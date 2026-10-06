@@ -1,0 +1,873 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #07110d;
+  color: #e8f0eb;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding: 0 28px 50px;
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar {
+  min-height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #72c96b,
+      #2d7f48
+    );
+
+  color: #061008;
+
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.brand h1 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.brand span {
+  display: block;
+
+  color: #7f9186;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 7px 11px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.status::before {
+  content: "";
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.status.online {
+  background: rgba(90, 190, 106, 0.12);
+  color: #83d68b;
+}
+
+.status.online::before {
+  background: #63c96e;
+}
+
+.status.warning {
+  background: rgba(238, 180, 63, 0.12);
+  color: #edc76d;
+}
+
+.status.warning::before {
+  background: #e4b84e;
+}
+
+.status.offline {
+  background: rgba(235, 80, 80, 0.12);
+  color: #ee8585;
+}
+
+.status.offline::before {
+  background: #e55c5c;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+  padding: 46px 0 34px;
+}
+
+.eyebrow {
+  color: #70c875;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
+}
+
+.hero h2 {
+  max-width: 850px;
+
+  margin: 8px 0 10px;
+
+  font-size: clamp(
+    28px,
+    4vw,
+    42px
+  );
+
+  line-height: 1.08;
+
+  letter-spacing: -0.035em;
+}
+
+.hero p {
+  max-width: 760px;
+
+  margin: 0;
+
+  color: #8fa197;
+
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+  margin-bottom: 18px;
+
+  padding: 26px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.07);
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.035),
+      rgba(255,255,255,0.018)
+    );
+
+  box-shadow:
+    0 15px 40px
+    rgba(0,0,0,0.15);
+}
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+.section-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+
+  margin-bottom: 24px;
+}
+
+.section-number {
+  min-width: 35px;
+  height: 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(112, 200, 117, 0.1);
+
+  color: #76cd7c;
+
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.section-title h3 {
+  margin: 0;
+
+  font-size: 17px;
+}
+
+.section-title p {
+  margin: 3px 0 0;
+
+  color: #718279;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.grid {
+  display: grid;
+  gap: 15px;
+
+  margin-bottom: 16px;
+}
+
+.grid-2 {
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.field {
+  min-width: 0;
+}
+
+.field label {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+
+  margin-bottom: 7px;
+
+  color: #aebdb4;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.field label span {
+  color: #627168;
+
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  outline: none;
+
+  border-radius: 10px;
+
+  background: #0a1711;
+
+  color: #e4ece7;
+
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.field input,
+.field select {
+  height: 43px;
+
+  padding: 0 12px;
+}
+
+.field textarea {
+  min-height: 100px;
+
+  padding: 12px;
+
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #4e5e56;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color:
+    rgba(112, 200, 117, 0.65);
+
+  background: #0c1b13;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(112, 200, 117, 0.08);
+}
+
+.field + .field {
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   AVAILABILITY
+========================================================= */
+
+.availability {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.availability-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(190px, 1.3fr)
+    repeat(4, minmax(100px, 1fr));
+
+  gap: 12px;
+
+  padding: 15px;
+
+  border-radius: 13px;
+
+  background: rgba(
+    0,
+    0,
+    0,
+    0.12
+  );
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.045);
+}
+
+.availability-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.availability-name strong {
+  font-size: 13px;
+}
+
+.availability-name span {
+  margin-top: 3px;
+
+  color: #687970;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin: 24px 0 30px;
+}
+
+.button {
+  min-height: 43px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  padding: 0 19px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  transition:
+    transform 0.15s,
+    opacity 0.15s,
+    background 0.15s;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.button.primary {
+  background:
+    linear-gradient(
+      135deg,
+      #76ce7c,
+      #48a957
+    );
+
+  color: #071009;
+
+  min-width: 190px;
+}
+
+.button.secondary {
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  color: #b7c5bd;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
+}
+
+.button.small {
+  min-height: 37px;
+  padding: 0 14px;
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+.loader {
+  display: inline-block;
+
+  width: 13px;
+  height: 13px;
+
+  margin-left: 7px;
+
+  border: 2px solid
+    rgba(0, 0, 0, 0.2);
+
+  border-top-color:
+    #071009;
+
+  border-radius: 50%;
+
+  animation:
+    spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   RESULTADO
+========================================================= */
+
+.result-section {
+  margin-top: 40px;
+}
+
+.result-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.result-header h2 {
+  margin: 4px 0 0;
+
+  font-size: 28px;
+
+  letter-spacing: -0.025em;
+}
+
+
+/* =========================================================
+   KPI
+========================================================= */
+
+.kpi-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 16px;
+}
+
+.kpi {
+  padding: 17px;
+
+  border-radius: 13px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.06);
+
+  background: #0a1711;
+}
+
+.kpi-label {
+  display: block;
+
+  color: #718279;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.07em;
+}
+
+.kpi-value {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #dce8e0;
+
+  font-size: 20px;
+}
+
+.kpi.normal {
+  border-color:
+    rgba(100, 194, 110, 0.18);
+}
+
+.kpi.normal .kpi-value {
+  color: #88d18c;
+}
+
+.kpi.attention {
+  border-color:
+    rgba(230, 180, 65, 0.22);
+}
+
+.kpi.attention .kpi-value {
+  color: #e6c26a;
+}
+
+.kpi.danger {
+  border-color:
+    rgba(228, 82, 82, 0.24);
+}
+
+.kpi.danger .kpi-value {
+  color: #ee8787;
+}
+
+
+/* =========================================================
+   PLAN
+========================================================= */
+
+.plan-card {
+  padding: 30px;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #0c1912,
+      #09140f
+    );
+
+  border: 1px solid
+    rgba(112, 200, 117, 0.15);
+
+  box-shadow:
+    0 20px 60px
+    rgba(0, 0, 0, 0.18);
+}
+
+.analysis-output {
+  white-space: pre-wrap;
+
+  color: #dce6df;
+
+  font-size: 14px;
+
+  line-height: 1.75;
+
+  word-break: break-word;
+}
+
+.result-footer {
+  padding: 12px 4px;
+
+  color: #58675f;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-box {
+  margin: 20px 0;
+
+  padding: 14px 16px;
+
+  border-radius: 11px;
+
+  border: 1px solid
+    rgba(230, 80, 80, 0.22);
+
+  background:
+    rgba(230, 80, 80, 0.08);
+
+  color: #f08b8b;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+  display: flex;
+  justify-content: space-between;
+
+  padding-top: 28px;
+
+  color: #526159;
+
+  font-size: 10px;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.06);
+}
+
+
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
+
+.hidden {
+  display: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (
+  max-width: 1100px
+) {
+
+  .grid-4 {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .availability-row {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .availability-name {
+    grid-column:
+      1 / -1;
+  }
+
+  .kpi-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+@media (
+  max-width: 760px
+) {
+
+  .app {
+    padding:
+      0 15px 35px;
+  }
+
+  .topbar {
+    min-height: 70px;
+  }
+
+  .hero {
+    padding:
+      30px 0 25px;
+  }
+
+  .hero h2 {
+    font-size: 30px;
+  }
+
+  .card {
+    padding: 19px;
+    border-radius: 14px;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns:
+      1fr;
+  }
+
+  .availability-row {
+    grid-template-columns:
+      1fr;
+  }
+
+  .availability-name {
+    grid-column:
+      auto;
+  }
+
+  .kpi-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .button {
+    width: 100%;
+  }
+
+  .result-header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .plan-card {
+    padding: 20px;
+  }
+
+  .analysis-output {
+    font-size: 13px;
+  }
+
+  footer {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+
+@media (
+  max-width: 450px
+) {
+
+  .brand h1 {
+    font-size: 17px;
+  }
+
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .status {
+    font-size: 9px;
+  }
+
+  .kpi-grid {
+    grid-template-columns:
+      1fr;
+  }
+}
