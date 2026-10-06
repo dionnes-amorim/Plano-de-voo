@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>COA | Plano de Voo CTT Agroindustrial</title>
+
+<style>
+:root{
+  --bg:#07111f;
+  --card:#0e1b2d;
+  --card2:#101f34;
+  --input:#081524;
+  --line:#263b58;
+  --text:#edf4ff;
+  --muted:#91a5be;
+  --blue:#278cff;
+  --green:#21c58a;
+  --yellow:#f4bd45;
+  --red:#ff5968;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#102744 0%,transparent 35%),
+    linear-gradient(135deg,#06101c,#0a1525 60%,#07111f);
+  color:var(--text);
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(7,17,31,.94);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid var(--line);
+}
+
+.top{
+  max-width:1500px;
+  margin:auto;
+  padding:17px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  background:linear-gradient(135deg,#1684ff,#20c69a);
+  box-shadow:0 8px 25px rgba(23,130,255,.25);
+}
+
+h1{
+  margin:0;
+  font-size:20px;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.status{
+  color:var(--muted);
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.status-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px var(--green);
+}
+
+main{
+  max-width:1500px;
+  margin:auto;
+  padding:22px;
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  gap:20px;
+}
+
+.card{
+  background:linear-gradient(180deg,rgba(16,31,52,.97),rgba(11,24,41,.98));
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 18px 55px rgba(0,0,0,.25);
+}
+
+.card h2{
+  font-size:15px;
+  margin:0 0 15px;
+}
+
+.card h3{
+  font-size:13px;
+  margin:18px 0 10px;
+  color:#dce9fa;
+}
+
+.section{
+  border-top:1px solid var(--line);
+  padding-top:14px;
+  margin-top:15px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+label{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  border:1px solid #2a4262;
+  background:var(--input);
+  color:var(--text);
+  border-radius:9px;
+  padding:10px;
+  font:inherit;
+  font-size:13px;
+  outline:none;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(39,140,255,.12);
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.api-box{
+  background:#081524;
+  border:1px dashed #315277;
+  border-radius:10px;
+  padding:12px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.5;
+  margin-top:7px;
+}
+
+.buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:16px;
+}
+
+button{
+  border:0;
+  border-radius:9px;
+  padding:10px 14px;
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  background:#203651;
+}
+
+button:hover{
+  filter:brightness(1.13);
+}
+
+.primary{
+  background:linear-gradient(135deg,#147cf1,#0da2dc);
+}
+
+.green{
+  background:linear-gradient(135deg,#0da875,#19c58e);
+}
+
+.red{
+  background:#70323b;
+}
+
+.yellow{
+  background:#70571d;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+  margin-bottom:13px;
+}
+
+.kpi{
+  background:#081625;
+  border:1px solid #223954;
+  border-radius:10px;
+  padding:11px;
+}
+
+.kpi span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.kpi b{
+  display:block;
+  font-size:17px;
+  margin-top:5px;
+}
+
+.ok{
+  color:#52e0a4;
+}
+
+.attention{
+  color:#ffd36d;
+}
+
+.critical{
+  color:#ff7884;
+}
+
+.output{
+  min-height:650px;
+  background:#06101b;
+  border:1px solid #223954;
+  border-radius:12px;
+  padding:18px;
+  white-space:pre-wrap;
+  overflow:auto;
+  line-height:1.65;
+  font-size:13px;
+}
+
+footer{
+  max-width:1500px;
+  margin:auto;
+  padding:0 22px 30px;
+  color:#70839c;
+  font-size:10px;
+}
+
+@media(max-width:1050px){
+  main{
+    grid-template-columns:1fr;
+  }
+
+  .output{
+    min-height:450px;
+  }
+}
+
+@media(max-width:700px){
+  main{
+    padding:12px;
+  }
+
+  .top{
+    padding:14px;
+  }
+
+  .grid,
+  .grid3,
+  .grid2{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .kpis{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .card{
+    padding:14px;
+  }
+
+  .status{
+    display:none;
+  }
+}
+
+@media(max-width:450px){
+  .grid,
+  .grid3,
+  .grid2,
+  .kpis{
+    grid-template-columns:1fr;
+  }
+
+  h1{
+    font-size:17px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="top">
+
+    <div class="brand">
+
+      <div class="logo">COA</div>
+
+      <div>
+        <h1>Plano de Voo | CTT Agroindustrial</h1>
+
+        <div class="subtitle">
+          Moagem • Entrega • Estoque • Ciclo • Colheita • Transporte • Sinergia
+        </div>
+      </div>
+
+    </div>
+
+    <div class="status">
+      <span class="status-dot"></span>
+      <span>Modo Local + Gemini</span>
+    </div>
+
+  </div>
+</header>
+
+
+<main>
+
+<!-- ========================================================= -->
+<!-- ENTRADA DOS DADOS -->
+<!-- ========================================================= -->
+
+<section class="card">
+
+<h2>1. Cenário operacional</h2>
+
+<div class="grid">
+
+  <div>
+    <label>Unidade</label>
+    <input id="unit" placeholder="Ex.: UICA">
+  </div>
+
+  <div>
+    <label>Data</label>
+    <input id="date" type="date">
+  </div>
+
+  <div>
+    <label>Moagem nominal (t/h)</label>
+    <input id="nominal" type="number" value="900">
+  </div>
+
+  <div>
+    <label>Moagem atual / média (t/h)</label>
+    <input id="milling" type="number" value="900">
+  </div>
+
+  <div>
+    <label>Entrega média das frentes (t/h)</label>
+    <input id="delivery" type="number" value="850">
+  </div>
+
+  <div>
+    <label>Produção atual das frentes (t/h)</label>
+    <input id="frontProd" type="number" value="850">
+  </div>
+
+  <div>
+    <label>Estoque atual (conjuntos)</label>
+    <input id="stock" type="number" value="10">
+  </div>
+
+  <div>
+    <label>Toneladas por conjunto</label>
+    <input id="density" type="number" value="70">
+  </div>
+
+  <div>
+    <label>Estoque mínimo (conjuntos)</label>
+    <input id="minStock" type="number" value="10">
+  </div>
+
+  <div>
+    <label>Estoque máximo (conjuntos)</label>
+    <input id="maxStock" type="number" value="20">
+  </div>
+
+  <div>
+    <label>Horizonte de análise (h)</label>
+    <input id="horizon" type="number" value="12">
+  </div>
+
+  <div>
+    <label>Horário de possível redução</label>
+    <input id="riskHour" placeholder="Ex.: 03:00">
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- COLHEDORAS -->
+<!-- ========================================================= -->
+
+<div class="section">
+
+<h3>Disponibilidade de colhedoras próprias</h3>
+
+<div class="grid">
+
+  <div>
+    <label>Indisponibilidade média (%)</label>
+    <input id="harvAvg" type="number" step="0.1" value="0">
+  </div>
+
+  <div>
+    <label>Período</label>
+    <input id="harvPeriod" placeholder="Ex.: 10:00 às 17:00">
+  </div>
+
+  <div>
+    <label>Pico (%)</label>
+    <input id="harvPeak" type="number" step="0.1" value="0">
+  </div>
+
+  <div>
+    <label>Horário do pico</label>
+    <input id="harvPeakTime" placeholder="Ex.: 14:00">
+  </div>
+
+</div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- TRAÇÕES -->
+<!-- ========================================================= -->
+
+<div class="section">
+
+<h3>Disponibilidade de trações / cavalos</h3>
+
+<div class="grid">
+
+  <div>
+    <label>Indisponibilidade média (%)</label>
+    <input id="tractionAvg" type="number" step="0.1" value="0">
+  </div>
+
+  <div>
+    <label>Período</label>
+    <input id="tractionPeriod" placeholder="Ex.: 10:00 às 18:00">
+  </div>
+
+  <div>
+    <label>Pico (%)</label>
+    <input id="tractionPeak" type="number" step="0.1" value="0">
+  </div>
+
+  <div>
+    <label>Horário do pico</label>
+    <input id="tractionPeakTime" placeholder="Ex.: 18:00">
+  </div>
+
+</div>
+
+<div class="grid3" style="margin-top:10px">
+
+  <div>
+    <label>Falta de cavalos no ciclo</label>
+    <input id="horsesMissing" type="number" value="0">
+  </div>
+
+  <div>
+    <label>Sem motorista</label>
+    <input id="noDrivers" type="number" value="0">
+  </div>
+
+  <div>
+    <label>Em manutenção</label>
+    <input id="horsesMaint" type="number" value="0">
+  </div>
+
+</div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- DÉFICITS -->
+<!-- ========================================================= -->
+
+<div class="section">
+
+<h3>Déficits e desempenho das frentes</h3>
+
+<div class="grid3">
+
+  <div>
+    <label>Déficit próprias (t)</label>
+    <input id="ownDeficit" type="number" value="0">
+  </div>
+
+  <div>
+    <label>Déficit terceiros (t)</label>
+    <input id="thirdDeficit" type="number" value="0">
+  </div>
+
+  <div>
+    <label>Déficit fornecedores (t)</label>
+    <input id="supplierDeficit" type="number" value="0">
+  </div>
+
+</div>
+
+
+<div class="grid2" style="margin-top:10px">
+
+  <div>
+    <label>Frentes / eventos / mudanças</label>
+
+    <textarea
+      id="frontEvents"
+      placeholder="Ex.: F242 normalizando ciclo; F23 mudança longa; F205 interdição; F04 sem ciclo montado..."
+    ></textarea>
+  </div>
+
+
+  <div>
+    <label>Transporte / trocas de turno</label>
+
+    <textarea
+      id="transportEvents"
+      placeholder="Ex.: troca 18:00 e 21:00; ciclo instável; priorizar raio menor..."
+    ></textarea>
+  </div>
+
+</div>
+
+
+<div class="grid2" style="margin-top:10px">
+
+  <div>
+    <label>Sinergia / ações realizadas pelo COA</label>
+
+    <textarea
+      id="synergy"
+      placeholder="Ex.: 03 viagens para F503 UIM; 01 viagem/h F83 UISJ..."
+    ></textarea>
+  </div>
+
+
+  <div>
+    <label>Outras observações</label>
+
+    <textarea
+      id="notes"
+      placeholder="Inclua informações adicionais importantes para a análise."
+    ></textarea>
+  </div>
+
+</div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- GEMINI -->
+<!-- ========================================================= -->
+
+<div class="section">
+
+<h3>Integração Gemini / Google AI Studio</h3>
+
+<div class="api-box">
+
+<div class="grid2">
+
+  <div>
+    <label>Chave Gemini API</label>
+
+    <input
+      id="apiKey"
+      type="password"
+      placeholder="Cole sua chave do Google AI Studio"
+    >
+  </div>
+
+
+  <div>
+    <label>Modelo Gemini</label>
+
+    <input
+      id="model"
+      value="gemini-3.8-flash"
+    >
+  </div>
+
+</div>
+
+<div class="small">
+A chave é utilizada diretamente pelo navegador. Para ambiente corporativo,
+o ideal é posteriormente colocar a chamada Gemini em um backend/proxy para
+não expor a chave no navegador.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- BOTÕES -->
+<!-- ========================================================= -->
+
+<div class="buttons">
+
+<button
+  class="primary"
+  id="generate"
+>
+  Gerar Plano de Voo com Gemini
+</button>
+
+
+<button
+  class="green"
+  id="local"
+>
+  Gerar Análise Local
+</button>
+
+
+<button id="save">
+  Salvar preenchimento
+</button>
+
+
+<button id="load">
+  Carregar preenchimento
+</button>
+
+
+<button
+  class="red"
+  id="clear"
+>
+  Limpar
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- RESULTADO -->
+<!-- ========================================================= -->
+
+<section class="card">
+
+<h2>2. Análise / Plano de Voo</h2>
+
+
+<div class="kpis">
+
+  <div class="kpi">
+    <span>Gap Moagem x Entrega</span>
+    <b id="gap">—</b>
+  </div>
+
+
+  <div class="kpi">
+    <span>Estoque estimado</span>
+    <b id="stockT">—</b>
+  </div>
+
+
+  <div class="kpi">
+    <span>Autonomia aproximada</span>
+    <b id="autonomy">—</b>
+  </div>
+
+
+  <div class="kpi">
+    <span>Status</span>
+    <b id="risk">—</b>
+  </div>
+
+</div>
+
+
+<div
+  id="output"
+  class="output"
+>
+Preencha os dados e clique em "Gerar Plano de Voo com Gemini".
+</div>
+
+
+<div class="buttons">
+
+<button id="copy">
+  Copiar resultado
+</button>
+
+
+<button id="download">
+  Baixar TXT
+</button>
+
+
+<button id="print">
+  Imprimir
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+COA • Ferramenta de apoio à análise operacional.
+Os cálculos são indicativos e não substituem o acompanhamento
+em tempo real de campo, transporte e indústria.
+</footer>
+
+
+<script>
+
+/* ============================================================
+   CONFIGURAÇÃO
+============================================================ */
+
+const IDS = [
+
+  "unit",
+  "date",
+  "nominal",
+  "milling",
+  "delivery",
+  "frontProd",
+  "stock",
+  "density",
+  "minStock",
+  "maxStock",
+  "horizon",
+  "riskHour",
+
+  "harvAvg",
+  "harvPeriod",
+  "harvPeak",
+  "harvPeakTime",
+
+  "tractionAvg",
+  "tractionPeriod",
+  "tractionPeak",
+  "tractionPeakTime",
+
+  "horsesMissing",
+  "noDrivers",
+  "horsesMaint",
+
+  "ownDeficit",
+  "thirdDeficit",
+  "supplierDeficit",
+
+  "frontEvents",
+  "transportEvents",
+  "synergy",
+  "notes",
+
+  "apiKey",
+  "model"
+
+];
+
+
+function $(id){
+
+  return document.getElementById(id);
+
+}
+
+
+function val(id){
+
+  return $(id).value.trim();
+
+}
+
+
+function num(id){
+
+  const value = parseFloat($(id).value);
+
+  return Number.isFinite(value) ? value : 0;
+
+}
+
+
+function formatNumber(number){
+
+  return Number(number || 0).toLocaleString(
+    "pt-BR",
+    {
+      maximumFractionDigits:1
+    }
+  );
+
+}
+
+
+/* ============================================================
+   COLETA DOS DADOS
+============================================================ */
+
+function collectData(){
+
+  const data = {};
+
+  IDS.forEach(id => {
+
+    data[id] = val(id);
+
+  });
+
+  return data;
+
+}
+
+
+/* ============================================================
+   CÁLCULOS
+============================================================ */
+
+function calculate(data){
+
+  const milling = num("milling");
+
+  const delivery = num("delivery");
+
+  const stock = num("stock");
+
+  const density = num("density");
+
+  const minimum = num("minStock");
+
+  const gap = milling - delivery;
+
+  const stockTons = stock * density;
+
+  const autonomyMinutes =
+    milling > 0
+      ? (stockTons / milling) * 60
+      : 0;
+
+
+  let status = "ESTÁVEL";
+
+
+  if(
+    stock <= minimum ||
+    gap > 100
+  ){
+
+    status = "ATENÇÃO";
+
+  }
+
+
+  if(
+    stock <= Math.max(4,minimum - 3) ||
+    gap > 200
+  ){
+
+    status = "CRÍTICO";
+
+  }
+
+
+  $("gap").textContent =
+    (gap >= 0 ? "+" : "") +
+    formatNumber(gap) +
+    " t/h";
+
+
+  $("stockT").textContent =
+    formatNumber(stockTons) +
+    " t";
+
+
+  if(autonomyMinutes < 120){
+
+    const hours =
+      Math.floor(autonomyMinutes / 60);
+
+    const minutes =
+      Math.round(autonomyMinutes % 60);
+
+    $("autonomy").textContent =
+      hours +
+      ":" +
+      String(minutes).padStart(2,"0") +
+      " h";
+
+  }else{
+
+    $("autonomy").textContent =
+      formatNumber(autonomyMinutes / 60) +
+      " h";
+
+  }
+
+
+  $("risk").textContent = status;
+
+  $("risk").className =
+    status === "CRÍTICO"
+      ? "critical"
+      : status === "ATENÇÃO"
+        ? "attention"
+        : "ok";
+
+
+  return {
+
+    gap,
+    stockTons,
+    autonomyMinutes,
+    status
+
+  };
+
+}
+
+
+/* ============================================================
+   CONTEXTO PARA GEMINI
+============================================================ */
+
+function buildContext(data){
+
+  const calc = calculate(data);
+
+
+  return `
+
+DADOS OPERACIONAIS DA UNIDADE
+
+Unidade:
+${data.unit || "não informada"}
+
+Data:
+${data.date || "não informada"}
+
+Moagem nominal:
+${data.nominal} t/h
+
+Moagem atual/média:
+${data.milling} t/h
+
+Entrega média das frentes:
+${data.delivery} t/h
+
+Produção atual das frentes:
+${data.frontProd} t/h
+
+Estoque:
+${data.stock} conjuntos carregados
+
+Densidade:
+${data.density} t/conjunto
+
+Estoque aproximado em toneladas:
+${calc.stockTons} t
+
+Estoque mínimo:
+${data.minStock} conjuntos
+
+Estoque máximo:
+${data.maxStock} conjuntos
+
+Gap entre moagem e entrega:
+${calc.gap} t/h
+
+Autonomia aproximada do estoque:
+${Math.round(calc.autonomyMinutes)} minutos
+
+
+COLHEDORAS PRÓPRIAS
+
+Indisponibilidade média:
+${data.harvAvg}%
+
+Período:
+${data.harvPeriod || "não informado"}
+
+Pico:
+${data.harvPeak}%
+
+Horário do pico:
+${data.harvPeakTime || "não informado"}
+
+
+TRAÇÕES / CAVALOS
+
+Indisponibilidade média:
+${data.tractionAvg}%
+
+Período:
+${data.tractionPeriod || "não informado"}
+
+Pico:
+${data.tractionPeak}%
+
+Horário do pico:
+${data.tractionPeakTime || "não informado"}
+
+Falta de cavalos no ciclo:
+${data.horsesMissing}
+
+Sem motorista:
+${data.noDrivers}
+
+Em manutenção:
+${data.horsesMaint}
+
+
+DÉFICITS
+
+Próprias:
+${data.ownDeficit} t
+
+Terceiros:
+${data.thirdDeficit} t
+
+Fornecedores:
+${data.supplierDeficit} t
+
+
+EVENTOS DAS FRENTES
+
+${data.frontEvents || "Não informado"}
+
+
+TRANSPORTE / TROCAS DE TURNO
+
+${data.transportEvents || "Não informado"}
+
+
+SINERGIA / AÇÕES DO COA
+
+${data.synergy || "Não informado"}
+
+
+OUTRAS OBSERVAÇÕES
+
+${data.notes || "Não informado"}
+
+
+HORÁRIO DE POSSÍVEL REDUÇÃO
+
+${data.riskHour || "Não informado"}
+
+HORIZONTE DA ANÁLISE:
+
+${data.horizon} horas
+
+`;
+
+}
+
+
+/* ============================================================
+   PROMPT PRINCIPAL DA GEMINI
+============================================================ */
+
+function buildPrompt(data){
+
+  return `
+
+Você é um ANALISTA SÊNIOR DE OPERAÇÕES do COA/CTT
+de uma operação agroindustrial de cana-de-açúcar da Tereos.
+
+Sua função é transformar os números operacionais abaixo
+em um PLANO DE VOO para comunicação de nível gerencial.
+
+O texto precisa parecer escrito por um analista de operações
+experiente que conhece CTT, colheita, transporte, moagem,
+estoque, ciclo, alocação e disponibilidade mecânica.
+
+ESTILO OBRIGATÓRIO:
+
+- Português do Brasil.
+- Claro.
+- Direto.
+- Explicativo.
+- Técnico, mas sem linguagem excessivamente formal.
+- Natural.
+- Não escrever como IA.
+- Não utilizar frases genéricas.
+- Não repetir informações desnecessariamente.
+- Mostrar claramente CAUSA → REFLEXO → RISCO → AÇÃO → TENDÊNCIA.
+- Usar os números fornecidos.
+- Fazer conexão entre os indicadores.
+- Não inventar nenhuma informação.
+- Não inventar horários.
+- Não inventar frentes.
+- Não inventar déficits.
+- Não inventar capacidade.
+- Não criar dados que não foram fornecidos.
+- Pode fazer cálculos matemáticos simples com os números.
+- Se um dado não foi informado, simplesmente não utilize.
+- Se houver risco de redução de moagem, explicar exatamente qual condição gera esse risco.
+- Se não houver risco de redução, deixar isso explícito.
+- Quando houver sinergia ou ação já realizada pelo COA, destacar essa ação antes de sugerir novas ações.
+- Se houver troca de turno, destacar a necessidade de preservar a fluidez do ciclo.
+- Se houver estoque baixo, relacionar o estoque com a diferença entre moagem e entrega.
+- Se houver indisponibilidade de colhedoras, relacionar com produção das frentes.
+- Se houver indisponibilidade de cavalos/trações, relacionar com ciclo e retorno dos carregamentos.
+- Se houver frentes de terceiros/fornecedores com déficit, relacionar com a oferta total da unidade.
+- Se houver mudança de frente, considerar o tempo de estabilização do ciclo.
+- Se houver interdição de trajeto, considerar o impacto logístico.
+- Se houver recuperação das frentes, destacar a tendência positiva.
+- Não usar excesso de tópicos.
+- Priorizar parágrafos explicativos.
+- Pode usar poucos bullets somente quando facilitarem o plano de ação.
+
+ESTRUTURA:
+
+PLANO DE VOO – [UNIDADE]
+
+Primeiro parágrafo:
+Descrever o cenário atual de moagem, entrega e estoque.
+
+Segundo parágrafo:
+Explicar os principais ofensores e como eles afetaram a produção/ciclo.
+
+Terceiro parágrafo:
+Explicar o reflexo no estoque e o nível de risco.
+
+PLANO DE AÇÃO:
+Descrever as ações já realizadas pelo COA e as ações necessárias
+para recuperar ciclo, produção, estoque e moagem.
+
+CENÁRIO ESPERADO:
+Explicar o que precisa acontecer para manter ou recuperar
+a moagem nominal e qual é o principal ponto de atenção.
+
+FECHAMENTO:
+Uma conclusão curta, objetiva e gerencial.
+
+IMPORTANTE:
+
+Não diga "conforme mostra o gráfico" porque nenhum gráfico
+foi enviado para você.
+
+Não escreva explicações sobre como você fez a análise.
+
+Entregue SOMENTE o texto final do Plano de Voo.
+
+${buildContext(data)}
+
+`;
+
+}
+
+
+/* ============================================================
+   GEMINI
+============================================================ */
+
+async function generateGemini(){
+
+  const data = collectData();
+
+  const apiKey = data.apiKey;
+
+  if(!apiKey){
+
+    alert(
+      "Informe a chave da Gemini API para utilizar a IA."
+    );
+
+    return;
+
+  }
+
+
+  $("output").textContent =
+    "Analisando o cenário operacional com Gemini...";
+
+
+  const model =
+    data.model ||
+    "gemini-3.8-flash";
+
+
+  const url =
+    "https://generativelanguage.googleapis.com/v1beta/models/" +
+    encodeURIComponent(model) +
+    ":generateContent";
+
+
+  const body = {
+
+    system_instruction:{
+
+      parts:[
+
+        {
+
+          text:
+          `
+Você é especialista em CTT agroindustrial,
+transporte de cana, colheita, moagem,
+estoque, disponibilidade mecânica,
+alocação e planejamento operacional.
+
+Sua análise deve ser factual,
+gerencial e operacional.
+Não invente dados.
+`
+
+        }
+
+      ]
+
+    },
+
+
+    contents:[
+
+      {
+
+        role:"user",
+
+        parts:[
+
+          {
+
+            text:buildPrompt(data)
+
+          }
+
+        ]
+
+      }
+
+    ],
+
+
+    generationConfig:{
+
+      temperature:0.20,
+
+      maxOutputTokens:2200
+
+    }
+
+  };
+
+
+  try{
+
+    const response =
+      await fetch(
+
+        url,
+
+        {
+
+          method:"POST",
+
+          headers:{
+
+            "Content-Type":
+            "application/json",
+
+            "x-goog-api-key":
+            apiKey
+
+          },
+
+          body:
+          JSON.stringify(body)
+
+        }
+
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if(!response.ok){
+
+      throw new Error(
+        result?.error?.message ||
+        "Erro na API Gemini"
+      );
+
+    }
+
+
+    const text =
+      result
+      ?.candidates
+      ?.map(candidate =>
+        candidate
+        ?.content
+        ?.parts
+        ?.map(part => part.text || "")
+        .join("")
+      )
+      .join("")
+      .trim();
+
+
+    if(!text){
+
+      throw new Error(
+        "A Gemini não retornou conteúdo."
+      );
+
+    }
+
+
+    $("output").textContent = text;
+
+
+    localStorage.setItem(
+      "coa_last_result",
+      text
+    );
+
+  }
+
+  catch(error){
+
+    $("output").textContent =
+      "ERRO AO CONSULTAR GEMINI\n\n" +
+      error.message +
+      "\n\n" +
+      "Você ainda pode utilizar a opção " +
+      "\"Gerar Análise Local\".";
+
+  }
+
+}
+
+
+/* ============================================================
+   ANÁLISE LOCAL
+============================================================ */
+
+function generateLocal(){
+
+  const data = collectData();
+
+  const calc = calculate(data);
+
+  const unit =
+    data.unit ||
+    "UNIDADE";
+
+
+  const gap =
+    Math.max(
+      0,
+      calc.gap
+    );
+
+
+  let text = "";
+
+
+  text +=
+    "PLANO DE VOO – " +
+    unit.toUpperCase() +
+    "\n\n";
+
+
+  text +=
+    "Em análise realizada, a moagem está em " +
+    data.milling +
+    " t/h, enquanto a entrega média das frentes está em " +
+    data.delivery +
+    " t/h. ";
+
+
+  if(calc.gap > 0){
+
+    text +=
+      "A diferença de " +
+      formatNumber(gap) +
+      " t/h entre moagem e entrega pressiona diretamente o estoque e exige atenção ao equilíbrio entre campo e indústria.";
+
+  }else{
+
+    text +=
+      "O ritmo de entrega está alinhado ao ritmo industrial, mantendo o abastecimento compatível com a moagem.";
+
+  }
+
+
+  text += "\n\n";
+
+
+  if(num("harvAvg") > 0){
+
+    text +=
+      "A indisponibilidade mecânica média das colhedoras próprias está em " +
+      data.harvAvg +
+      "%";
+
+
+    if(data.harvPeriod){
+
+      text +=
+        " no período " +
+        data.harvPeriod;
+
+    }
+
+
+    if(num("harvPeak") > 0){
+
+      text +=
+        ", com pico de " +
+        data.harvPeak +
+        "%";
+
+      if(data.harvPeakTime){
+
+        text +=
+          " às " +
+          data.harvPeakTime;
+
+      }
+
+    }
+
+
+    text +=
+      ". Esse cenário impacta diretamente a capacidade de produção das frentes e precisa ser acompanhado pelo reflexo gerado na entrega.";
+
+  }
+
+
+  text += "\n\n";
+
+
+  if(num("tractionAvg") > 0){
+
+    text +=
+      "Na logística, a indisponibilidade média de trações/cavalos está em " +
+      data.tractionAvg +
+      "%";
+
+
+    if(data.tractionPeriod){
+
+      text +=
+        " no período " +
+        data.tractionPeriod;
+
+    }
+
+
+    if(num("tractionPeak") > 0){
+
+      text +=
+        ", com pico de " +
+        data.tractionPeak +
+        "%";
+
+      if(data.tractionPeakTime){
+
+        text +=
+          " às " +
+          data.tractionPeakTime;
+
+      }
+
+    }
+
+
+    text +=
+      ", podendo comprometer a regularidade do ciclo e o retorno dos carregamentos.";
+
+  }
+
+
+  text += "\n\n";
+
+
+  text +=
+    "O pátio está com aproximadamente " +
+    data.stock +
+    " conjuntos carregados, equivalente a cerca de " +
+    formatNumber(calc.stockTons) +
+    " toneladas. " +
+    "Na moagem atual, a autonomia teórica do estoque é de aproximadamente " +
+    Math.round(calc.autonomyMinutes) +
+    " minutos. ";
+
+
+  if(calc.status === "CRÍTICO"){
+
+    text +=
+      "O cenário está em nível crítico e exige atuação imediata para evitar redução de moagem.";
+
+  }
+
+  else if(calc.status === "ATENÇÃO"){
+
+    text +=
+      "O cenário exige atenção, principalmente para evitar nova queda de estoque.";
+
+  }
+
+  else{
+
+    text +=
+      "O cenário permanece estável, desde que produção e ciclo continuem sustentando o ritmo industrial.";
+
+  }
+
+
+  if(data.frontEvents){
+
+    text +=
+      "\n\nPrincipais ofensores e eventos das frentes: " +
+      data.frontEvents;
+
+  }
+
+
+  if(data.transportEvents){
+
+    text +=
+      "\n\nNo transporte: " +
+      data.transportEvents;
+
+  }
+
+
+  if(data.synergy){
+
+    text +=
+      "\n\nAções já realizadas pelo COA: " +
+      data.synergy;
+
+  }
+
+
+  text +=
+    "\n\nPLANO DE AÇÃO\n\n";
+
+
+  text +=
+    "• Garantir alinhamento entre moagem e capacidade real de entrega, evitando consumo de estoque acima da recuperação do campo.\n\n";
+
+
+  text +=
+    "• Priorizar frentes com melhor rendimento e menor tempo de ciclo enquanto houver pressão sobre o pátio.\n\n";
+
+
+  text +=
+    "• Atuar nos principais ofensores de disponibilidade mecânica, buscando recuperar rapidamente a produção das frentes.\n\n";
+
+
+  text +=
+    "• Garantir disponibilidade de transporte suficiente para fechar os ciclos e evitar períodos sem alocação.\n\n";
+
+
+  text +=
+    "• Proteger os horários de troca de turno, evitando quebra de ciclo e nova perda de estoque.\n\n";
+
+
+  text +=
+    "• Reavaliar continuamente moagem, produção, entrega e estoque para ajustar o ritmo industrial conforme a capacidade real do campo.\n\n";
+
+
+  text +=
+    "CENÁRIO ESPERADO\n\n";
+
+
+  text +=
+    "A tendência operacional deverá ser acompanhada pela evolução da produção das frentes, disponibilidade mecânica e estabilidade do transporte. ";
+
+
+  if(calc.status === "CRÍTICO"){
+
+    text +=
+      "Neste momento, a prioridade deve ser recuperar produção e estoque antes de buscar elevação de moagem.";
+
+  }
+
+  else if(calc.status === "ATENÇÃO"){
+
+    text +=
+      "Com estabilização do ciclo e recuperação da entrega, existe condição para preservar a moagem, mas o pátio deve permanecer sob acompanhamento próximo.";
+
+  }
+
+  else{
+
+    text +=
+      "Com manutenção da estabilidade das frentes e do ciclo, existe condição para sustentar o ritmo industrial.";
+
+  }
+
+
+  text +=
+    "\n\nFECHAMENTO\n\n";
+
+
+  text +=
+    "O principal objetivo é manter o equilíbrio entre campo, transporte e indústria, garantindo que a moagem acompanhe a capacidade real de produção sem comprometer a segurança do estoque.";
+
+
+  $("output").textContent =
+    text;
+
+}
+
+
+/* ============================================================
+   SALVAR
+============================================================ */
+
+function saveData(){
+
+  const data =
+    collectData();
+
+
+  localStorage.setItem(
+    "coa_plano_voo_form",
+    JSON.stringify(data)
+  );
+
+
+  alert(
+    "Preenchimento salvo neste navegador."
+  );
+
+}
+
+
+/* ============================================================
+   CARREGAR
+============================================================ */
+
+function loadData(){
+
+  const saved =
+    localStorage.getItem(
+      "coa_plano_voo_form"
+    );
+
+
+  if(!saved){
+
+    alert(
+      "Não existe preenchimento salvo."
+    );
+
+    return;
+
+  }
+
+
+  const data =
+    JSON.parse(saved);
+
+
+  IDS.forEach(id => {
+
+    if(data[id] !== undefined){
+
+      $(id).value =
+        data[id];
+
+    }
+
+  });
+
+
+  calculate(data);
+
+
+  alert(
+    "Preenchimento carregado."
+  );
+
+}
+
+
+/* ============================================================
+   LIMPAR
+============================================================ */
+
+function clearData(){
+
+  if(
+    !confirm(
+      "Deseja realmente limpar os dados?"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  IDS.forEach(id => {
+
+    $(id).value = "";
+
+  });
+
+
+  $("nominal").value = 900;
+
+  $("milling").value = 900;
+
+  $("delivery").value = 850;
+
+  $("frontProd").value = 850;
+
+  $("stock").value = 10;
+
+  $("density").value = 70;
+
+  $("minStock").value = 10;
+
+  $("maxStock").value = 20;
+
+  $("horizon").value = 12;
+
+  $("model").value =
+    "gemini-3.8-flash";
+
+
+  $("output").textContent =
+    'Preencha os dados e clique em "Gerar Plano de Voo com Gemini".';
+
+
+  calculate(
+    collectData()
+  );
+
+}
+
+
+/* ============================================================
+   COPIAR RESULTADO
+============================================================ */
+
+async function copyResult(){
+
+  try{
+
+    await navigator.clipboard.writeText(
+      $("output").textContent
+    );
+
+    alert(
+      "Plano de voo copiado."
+    );
+
+  }
+
+  catch(error){
+
+    alert(
+      "Não foi possível copiar automaticamente."
+    );
+
+  }
+
+}
+
+
+/* ============================================================
+   DOWNLOAD TXT
+============================================================ */
+
+function downloadResult(){
+
+  const text =
+    $("output").textContent;
+
+
+  const unit =
+    val("unit") ||
+    "Unidade";
+
+
+  const blob =
+    new Blob(
+      [text],
+      {
+        type:
+        "text/plain;charset=utf-8"
+      }
+    );
+
+
+  const link =
+    document.createElement("a");
+
+
+  link.href =
+    URL.createObjectURL(blob);
+
+
+  link.download =
+    "Plano_de_Voo_" +
+    unit +
+    ".txt";
+
+
+  link.click();
+
+
+  URL.revokeObjectURL(
+    link.href
+  );
+
+}
+
+
+/* ============================================================
+   EVENTOS
+============================================================ */
+
+$("generate").onclick =
+  generateGemini;
+
+
+$("local").onclick =
+  generateLocal;
+
+
+$("save").onclick =
+  saveData;
+
+
+$("load").onclick =
+  loadData;
+
+
+$("clear").onclick =
+  clearData;
+
+
+$("copy").onclick =
+  copyResult;
+
+
+$("download").onclick =
+  downloadResult;
+
+
+$("print").onclick =
+  () => window.print();
+
+
+IDS.forEach(id => {
+
+  $(id).addEventListener(
+    "input",
+    () => calculate(
+      collectData()
+    )
+  );
+
+});
+
+
+/* ============================================================
+   API KEY LOCAL
+============================================================ */
+
+const savedApiKey =
+  localStorage.getItem(
+    "coa_gemini_key"
+  );
+
+
+if(savedApiKey){
+
+  $("apiKey").value =
+    savedApiKey;
+
+}
+
+
+$("apiKey").addEventListener(
+  "change",
+  () => {
+
+    localStorage.setItem(
+      "coa_gemini_key",
+      $("apiKey").value
+    );
+
+  }
+);
+
+
+/* ============================================================
+   DATA INICIAL
+============================================================ */
+
+$("date").value =
+  new Date()
+  .toISOString()
+  .slice(0,10);
+
+
+calculate(
+  collectData()
+);
+
+</script>
+
+</body>
+</html>
