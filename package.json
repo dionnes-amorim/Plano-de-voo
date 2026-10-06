@@ -1,8 +1,7 @@
 {
-  "name": "coa-plano-voo",
+  "name": "coa-plano-voo-ctt",
   "version": "1.0.0",
-  "description": "COA | Plano de Voo CTT Agroindustrial",
-  "type": "module",
+  "description": "COA - Plano de Voo CTT Agroindustrial",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -13,6 +12,8 @@
   },
   "dependencies": {
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0"
   }
 }
