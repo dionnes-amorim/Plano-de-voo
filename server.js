@@ -1,875 +1,839 @@
-import express from "express";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+require("dotenv").config();
 
-dotenv.config();
+const express = require("express");
+const path = require("path");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
-const GEMINI_MODEL =
-  process.env.GEMINI_MODEL || "gemini-3.8-flash";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-app.use(express.json({ limit: "1mb" }));
+app.set("trust proxy", 1);
 
 app.use(
-  express.static(
-    path.join(__dirname, "public")
-  )
+  helmet({
+    contentSecurityPolicy: false
+  })
 );
 
+app.use(express.json({ limit: "250kb" }));
+
+app.use(express.static(__dirname));
+
+const analyzeLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Limite de análises atingido. Aguarde alguns segundos e tente novamente."
+  }
+});
+
+/* =========================================================
+   FUNÇÕES AUXILIARES
+========================================================= */
+
+function toNumber(value) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const number = Number(String(value).replace(",", "."));
+
+  return Number.isFinite(number) ? number : null;
+}
+
+function toText(value, maxLength = 3000) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value).trim().slice(0, maxLength);
+}
+
+function percent(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  return Number(value);
+}
+
+/* =========================================================
+   NORMALIZAÇÃO DOS DADOS
+========================================================= */
+
+function normalizePayload(body) {
+  return {
+    unidade: toText(body.unidade, 100),
+    dataHora: toText(body.dataHora, 100),
+    turno: toText(body.turno, 100),
+
+    moagemAtual: toNumber(body.moagemAtual),
+    moagemNominal: toNumber(body.moagemNominal),
+    entregaMedia: toNumber(body.entregaMedia),
+    janelaEntrega: toText(body.janelaEntrega, 100),
+
+    estoqueAtual: toNumber(body.estoqueAtual),
+    estoqueMinimo: toNumber(body.estoqueMinimo),
+    estoqueProjetado: toNumber(body.estoqueProjetado),
+    horaEstoqueCritico: toText(body.horaEstoqueCritico, 100),
+
+    moagemContingencia: toNumber(body.moagemContingencia),
+
+    colhedorasMedia: percent(body.colhedorasMedia),
+    colhedorasPeriodo: toText(body.colhedorasPeriodo, 100),
+    colhedorasPico: percent(body.colhedorasPico),
+    colhedorasHoraPico: toText(body.colhedorasHoraPico, 100),
+
+    tracoesMedia: percent(body.tracoesMedia),
+    tracoesPeriodo: toText(body.tracoesPeriodo, 100),
+    tracoesPico: percent(body.tracoesPico),
+    tracoesHoraPico: toText(body.tracoesHoraPico, 100),
+
+    cavalosMedia: percent(body.cavalosMedia),
+    cavalosPeriodo: toText(body.cavalosPeriodo, 100),
+    cavalosPico: percent(body.cavalosPico),
+    cavalosHoraPico: toText(body.cavalosHoraPico, 100),
+
+    tipoProblema: toText(body.tipoProblema, 100),
+
+    ofensores: toText(body.ofensores, 5000),
+    eventos: toText(body.eventos, 5000),
+
+    ciclo: toText(body.ciclo, 3000),
+    trocasTurno: toText(body.trocasTurno, 2000),
+
+    tercForn: toText(body.tercForn, 3000),
+
+    acoesCOA: toText(body.acoesCOA, 5000),
+    prioridadeAlocacao: toText(body.prioridadeAlocacao, 3000),
+    sinergia: toText(body.sinergia, 3000),
+
+    observacoes: toText(body.observacoes, 5000)
+  };
+}
+
+/* =========================================================
+   CÁLCULO DOS INDICADORES
+========================================================= */
+
+function calculateMetrics(data) {
+  const metrics = {
+    gapMoagemNominal: null,
+    gapEntregaMoagem: null,
+    coberturaNominal: null,
+    saldoEstoque: null,
+    variacaoEstoqueProjetado: null,
+    risco: "SEM CLASSIFICAÇÃO",
+    principaisSinais: []
+  };
+
+  if (
+    data.moagemAtual !== null &&
+    data.moagemNominal !== null
+  ) {
+    metrics.gapMoagemNominal =
+      data.moagemAtual - data.moagemNominal;
+  }
+
+  if (
+    data.entregaMedia !== null &&
+    data.moagemAtual !== null
+  ) {
+    metrics.gapEntregaMoagem =
+      data.entregaMedia - data.moagemAtual;
+  }
+
+  if (
+    data.entregaMedia !== null &&
+    data.moagemNominal !== null &&
+    data.moagemNominal > 0
+  ) {
+    metrics.coberturaNominal =
+      (data.entregaMedia / data.moagemNominal) * 100;
+  }
+
+  if (
+    data.estoqueAtual !== null &&
+    data.estoqueMinimo !== null
+  ) {
+    metrics.saldoEstoque =
+      data.estoqueAtual - data.estoqueMinimo;
+  }
+
+  if (
+    data.estoqueProjetado !== null &&
+    data.estoqueAtual !== null
+  ) {
+    metrics.variacaoEstoqueProjetado =
+      data.estoqueProjetado - data.estoqueAtual;
+  }
+
+  const sinais = [];
+
+  if (
+    metrics.gapMoagemNominal !== null &&
+    metrics.gapMoagemNominal > 0
+  ) {
+    sinais.push(
+      "Moagem acima da referência nominal."
+    );
+  }
+
+  if (
+    metrics.gapEntregaMoagem !== null &&
+    metrics.gapEntregaMoagem < 0
+  ) {
+    sinais.push(
+      "Entrega abaixo da moagem atual, pressionando o estoque."
+    );
+  }
+
+  if (
+    metrics.saldoEstoque !== null &&
+    metrics.saldoEstoque <= 0
+  ) {
+    sinais.push(
+      "Estoque atual dentro ou abaixo da zona mínima informada."
+    );
+  } else if (
+    metrics.saldoEstoque !== null &&
+    metrics.saldoEstoque <= 2
+  ) {
+    sinais.push(
+      "Estoque próximo da zona mínima."
+    );
+  }
+
+  const indisponibilidades = [
+    {
+      nome: "Colhedoras próprias",
+      media: data.colhedorasMedia,
+      pico: data.colhedorasPico
+    },
+    {
+      nome: "Trações",
+      media: data.tracoesMedia,
+      pico: data.tracoesPico
+    },
+    {
+      nome: "Cavalos",
+      media: data.cavalosMedia,
+      pico: data.cavalosPico
+    }
+  ];
+
+  indisponibilidades.forEach((item) => {
+    if (item.media !== null && item.media >= 15) {
+      sinais.push(
+        `${item.nome} com indisponibilidade média relevante (${item.media}%).`
+      );
+    }
+
+    if (item.pico !== null && item.pico >= 25) {
+      sinais.push(
+        `${item.nome} apresentou pico elevado de indisponibilidade (${item.pico}%).`
+      );
+    }
+  });
+
+  metrics.principaisSinais = sinais;
+
+  /* -------------------------------------------------------
+     CLASSIFICAÇÃO DE RISCO
+  ------------------------------------------------------- */
+
+  let risco = "ESTÁVEL";
+
+  const estoqueCritico =
+    metrics.saldoEstoque !== null &&
+    metrics.saldoEstoque <= 0;
+
+  const estoqueAltoRisco =
+    metrics.saldoEstoque !== null &&
+    metrics.saldoEstoque <= 2;
+
+  const entregaAbaixoMoagem =
+    metrics.gapEntregaMoagem !== null &&
+    metrics.gapEntregaMoagem < 0;
+
+  const moagemAcimaNominal =
+    metrics.gapMoagemNominal !== null &&
+    metrics.gapMoagemNominal > 0;
+
+  const picoIndisponibilidadeAlto =
+    indisponibilidades.some(
+      (item) =>
+        item.pico !== null &&
+        item.pico >= 25
+    );
+
+  if (estoqueCritico) {
+    risco = "CRÍTICO";
+  } else if (
+    estoqueAltoRisco &&
+    entregaAbaixoMoagem
+  ) {
+    risco = "ALTO";
+  } else if (
+    entregaAbaixoMoagem &&
+    moagemAcimaNominal
+  ) {
+    risco = "ALTO";
+  } else if (
+    entregaAbaixoMoagem ||
+    estoqueAltoRisco ||
+    picoIndisponibilidadeAlto
+  ) {
+    risco = "ATENÇÃO";
+  }
+
+  metrics.risco = risco;
+
+  return metrics;
+}
+
+/* =========================================================
+   PROMPT DO PLANO DE VOO
+========================================================= */
+
+function buildPrompt(data, metrics) {
+  return `
+Você é um especialista sênior em CTT Agroindustrial e Controle de Operações Agrícolas (COA), atuando em uma operação de cana-de-açúcar da Tereos.
+
+Sua função é analisar os dados operacionais abaixo e produzir um "Plano de Voo" gerencial, com linguagem semelhante à utilizada em uma comunicação real de COA para gerência.
+
+O objetivo não é apenas repetir os números.
+
+Você deve interpretar:
+
+- moagem;
+- moagem nominal;
+- entrega das frentes;
+- estoque de conjuntos carregados;
+- tendência do estoque;
+- disponibilidade mecânica;
+- colhedoras;
+- trações;
+- cavalos;
+- ciclo de transporte;
+- ofensores;
+- manutenção;
+- mudanças de frente;
+- interdições;
+- troca de turno;
+- terceiros e fornecedores;
+- ações de sinergia;
+- ações já realizadas pelo COA;
+- necessidade de alocação;
+- risco de redução ou parada da moagem;
+- caminho para retorno à moagem nominal.
+
+=========================================================
+DADOS DO CENÁRIO
+=========================================================
+
+Unidade:
+${data.unidade || "Não informado"}
+
+Data/hora:
+${data.dataHora || "Não informado"}
+
+Turno:
+${data.turno || "Não informado"}
+
+Tipo de problema predominante:
+${data.tipoProblema || "Não informado"}
+
+---------------------------------------------------------
+MOAGEM E ENTREGA
+---------------------------------------------------------
+
+Moagem atual:
+${data.moagemAtual ?? "Não informado"} t/h
+
+Moagem nominal:
+${data.moagemNominal ?? "Não informado"} t/h
+
+Entrega média:
+${data.entregaMedia ?? "Não informado"} t/h
+
+Janela utilizada para entrega:
+${data.janelaEntrega || "Não informado"}
+
+---------------------------------------------------------
+ESTOQUE
+---------------------------------------------------------
+
+Estoque atual:
+${data.estoqueAtual ?? "Não informado"} conjuntos
+
+Estoque mínimo / zona de risco:
+${data.estoqueMinimo ?? "Não informado"} conjuntos
+
+Estoque projetado:
+${data.estoqueProjetado ?? "Não informado"} conjuntos
+
+Horário estimado de atingir estoque crítico:
+${data.horaEstoqueCritico || "Não informado"}
+
+Moagem de contingência:
+${data.moagemContingencia ?? "Não informado"} t/h
+
+---------------------------------------------------------
+DISPONIBILIDADE - COLHEDORAS PRÓPRIAS
+---------------------------------------------------------
+
+Média de indisponibilidade:
+${data.colhedorasMedia ?? "Não informado"}%
+
+Período:
+${data.colhedorasPeriodo || "Não informado"}
+
+Pico:
+${data.colhedorasPico ?? "Não informado"}%
+
+Horário do pico:
+${data.colhedorasHoraPico || "Não informado"}
+
+---------------------------------------------------------
+DISPONIBILIDADE - TRAÇÕES
+---------------------------------------------------------
+
+Média de indisponibilidade:
+${data.tracoesMedia ?? "Não informado"}%
+
+Período:
+${data.tracoesPeriodo || "Não informado"}
+
+Pico:
+${data.tracoesPico ?? "Não informado"}%
+
+Horário do pico:
+${data.tracoesHoraPico || "Não informado"}
+
+---------------------------------------------------------
+DISPONIBILIDADE - CAVALOS
+---------------------------------------------------------
+
+Média de indisponibilidade:
+${data.cavalosMedia ?? "Não informado"}%
+
+Período:
+${data.cavalosPeriodo || "Não informado"}
+
+Pico:
+${data.cavalosPico ?? "Não informado"}%
+
+Horário do pico:
+${data.cavalosHoraPico || "Não informado"}
+
+---------------------------------------------------------
+OFENSORES / FRENTES / EVENTOS
+---------------------------------------------------------
+
+${data.ofensores || "Nenhum ofensor informado."}
+
+---------------------------------------------------------
+EVENTOS OPERACIONAIS
+---------------------------------------------------------
+
+${data.eventos || "Nenhum evento informado."}
+
+---------------------------------------------------------
+CICLO DE TRANSPORTE
+---------------------------------------------------------
+
+${data.ciclo || "Não informado."}
+
+---------------------------------------------------------
+TROCAS DE TURNO
+---------------------------------------------------------
+
+${data.trocasTurno || "Não informado."}
+
+---------------------------------------------------------
+TERCEIROS / FORNECEDORES
+---------------------------------------------------------
+
+${data.tercForn || "Não informado."}
+
+---------------------------------------------------------
+AÇÕES JÁ REALIZADAS PELO COA
+---------------------------------------------------------
+
+${data.acoesCOA || "Nenhuma ação informada."}
+
+---------------------------------------------------------
+PRIORIDADE DE ALOCAÇÃO
+---------------------------------------------------------
+
+${data.prioridadeAlocacao || "Não informado."}
+
+---------------------------------------------------------
+SINERGIA ENTRE UNIDADES
+---------------------------------------------------------
+
+${data.sinergia || "Não informado."}
+
+---------------------------------------------------------
+OBSERVAÇÕES
+---------------------------------------------------------
+
+${data.observacoes || "Nenhuma observação adicional."}
+
+=========================================================
+INDICADORES CALCULADOS PELO SISTEMA
+=========================================================
+
+Gap entre moagem atual e nominal:
+${metrics.gapMoagemNominal ?? "Não calculado"} t/h
+
+Gap entre entrega e moagem:
+${metrics.gapEntregaMoagem ?? "Não calculado"} t/h
+
+Cobertura da entrega sobre a moagem nominal:
+${
+  metrics.coberturaNominal !== null
+    ? metrics.coberturaNominal.toFixed(1)
+    : "Não calculado"
+}%
+
+Saldo do estoque em relação ao mínimo:
+${metrics.saldoEstoque ?? "Não calculado"} conjuntos
+
+Variação do estoque projetado:
+${metrics.variacaoEstoqueProjetado ?? "Não calculado"} conjuntos
+
+Classificação preliminar:
+${metrics.risco}
+
+Principais sinais identificados:
+${
+  metrics.principaisSinais.length
+    ? metrics.principaisSinais.join("\n- ")
+    : "Nenhum sinal automático relevante."
+}
+
+=========================================================
+REGRAS DE ANÁLISE
+=========================================================
+
+1. NÃO INVENTE números, horários, frentes ou eventos.
+
+2. Utilize somente as informações fornecidas.
+
+3. Se alguma informação estiver ausente, não invente uma conclusão específica. Faça uma recomendação condicional.
+
+4. Não trate a classificação automática de risco como verdade absoluta. Utilize os números e o contexto operacional para validar a situação.
+
+5. Diferencie claramente:
+   - moagem;
+   - entrega;
+   - estoque;
+   - disponibilidade;
+   - ciclo;
+   - causa;
+   - consequência;
+   - ação.
+
+6. Quando a entrega estiver abaixo da moagem, explique que existe consumo do estoque e que a sustentação da moagem dependerá da recuperação da entrega/ciclo.
+
+7. Quando a moagem estiver acima da nominal, avalie se existe sustentação operacional ou se é necessário reduzir para preservar o estoque.
+
+8. Quando o estoque estiver próximo ou abaixo da zona de risco, destaque isso claramente.
+
+9. Se houver indisponibilidade relevante de colhedoras, trações ou cavalos, explique como isso impacta a entrega e o ciclo.
+
+10. Se houver troca de frente, interdição, mudança de área ou mudança de turno, considere o tempo de estabilização do ciclo.
+
+11. Não trate uma simples mudança de frente como recuperação imediata. Considere que a nova frente precisa carregar, iniciar o ciclo e colocar viagens no sistema.
+
+12. Se houver sinergia entre unidades, considere a sinergia como mecanismo de recuperação de entrega, mas não invente capacidade que não foi informada.
+
+13. Se houver ações já realizadas pelo COA, incorpore essas ações ao plano.
+
+14. Priorize sempre:
+   - manter o ciclo;
+   - recuperar entrega;
+   - preservar estoque;
+   - reduzir risco de quebra;
+   - retornar à moagem nominal com segurança.
+
+15. Não utilize linguagem excessivamente acadêmica.
+
+16. Não escreva como uma IA.
+
+17. Não use frases genéricas como:
+   "é importante monitorar constantemente"
+   sem explicar exatamente o que deve ser monitorado e por quê.
+
+18. Não faça tabela.
+
+19. Não coloque emojis.
+
+20. O texto deve parecer uma comunicação real de COA para uma gerência operacional.
+
+=========================================================
+FORMATO DA RESPOSTA
+=========================================================
+
+Produza exatamente nesta estrutura:
+
+PLANO DE VOO — [UNIDADE]
+
+CENÁRIO ATUAL
+
+Faça uma análise objetiva da moagem atual, nominal, entrega e principal comportamento operacional.
+
+PONTOS CRÍTICOS
+
+Explique os principais ofensores, indisponibilidades, eventos ou problemas de ciclo. Relacione causa e efeito.
+
+ESTOQUE E RISCO OPERACIONAL
+
+Explique o comportamento do estoque, se existe risco de redução/parada e qual variável precisa ser recuperada para sustentar a moagem.
+
+PLANO DE AÇÃO
+
+Apresente ações práticas e específicas, priorizando alocação, recuperação de ciclo, retorno de equipamentos, mudança de frente, sinergia ou qualquer outra ação informada.
+
+TENDÊNCIA
+
+Finalize explicando o cenário esperado.
+
+Se os dados permitirem recuperação:
+explique o que precisa ser garantido para retornar à nominal.
+
+Se os dados indicarem risco:
+explique qual condição precisa ser revertida para evitar nova redução.
+
+Mantenha o texto entre aproximadamente 350 e 650 palavras, podendo ser menor quando o cenário for simples.
+
+Se houver informação muito relevante, priorize qualidade da análise em vez de preencher espaço.
+`;
+}
+
+/* =========================================================
+   CHAMADA GEMINI
+========================================================= */
+
+async function callGemini(prompt) {
+  if (!GEMINI_API_KEY) {
+    throw new Error(
+      "GEMINI_API_KEY não configurada no ambiente."
+    );
+  }
+
+  const url =
+    `https://generativelanguage.googleapis.com/v1beta/models/` +
+    `${encodeURIComponent(GEMINI_MODEL)}:generateContent`;
+
+  const body = {
+    systemInstruction: {
+      parts: [
+        {
+          text: `
+Você é o motor de análise operacional do COA.
+Sua especialidade é CTT Agroindustrial, logística de cana,
+moagem, ciclo de transporte, estoque e planejamento operacional.
+
+Sempre priorize precisão, causalidade operacional e clareza gerencial.
+`
+        }
+      ]
+    },
+
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: prompt
+          }
+        ]
+      }
+    ],
+
+    generationConfig: {
+      temperature: 0.35,
+      topP: 0.9,
+      maxOutputTokens: 3000
+    }
+  };
+
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": GEMINI_API_KEY
+        },
+        body: JSON.stringify(body)
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        const message =
+          json?.error?.message ||
+          `Erro HTTP ${response.status}`;
+
+        const error = new Error(message);
+        error.status = response.status;
+
+        throw error;
+      }
+
+      const text =
+        json?.candidates?.[0]?.content?.parts
+          ?.map((part) => part.text || "")
+          .join("")
+          .trim();
+
+      if (!text) {
+        throw new Error(
+          "A Gemini não retornou conteúdo de análise."
+        );
+      }
+
+      return text;
+
+    } catch (error) {
+      lastError = error;
+
+      const retryable =
+        error.status === 429 ||
+        error.status >= 500;
+
+      if (!retryable || attempt === 2) {
+        throw error;
+      }
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1200)
+      );
+    }
+  }
+
+  throw lastError;
+}
 
 /* =========================================================
    HEALTH CHECK
 ========================================================= */
 
 app.get("/api/health", (req, res) => {
-
   res.json({
     ok: true,
-    service: "COA Plano de Voo",
+    service: "COA Plano de Voo CTT",
+    model: GEMINI_MODEL,
     geminiConfigured: Boolean(GEMINI_API_KEY),
-    model: GEMINI_MODEL
+    timestamp: new Date().toISOString()
   });
-
 });
 
-
 /* =========================================================
-   CÁLCULOS OPERACIONAIS
+   ANALISAR CENÁRIO
 ========================================================= */
 
-function number(value) {
-
-  const n = Number(value);
-
-  return Number.isFinite(n) ? n : 0;
-
-}
-
-
-function calculateScenario(data) {
-
-  const nominal =
-    number(data.nominal);
-
-  const milling =
-    number(data.milling);
-
-  const delivery =
-    number(data.delivery);
-
-  const production =
-    number(data.frontProd);
-
-  const stock =
-    number(data.stock);
-
-  const density =
-    number(data.density) || 70;
-
-  const minStock =
-    number(data.minStock);
-
-  const maxStock =
-    number(data.maxStock);
-
-  /*
-   * Saldo de entrada/saída do pátio.
-   *
-   * Positivo = estoque tende a cair.
-   * Negativo = estoque tende a subir.
-   */
-  const stockDeltaPerHour =
-    delivery - milling;
-
-
-  /*
-   * Estoque em toneladas.
-   */
-  const stockTons =
-    stock * density;
-
-
-  /*
-   * Diferença moagem x entrega.
-   */
-  const millingDeliveryGap =
-    milling - delivery;
-
-
-  /*
-   * Diferença moagem x produção.
-   */
-  const millingProductionGap =
-    milling - production;
-
-
-  /*
-   * Tempo teórico até consumir todo o estoque,
-   * considerando o ritmo atual de moagem e sem entrada.
-   */
-  const fullStockMinutes =
-    milling > 0
-      ? (stockTons / milling) * 60
-      : 0;
-
-
-  /*
-   * Quantos conjuntos/h o estoque perde ou ganha.
-   */
-  const stockChangeSetsPerHour =
-    density > 0
-      ? stockDeltaPerHour / density
-      : 0;
-
-
-  /*
-   * Estoque mínimo em toneladas.
-   */
-  const minStockTons =
-    minStock * density;
-
-
-  /*
-   * Margem até estoque mínimo.
-   */
-  const marginToMinimum =
-    stockTons - minStockTons;
-
-
-  /*
-   * Classificação básica.
-   */
-  let risk = "ESTÁVEL";
-
-  if (
-    stock <= minStock ||
-    millingDeliveryGap >= 100
-  ) {
-
-    risk = "ATENÇÃO";
-
-  }
-
-  if (
-    stock <= Math.max(4, minStock - 2) ||
-    millingDeliveryGap >= 180
-  ) {
-
-    risk = "CRÍTICO";
-
-  }
-
-
-  /*
-   * Se produção está abaixo da moagem,
-   * o campo não está sustentando o ritmo industrial.
-   */
-  const fieldBelowMilling =
-    production < milling;
-
-
-  /*
-   * Se entrega está abaixo da moagem,
-   * o pátio está sendo consumido.
-   */
-  const stockBeingConsumed =
-    delivery < milling;
-
-
-  return {
-
-    nominal,
-    milling,
-    delivery,
-    production,
-    stock,
-    density,
-    minStock,
-    maxStock,
-
-    stockTons,
-
-    millingDeliveryGap,
-
-    millingProductionGap,
-
-    stockDeltaPerHour,
-
-    stockChangeSetsPerHour,
-
-    fullStockMinutes,
-
-    minStockTons,
-
-    marginToMinimum,
-
-    fieldBelowMilling,
-
-    stockBeingConsumed,
-
-    risk
-
-  };
-
-}
-
-
-/* =========================================================
-   PROMPT DO PLANO DE VOO
-========================================================= */
-
-function buildPrompt(data, calc) {
-
-  return `
-Você é um Analista Sênior de Operações do COA/CTT
-em uma operação agroindustrial de cana-de-açúcar.
-
-Você conhece profundamente:
-
-- CTT;
-- colheita mecanizada;
-- transporte de cana;
-- ciclo de caminhões;
-- cavalos e carretas;
-- alocação;
-- disponibilidade mecânica;
-- produção de frentes;
-- moagem;
-- entrega agrícola;
-- estoque de cana;
-- palhada;
-- mudanças de frente;
-- interdições de trajeto;
-- trocas de turno;
-- sinergia entre unidades;
-- fornecedores;
-- terceiros;
-- planejamento operacional.
-
-Sua tarefa é produzir um PLANO DE VOO GERENCIAL
-com base exclusivamente nos dados fornecidos.
-
-=========================================================
-PADRÃO DE ESCRITA
-=========================================================
-
-O texto deve seguir o estilo operacional abaixo:
-
-- Claro.
-- Direto.
-- Explicativo.
-- Técnico na medida certa.
-- Natural.
-- Linguagem de gerente/operação.
-- Sem parecer texto produzido por IA.
-- Sem excesso de formalidade.
-- Sem excesso de tópicos.
-- Sem frases genéricas.
-- Sem repetir os mesmos números várias vezes.
-
-A lógica da análise deve ser:
-
-CAUSA
-↓
-REFLEXO NA PRODUÇÃO/CICLO
-↓
-IMPACTO NO ESTOQUE
-↓
-RISCO PARA MOAGEM
-↓
-AÇÃO DO COA
-↓
-CENÁRIO ESPERADO
-
-=========================================================
-REGRA FUNDAMENTAL
-=========================================================
-
-NÃO INVENTE informações.
-
-Não invente:
-
-- horários;
-- frentes;
-- toneladas;
-- disponibilidade;
-- ciclos;
-- quantidade de caminhões;
-- quantidade de cavalos;
-- tempos;
-- eventos;
-- capacidade produtiva.
-
-Se uma informação não foi fornecida,
-não utilize.
-
-Pode realizar cálculos matemáticos simples
-com os números fornecidos.
-
-=========================================================
-INTERPRETAÇÃO OPERACIONAL
-=========================================================
-
-Quando a moagem estiver acima da entrega:
-
-Explique que existe consumo de estoque.
-
-Quando a entrega estiver acima da moagem:
-
-Explique que existe tendência de recuperação do estoque.
-
-Quando a produção das frentes estiver abaixo da moagem:
-
-Relacione isso à capacidade real de abastecimento da indústria.
-
-Quando houver indisponibilidade de colhedoras:
-
-Relacione diretamente à perda de capacidade produtiva
-das frentes.
-
-Quando houver indisponibilidade de cavalos/trações:
-
-Relacione à quebra ou instabilidade do ciclo.
-
-Quando houver mudança de frente:
-
-Considere que existe um período de transição
-até estabilização do ciclo.
-
-Quando houver interdição:
-
-Relacione ao impacto no tempo de ciclo e na entrega.
-
-Quando houver terceiros/fornecedores com déficit:
-
-Relacione isso à oferta total da unidade.
-
-Quando houver sinergia:
-
-Destaque a ação realizada e seu objetivo operacional.
-
-Quando houver troca de turno:
-
-Avalie o risco de quebra de ciclo durante a transição.
-
-=========================================================
-ESTOQUE
-=========================================================
-
-Considere:
-
-1 conjunto = densidade informada pelo usuário.
-
-Não trate o estoque isoladamente.
-
-Relacione sempre:
-
-estoque
-+
-moagem
-+
-entrega
-+
-produção
-+
-tendência.
-
-Se o estoque estiver baixo, mas as frentes estiverem
-recuperando produção e o ciclo estiver normalizando,
-não afirmar automaticamente que haverá redução.
-
-Se o estoque estiver baixo e a produção/entrega continuar
-abaixo da moagem, destacar o risco.
-
-=========================================================
-ESTRUTURA FINAL
-=========================================================
-
-Escreva:
-
-PLANO DE VOO – [UNIDADE]
-
-1º PARÁGRAFO:
-Cenário atual da moagem, entrega, produção e estoque.
-
-2º PARÁGRAFO:
-Principais ofensores e como eles impactaram a operação.
-
-3º PARÁGRAFO:
-Reflexo no estoque e risco para a moagem.
-
-PLANO DE AÇÃO
-
-Descrever as ações já realizadas pelo COA e,
-depois, as ações necessárias para recuperação.
-
-CENÁRIO ESPERADO
-
-Explicar o que precisa acontecer para manter,
-recuperar ou sustentar a moagem.
-
-FECHAMENTO
-
-Uma conclusão curta e gerencial.
-
-=========================================================
-IMPORTANTE
-=========================================================
-
-Não escreva:
-
-"Conforme mostra o gráfico"
-
-porque nenhum gráfico foi enviado.
-
-Não explique que você é uma IA.
-
-Não explique seu raciocínio interno.
-
-Entregue somente o Plano de Voo.
-
-=========================================================
-DADOS DA OPERAÇÃO
-=========================================================
-
-UNIDADE:
-${data.unit || "Não informada"}
-
-DATA:
-${data.date || "Não informada"}
-
-MOAGEM NOMINAL:
-${data.nominal || 0} t/h
-
-MOAGEM ATUAL/MÉDIA:
-${data.milling || 0} t/h
-
-ENTREGA MÉDIA DAS FRENTES:
-${data.delivery || 0} t/h
-
-PRODUÇÃO ATUAL DAS FRENTES:
-${data.frontProd || 0} t/h
-
-ESTOQUE:
-${data.stock || 0} conjuntos
-
-DENSIDADE:
-${data.density || 70} t/conjunto
-
-ESTOQUE MÍNIMO:
-${data.minStock || 0} conjuntos
-
-ESTOQUE MÁXIMO:
-${data.maxStock || 0} conjuntos
-
-HORIZONTE:
-${data.horizon || 12} horas
-
-=========================================================
-CÁLCULOS DO SISTEMA
-=========================================================
-
-ESTOQUE EM TONELADAS:
-${calc.stockTons.toFixed(1)} t
-
-GAP MOAGEM - ENTREGA:
-${calc.millingDeliveryGap.toFixed(1)} t/h
-
-GAP MOAGEM - PRODUÇÃO:
-${calc.millingProductionGap.toFixed(1)} t/h
-
-VARIAÇÃO DO ESTOQUE:
-${calc.stockDeltaPerHour.toFixed(1)} t/h
-
-VARIAÇÃO DO ESTOQUE EM CONJUNTOS/H:
-${calc.stockChangeSetsPerHour.toFixed(2)} conjuntos/h
-
-ESTOQUE MÍNIMO EM TONELADAS:
-${calc.minStockTons.toFixed(1)} t
-
-MARGEM ATÉ ESTOQUE MÍNIMO:
-${calc.marginToMinimum.toFixed(1)} t
-
-AUTONOMIA TEÓRICA DO ESTOQUE:
-${calc.fullStockMinutes.toFixed(0)} minutos
-
-STATUS PRELIMINAR:
-${calc.risk}
-
-=========================================================
-COLHEDORAS PRÓPRIAS
-=========================================================
-
-MÉDIA DE INDISPONIBILIDADE:
-${data.harvAvg || 0}%
-
-PERÍODO:
-${data.harvPeriod || "Não informado"}
-
-PICO:
-${data.harvPeak || 0}%
-
-HORÁRIO DO PICO:
-${data.harvPeakTime || "Não informado"}
-
-=========================================================
-TRAÇÕES / CAVALOS
-=========================================================
-
-MÉDIA DE INDISPONIBILIDADE:
-${data.tractionAvg || 0}%
-
-PERÍODO:
-${data.tractionPeriod || "Não informado"}
-
-PICO:
-${data.tractionPeak || 0}%
-
-HORÁRIO DO PICO:
-${data.tractionPeakTime || "Não informado"}
-
-FALTA DE CAVALOS:
-${data.horsesMissing || 0}
-
-SEM MOTORISTA:
-${data.noDrivers || 0}
-
-EM MANUTENÇÃO:
-${data.horsesMaint || 0}
-
-=========================================================
-DÉFICITS
-=========================================================
-
-PRÓPRIAS:
-${data.ownDeficit || 0} t
-
-TERCEIROS:
-${data.thirdDeficit || 0} t
-
-FORNECEDORES:
-${data.supplierDeficit || 0} t
-
-=========================================================
-EVENTOS DAS FRENTES
-=========================================================
-
-${data.frontEvents || "Não informado"}
-
-=========================================================
-TRANSPORTE / TROCAS DE TURNO
-=========================================================
-
-${data.transportEvents || "Não informado"}
-
-=========================================================
-SINERGIA / AÇÕES DO COA
-=========================================================
-
-${data.synergy || "Não informado"}
-
-=========================================================
-OUTRAS OBSERVAÇÕES
-=========================================================
-
-${data.notes || "Não informado"}
-
-=========================================================
-POSSÍVEL HORÁRIO DE REDUÇÃO
-=========================================================
-
-${data.riskHour || "Não informado"}
-
-=========================================================
-`;
-
-}
-
-
-/* =========================================================
-   CHAMADA GEMINI
-========================================================= */
-
-app.post("/api/plano-voo", async (req, res) => {
-
-  try {
-
-    if (!GEMINI_API_KEY) {
+app.post(
+  "/api/analyze",
+  analyzeLimiter,
+  async (req, res) => {
+    try {
+      const data = normalizePayload(req.body);
+
+      if (!data.unidade) {
+        return res.status(400).json({
+          error: "Informe a unidade."
+        });
+      }
+
+      if (
+        data.moagemAtual === null ||
+        data.moagemNominal === null
+      ) {
+        return res.status(400).json({
+          error:
+            "Informe a moagem atual e a moagem nominal."
+        });
+      }
+
+      const metrics = calculateMetrics(data);
+
+      const prompt = buildPrompt(
+        data,
+        metrics
+      );
+
+      const analysis =
+        await callGemini(prompt);
+
+      return res.json({
+        success: true,
+        model: GEMINI_MODEL,
+        metrics,
+        analysis,
+        generatedAt: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error(
+        "Erro na análise:",
+        error
+      );
 
       return res.status(500).json({
-
-        ok: false,
-
+        success: false,
         error:
-          "GEMINI_API_KEY não configurada no servidor."
-
+          error?.message ||
+          "Não foi possível gerar o Plano de Voo."
       });
-
     }
-
-
-    const data =
-      req.body;
-
-
-    const calc =
-      calculateScenario(data);
-
-
-    const prompt =
-      buildPrompt(
-        data,
-        calc
-      );
-
-
-    const endpoint =
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
-        GEMINI_MODEL
-      )}:generateContent`;
-
-
-    const response =
-      await fetch(
-        endpoint,
-        {
-
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/json",
-
-            "x-goog-api-key":
-              GEMINI_API_KEY
-
-          },
-
-          body:
-            JSON.stringify({
-
-              system_instruction: {
-
-                parts: [
-
-                  {
-
-                    text:
-                      "Você é um analista sênior de operações agroindustriais. Produza análises objetivas, factuais e gerenciais."
-
-                  }
-
-                ]
-
-              },
-
-              contents: [
-
-                {
-
-                  role: "user",
-
-                  parts: [
-
-                    {
-
-                      text: prompt
-
-                    }
-
-                  ]
-
-                }
-
-              ],
-
-              generationConfig: {
-
-                temperature: 0.18,
-
-                maxOutputTokens: 3000
-
-              }
-
-            })
-
-        }
-
-      );
-
-
-    const result =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      console.error(
-        "Gemini error:",
-        result
-      );
-
-
-      return res.status(
-        response.status
-      ).json({
-
-        ok: false,
-
-        error:
-          result?.error?.message ||
-          "Erro retornado pela Gemini."
-
-      });
-
-    }
-
-
-    const text =
-      result
-        ?.candidates?.[0]
-        ?.content?.parts
-        ?.map(
-          part => part.text || ""
-        )
-        .join("")
-        .trim();
-
-
-    if (!text) {
-
-      return res.status(502).json({
-
-        ok: false,
-
-        error:
-          "A Gemini não retornou texto."
-
-      });
-
-    }
-
-
-    return res.json({
-
-      ok: true,
-
-      text,
-
-      calculations: calc,
-
-      model:
-        GEMINI_MODEL
-
-    });
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    return res.status(500).json({
-
-      ok: false,
-
-      error:
-        error.message ||
-        "Erro interno do servidor."
-
-    });
-
-  }
-
-});
-
-
-/* =========================================================
-   CÁLCULO LOCAL
-========================================================= */
-
-app.post("/api/calcular", (req, res) => {
-
-  try {
-
-    const calc =
-      calculateScenario(
-        req.body
-      );
-
-
-    res.json({
-
-      ok: true,
-
-      calculations: calc
-
-    });
-
-  }
-
-  catch (error) {
-
-    res.status(500).json({
-
-      ok: false,
-
-      error:
-        error.message
-
-    });
-
-  }
-
-});
-
-
-/* =========================================================
-   SPA FALLBACK
-========================================================= */
-
-app.get("*", (req, res) => {
-
-  res.sendFile(
-    path.join(
-      __dirname,
-      "public",
-      "index.html"
-    )
-  );
-
-});
-
-
-/* =========================================================
-   SERVER
-========================================================= */
-
-app.listen(
-  PORT,
-  () => {
-
-    console.log(
-      `COA Plano de Voo rodando na porta ${PORT}`
-    );
-
-    console.log(
-      `Modelo Gemini: ${GEMINI_MODEL}`
-    );
-
-    console.log(
-      `Gemini configurada: ${Boolean(GEMINI_API_KEY)}`
-    );
-
   }
 );
+
+/* =========================================================
+   FALLBACK
+========================================================= */
+
+app.use((req, res, next) => {
+  if (
+    req.method === "GET" &&
+    !req.path.startsWith("/api/")
+  ) {
+    return res.sendFile(
+      path.join(__dirname, "index.html")
+    );
+  }
+
+  next();
+});
+
+/* =========================================================
+   START
+========================================================= */
+
+app.listen(PORT, () => {
+  console.log("");
+  console.log("==========================================");
+  console.log(" COA | PLANO DE VOO CTT");
+  console.log("==========================================");
+  console.log(`Servidor: http://localhost:${PORT}`);
+  console.log(`Modelo Gemini: ${GEMINI_MODEL}`);
+  console.log(
+    `Gemini configurada: ${Boolean(GEMINI_API_KEY)}`
+  );
+  console.log("==========================================");
+  console.log("");
+});
