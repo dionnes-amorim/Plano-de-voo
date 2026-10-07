@@ -1,1141 +1,200 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>
-    COA | Plano de Voo CTT
-  </title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COA | Plano de Voo CTT</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
   <div class="app">
-
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-
     <header class="topbar">
-
       <div class="brand">
-
-        <div class="brand-mark">
-          COA
-        </div>
-
-        <div>
-          <h1>
-            Plano de Voo
-          </h1>
-
-          <span>
-            CTT Agroindustrial
-          </span>
-        </div>
-
+        <div class="brand-mark">COA</div>
+        <div><h1>Plano de Voo</h1><span>CTT Agroindustrial</span></div>
       </div>
-
-      <div class="status-area">
-
-        <span
-          id="systemStatus"
-          class="status offline"
-        >
-          Verificando sistema...
-        </span>
-
-      </div>
-
+      <div class="status-area"><span id="systemStatus" class="status offline">Verificando sistema...</span></div>
     </header>
 
-
-    <!-- =====================================================
-         INTRODUÇÃO
-    ====================================================== -->
-
     <section class="hero">
-
       <div>
-
-        <span class="eyebrow">
-          CONTROLE OPERACIONAL
-        </span>
-
-        <h2>
-          Análise de ritmo, ciclo e risco operacional
-        </h2>
-
-        <p>
-          Preencha o cenário atual da operação.
-          O sistema consolida os indicadores e utiliza
-          inteligência artificial para gerar o Plano de Voo
-          no padrão de comunicação do COA.
-        </p>
-
+        <span class="eyebrow">CONTROLE OPERACIONAL</span>
+        <h2>Análise de ritmo, ciclo e risco operacional</h2>
+        <p>Preencha o cenário atual. Cole a tela de potencial para preenchimento automático. O sistema utiliza inteligência artificial para gerar o Plano de Voo no padrão COA.</p>
       </div>
-
     </section>
 
+    <form id="analysisForm" autocomplete="off">
 
-    <!-- =====================================================
-         FORMULÁRIO
-    ====================================================== -->
-
-    <form
-      id="analysisForm"
-      autocomplete="off"
-    >
-
-      <!-- ===================================================
-           01 - IDENTIFICAÇÃO
-      ==================================================== -->
-
+      <!-- 01 - IDENTIFICAÇÃO -->
       <section class="card">
-
         <div class="section-title">
-
-          <div class="section-number">
-            01
-          </div>
-
-          <div>
-            <h3>
-              Identificação do cenário
-            </h3>
-
-            <p>
-              Contexto básico da análise.
-            </p>
-          </div>
-
+          <div class="section-number">01</div>
+          <div><h3>Identificação do cenário</h3><p>Contexto básico da análise.</p></div>
         </div>
-
-
         <div class="grid grid-3">
-
-          <div class="field">
-
-            <label for="unidade">
-              Unidade
-            </label>
-
-            <input
-              id="unidade"
-              name="unidade"
-              type="text"
-              placeholder="Ex.: UIA"
-              required
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="dataHora">
-              Data / hora
-            </label>
-
-            <input
-              id="dataHora"
-              name="dataHora"
-              type="text"
-              placeholder="Ex.: 05/10 - 18:00"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="turno">
-              Turno
-            </label>
-
-            <select
-              id="turno"
-              name="turno"
-            >
-
-              <option value="">
-                Selecione
-              </option>
-
-              <option value="1º turno">
-                1º turno
-              </option>
-
-              <option value="2º turno">
-                2º turno
-              </option>
-
-              <option value="3º turno">
-                3º turno
-              </option>
-
-              <option value="Madrugada">
-                Madrugada
-              </option>
-
-              <option value="Integral">
-                Integral
-              </option>
-
-            </select>
-
-          </div>
-
+          <div class="field"><label for="unidade">Unidade / Filial</label><input id="unidade" name="unidade" type="text" placeholder="Ex.: MANDU, UIA, UMO" required></div>
+          <div class="field"><label for="dataHora">Data / hora</label><input id="dataHora" name="dataHora" type="text" placeholder="Ex.: 05/10 - 22:00"></div>
+          <div class="field"><label for="turno">Turno</label><select id="turno" name="turno"><option value="">Selecione</option><option value="1º turno">1º turno</option><option value="2º turno">2º turno</option><option value="3º turno">3º turno</option><option value="Madrugada">Madrugada</option><option value="Integral">Integral</option></select></div>
         </div>
-
-
         <div class="field">
-
-          <label for="tipoProblema">
-            Principal característica do cenário
-          </label>
-
-          <select
-            id="tipoProblema"
-            name="tipoProblema"
-          >
-
-            <option value="">
-              Selecione
-            </option>
-
-            <option value="Entrega abaixo da moagem">
-              Entrega abaixo da moagem
-            </option>
-
-            <option value="Disponibilidade de colhedoras">
-              Disponibilidade de colhedoras
-            </option>
-
-            <option value="Disponibilidade de cavalos">
-              Disponibilidade de cavalos
-            </option>
-
-            <option value="Disponibilidade de trações">
-              Disponibilidade de trações
-            </option>
-
-            <option value="Ciclo de transporte">
-              Ciclo de transporte
-            </option>
-
-            <option value="Mudança de frente">
-              Mudança de frente
-            </option>
-
-            <option value="Interdição / rota">
-              Interdição / rota
-            </option>
-
-            <option value="Terceiros / fornecedores">
-              Terceiros / fornecedores
-            </option>
-
-            <option value="Cenário misto">
-              Cenário misto
-            </option>
-
+          <label for="tipoProblema">Principal característica do cenário</label>
+          <select id="tipoProblema" name="tipoProblema">
+            <option value="">Selecione</option>
+            <option value="Entrega abaixo da moagem">Entrega abaixo da moagem</option>
+            <option value="Disponibilidade de colhedoras">Disponibilidade de colhedoras</option>
+            <option value="Disponibilidade de cavalos">Disponibilidade de cavalos</option>
+            <option value="Disponibilidade de trações">Disponibilidade de trações</option>
+            <option value="Ciclo de transporte">Ciclo de transporte</option>
+            <option value="Mudança de frente">Mudança de frente</option>
+            <option value="Interdição / rota">Interdição / rota</option>
+            <option value="Terceiros / fornecedores">Terceiros / fornecedores</option>
+            <option value="Cenário misto">Cenário misto</option>
           </select>
-
         </div>
-
       </section>
 
-
-            <!-- 01.5 - HISTÓRICO RECENTE INTEGRADO -->
-      <section class="card">
+      <!-- 01.5 - COLAR TABELA POTENCIAL - NOVO -->
+      <section class="card" style="border-color: rgba(114,201,107,0.3);">
         <div class="section-title">
           <div class="section-number">01.5</div>
-          <div>
-            <h3>Histórico integrado - últimas 3h</h3>
-            <p>Base para cálculo de tendência real. O mais importante da análise.</p>
-          </div>
+          <div><h3>Colar tela - Análise de Potencial de Produção</h3><p>Cole aqui a tabela completa. O sistema extrai entrada e saída automaticamente.</p></div>
         </div>
-
-        <div class="grid grid-3">
-          <div class="field">
-            <label>19h-20h | Entrou (t)</label>
-            <input name="h19_20_entrada" type="number" step="1" placeholder="Ex: 650">
-          </div>
-          <div class="field">
-            <label>19h-20h | Moído (t)</label>
-            <input name="h19_20_moagem" type="number" step="1" placeholder="Ex: 620">
-          </div>
-          <div class="field">
-            <label>20h | Estoque fechamento</label>
-            <input name="h19_20_estoque" type="number" step="1" placeholder="Ex: 8">
-          </div>
+        <div class="field">
+          <label for="tabelaPotencial">Cole a tabela (Hora / Máquinas / Despacho / Entrada / Saída)</label>
+          <textarea id="tabelaPotencial" name="tabelaPotencial" rows="12" placeholder="Ex:
+Hora Máquinas (t)... Entrada (t) Saída (t)
+00 - 01 1368... 701 848
+...
+21 - 22 682... 301 275
+Total 23936... 16107 15347"></textarea>
         </div>
-
-        <div class="grid grid-3">
-          <div class="field">
-            <label>20h-21h | Entrou (t)</label>
-            <input name="h20_21_entrada" type="number" step="1" placeholder="Ex: 540">
-          </div>
-          <div class="field">
-            <label>20h-21h | Moído (t)</label>
-            <input name="h20_21_moagem" type="number" step="1" placeholder="Ex: 600">
-          </div>
-          <div class="field">
-            <label>21h | Estoque fechamento</label>
-            <input name="h20_21_estoque" type="number" step="1" placeholder="Ex: 6">
-          </div>
-        </div>
-
-        <div class="grid grid-3">
-          <div class="field">
-            <label>21h-22h | Entrou (t)</label>
-            <input name="h21_22_entrada" type="number" step="1" placeholder="Ex: 480">
-          </div>
-          <div class="field">
-            <label>21h-22h | Moído (t)</label>
-            <input name="h21_22_moagem" type="number" step="1" placeholder="Ex: 610">
-          </div>
-          <div class="field">
-            <label>22h | Estoque ATUAL</label>
-            <input name="h21_22_estoque" type="number" step="1" placeholder="Ex: 4">
-          </div>
-        </div>
+        <div id="previewTabela" style="margin-top:12px; font-size:11px; color:#8fa197;"></div>
       </section>
 
-      <!-- 01.6 - PROJEÇÃO FUTURA -->
+      <!-- 01.6 - HISTÓRICO INTEGRADO -->
       <section class="card">
         <div class="section-title">
           <div class="section-number">01.6</div>
-          <div>
-            <h3>Projeção próximas 12h</h3>
-            <p>Potencial das frentes vs meta de moagem.</p>
-          </div>
+          <div><h3>Histórico integrado - últimas 3h</h3><p>Preenchido automaticamente pela tabela acima, mas pode editar.</p></div>
         </div>
-
         <div class="grid grid-3">
-          <div class="field">
-            <label>Potencial prod. 12h (t)</label>
-            <input name="potencial12h" type="number" step="1" placeholder="Ex: 7800">
-          </div>
-          <div class="field">
-            <label>Meta moagem 12h (t)</label>
-            <input name="metaMoagem12h" type="number" step="1" placeholder="Ex: 8000">
-          </div>
-          <div class="field">
-            <label>Moagem desejada (t/h)</label>
-            <input name="moagemDesejada" type="number" step="1" placeholder="Ex: 667">
-          </div>
+          <div class="field"><label>19h-20h | Entrou (t)</label><input id="h19_20_entrada" name="h19_20_entrada" type="number" step="1" placeholder="Ex: 333"></div>
+          <div class="field"><label>19h-20h | Moído (t)</label><input id="h19_20_moagem" name="h19_20_moagem" type="number" step="1" placeholder="Ex: 635"></div>
+          <div class="field"><label>20h | Estoque fechamento</label><input name="h19_20_estoque" type="number" step="1" placeholder="Ex: 8"></div>
         </div>
+        <div class="grid grid-3">
+          <div class="field"><label>20h-21h | Entrou (t)</label><input id="h20_21_entrada" name="h20_21_entrada" type="number" step="1" placeholder="Ex: 750"></div>
+          <div class="field"><label>20h-21h | Moído (t)</label><input id="h20_21_moagem" name="h20_21_moagem" type="number" step="1" placeholder="Ex: 697"></div>
+          <div class="field"><label>21h | Estoque fechamento</label><input name="h20_21_estoque" type="number" step="1" placeholder="Ex: 6"></div>
+        </div>
+        <div class="grid grid-3">
+          <div class="field"><label>21h-22h | Entrou (t)</label><input id="h21_22_entrada" name="h21_22_entrada" type="number" step="1" placeholder="Ex: 301"></div>
+          <div class="field"><label>21h-22h | Moído (t)</label><input id="h21_22_moagem" name="h21_22_moagem" type="number" step="1" placeholder="Ex: 275"></div>
+          <div class="field"><label>22h | Estoque ATUAL</label><input id="h21_22_estoque" name="h21_22_estoque" type="number" step="1" placeholder="Ex: 4"></div>
+        </div>
+      </section>
 
+      <!-- 01.7 - PROJEÇÃO FUTURA -->
+      <section class="card">
+        <div class="section-title">
+          <div class="section-number">01.7</div>
+          <div><h3>Projeção próximas 12h</h3><p>Potencial das frentes vs meta de moagem.</p></div>
+        </div>
+        <div class="grid grid-3">
+          <div class="field"><label>Potencial prod. 12h (t)</label><input name="potencial12h" type="number" step="1" placeholder="Ex: 7800"></div>
+          <div class="field"><label>Meta moagem 12h (t)</label><input name="metaMoagem12h" type="number" step="1" placeholder="Ex: 8000"></div>
+          <div class="field"><label>Moagem desejada (t/h)</label><input id="moagemDesejada" name="moagemDesejada" type="number" step="1" placeholder="Ex: 667"></div>
+        </div>
         <div class="field">
           <label>Frentes que vão produzir nas próximas 12h (potencial por frente)</label>
-          <textarea name="potencialFrentes" rows="3" placeholder="Ex: F501-150t/h, F502-130t/h com limitação de colhedora 450060, F505-80t/h em fim de área..."></textarea>
+          <textarea name="potencialFrentes" rows="3" placeholder="Ex: F501-150t/h, F502-130t/h com limitação de colhedora 450060..."></textarea>
         </div>
       </section>
-      
 
-      <!-- ===================================================
-           02 - MOAGEM E ESTOQUE
-      ==================================================== -->
-
+      <!-- 02 - MOAGEM E ESTOQUE -->
       <section class="card">
-
-        <div class="section-title">
-
-          <div class="section-number">
-            02
-          </div>
-
-          <div>
-            <h3>
-              Moagem, entrega e estoque
-            </h3>
-
-            <p>
-              Principal base quantitativa da análise.
-            </p>
-          </div>
-
-        </div>
-
-
+        <div class="section-title"><div class="section-number">02</div><div><h3>Moagem, entrega e estoque</h3><p>Principal base quantitativa da análise.</p></div></div>
         <div class="grid grid-4">
-
-          <div class="field">
-
-            <label for="moagemAtual">
-              Moagem atual
-              <span>t/h</span>
-            </label>
-
-            <input
-              id="moagemAtual"
-              name="moagemAtual"
-              type="number"
-              step="0.1"
-              placeholder="Ex.: 600"
-              required
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="moagemNominal">
-              Moagem nominal
-              <span>t/h</span>
-            </label>
-
-            <input
-              id="moagemNominal"
-              name="moagemNominal"
-              type="number"
-              step="0.1"
-              placeholder="Ex.: 667"
-              required
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="entregaMedia">
-              Entrega média
-              <span>t/h</span>
-            </label>
-
-            <input
-              id="entregaMedia"
-              name="entregaMedia"
-              type="number"
-              step="0.1"
-              placeholder="Ex.: 527"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="janelaEntrega">
-              Janela da entrega
-            </label>
-
-            <input
-              id="janelaEntrega"
-              name="janelaEntrega"
-              type="text"
-              placeholder="Ex.: últimas 6h"
-            >
-
-          </div>
-
+          <div class="field"><label for="moagemAtual">Moagem atual <span>t/h</span></label><input id="moagemAtual" name="moagemAtual" type="number" step="0.1" placeholder="Ex.: 600" required></div>
+          <div class="field"><label for="moagemNominal">Moagem nominal <span>t/h</span></label><input id="moagemNominal" name="moagemNominal" type="number" step="0.1" placeholder="Ex.: 667" required></div>
+          <div class="field"><label for="entregaMedia">Entrega média <span>t/h</span></label><input id="entregaMedia" name="entregaMedia" type="number" step="0.1" placeholder="Ex.: 527"></div>
+          <div class="field"><label for="janelaEntrega">Janela da entrega</label><input id="janelaEntrega" name="janelaEntrega" type="text" placeholder="Ex.: últimas 6h"></div>
         </div>
-
-
         <div class="grid grid-4">
-
-          <div class="field">
-
-            <label for="estoqueAtual">
-              Estoque atual
-              <span>conj.</span>
-            </label>
-
-            <input
-              id="estoqueAtual"
-              name="estoqueAtual"
-              type="number"
-              step="1"
-              placeholder="Ex.: 9"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="estoqueMinimo">
-              Estoque mínimo / risco
-              <span>conj.</span>
-            </label>
-
-            <input
-              id="estoqueMinimo"
-              name="estoqueMinimo"
-              type="number"
-              step="1"
-              placeholder="Ex.: 7"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="estoqueProjetado">
-              Estoque projetado
-              <span>conj.</span>
-            </label>
-
-            <input
-              id="estoqueProjetado"
-              name="estoqueProjetado"
-              type="number"
-              step="1"
-              placeholder="Ex.: 5"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="horaEstoqueCritico">
-              Horário crítico
-            </label>
-
-            <input
-              id="horaEstoqueCritico"
-              name="horaEstoqueCritico"
-              type="text"
-              placeholder="Ex.: 03:00"
-            >
-
-          </div>
-
+          <div class="field"><label for="estoqueAtual">Estoque atual <span>conj.</span></label><input id="estoqueAtual" name="estoqueAtual" type="number" step="1" placeholder="Ex.: 9"></div>
+          <div class="field"><label for="estoqueMinimo">Estoque mínimo / risco <span>conj.</span></label><input id="estoqueMinimo" name="estoqueMinimo" type="number" step="1" placeholder="Ex.: 7"></div>
+          <div class="field"><label for="estoqueProjetado">Estoque projetado <span>conj.</span></label><input id="estoqueProjetado" name="estoqueProjetado" type="number" step="1" placeholder="Ex.: 5"></div>
+          <div class="field"><label for="horaEstoqueCritico">Horário crítico</label><input id="horaEstoqueCritico" name="horaEstoqueCritico" type="text" placeholder="Ex.: 03:00"></div>
         </div>
-
-
-        <div class="field">
-
-          <label for="moagemContingencia">
-            Moagem de contingência
-            <span>t/h</span>
-          </label>
-
-          <input
-            id="moagemContingencia"
-            name="moagemContingencia"
-            type="number"
-            step="0.1"
-            placeholder="Ex.: 600"
-          >
-
-        </div>
-
+        <div class="field"><label for="moagemContingencia">Moagem de contingência <span>t/h</span></label><input id="moagemContingencia" name="moagemContingencia" type="number" step="0.1" placeholder="Ex.: 600"></div>
       </section>
 
-
-      <!-- ===================================================
-           03 - DISPONIBILIDADE
-      ==================================================== -->
-
+      <!-- 03 - DISPONIBILIDADE -->
       <section class="card">
-
-        <div class="section-title">
-
-          <div class="section-number">
-            03
-          </div>
-
-          <div>
-            <h3>
-              Disponibilidade operacional
-            </h3>
-
-            <p>
-              Indisponibilidade média, pico e janela crítica.
-            </p>
-          </div>
-
-        </div>
-
-
+        <div class="section-title"><div class="section-number">03</div><div><h3>Disponibilidade operacional</h3><p>Indisponibilidade média, pico e janela crítica.</p></div></div>
         <div class="availability">
-
-          <!-- COLHEDORAS -->
-
           <div class="availability-row">
-
-            <div class="availability-name">
-
-              <strong>
-                Colhedoras próprias
-              </strong>
-
-              <span>
-                Indisponibilidade mecânica
-              </span>
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Média %
-              </label>
-
-              <input
-                name="colhedorasMedia"
-                type="number"
-                step="0.1"
-                placeholder="Ex.: 15.9"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Período
-              </label>
-
-              <input
-                name="colhedorasPeriodo"
-                type="text"
-                placeholder="Ex.: 07h–13h"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Pico %
-              </label>
-
-              <input
-                name="colhedorasPico"
-                type="number"
-                step="0.1"
-                placeholder="Ex.: 30"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Hora do pico
-              </label>
-
-              <input
-                name="colhedorasHoraPico"
-                type="text"
-                placeholder="Ex.: 11h"
-              >
-
-            </div>
-
+            <div class="availability-name"><strong>Colhedoras próprias</strong><span>Indisponibilidade mecânica</span></div>
+            <div class="field"><label>Média %</label><input name="colhedorasMedia" type="number" step="0.1" placeholder="Ex.: 15.9"></div>
+            <div class="field"><label>Período</label><input name="colhedorasPeriodo" type="text" placeholder="Ex.: 07h–13h"></div>
+            <div class="field"><label>Pico %</label><input name="colhedorasPico" type="number" step="0.1" placeholder="Ex.: 30"></div>
+            <div class="field"><label>Hora do pico</label><input name="colhedorasHoraPico" type="text" placeholder="Ex.: 11h"></div>
           </div>
-
-
-          <!-- TRAÇÕES -->
-
           <div class="availability-row">
-
-            <div class="availability-name">
-
-              <strong>
-                Trações
-              </strong>
-
-              <span>
-                Indisponibilidade
-              </span>
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Média %
-              </label>
-
-              <input
-                name="tracoesMedia"
-                type="number"
-                step="0.1"
-                placeholder="Ex.: 12"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Período
-              </label>
-
-              <input
-                name="tracoesPeriodo"
-                type="text"
-                placeholder="Ex.: 10h–18h"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Pico %
-              </label>
-
-              <input
-                name="tracoesPico"
-                type="number"
-                step="0.1"
-                placeholder="Ex.: 17"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Hora do pico
-              </label>
-
-              <input
-                name="tracoesHoraPico"
-                type="text"
-                placeholder="Ex.: 18h"
-              >
-
-            </div>
-
+            <div class="availability-name"><strong>Trações</strong><span>Indisponibilidade</span></div>
+            <div class="field"><label>Média %</label><input name="tracoesMedia" type="number" step="0.1" placeholder="Ex.: 12"></div>
+            <div class="field"><label>Período</label><input name="tracoesPeriodo" type="text" placeholder="Ex.: 10h–18h"></div>
+            <div class="field"><label>Pico %</label><input name="tracoesPico" type="number" step="0.1" placeholder="Ex.: 17"></div>
+            <div class="field"><label>Hora do pico</label><input name="tracoesHoraPico" type="text" placeholder="Ex.: 18h"></div>
           </div>
-
-
-          <!-- CAVALOS -->
-
           <div class="availability-row">
-
-            <div class="availability-name">
-
-              <strong>
-                Cavalos
-              </strong>
-
-              <span>
-                Disponibilidade da frota
-              </span>
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Média %
-              </label>
-
-              <input
-                name="cavalosMedia"
-                type="number"
-                step="0.1"
-                placeholder="Ex.: 7.8"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Período
-              </label>
-
-              <input
-                name="cavalosPeriodo"
-                type="text"
-                placeholder="Ex.: 10h–16h"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Pico %
-              </label>
-
-              <input
-                name="cavalosPico"
-                type="number"
-                step="0.1"
-                placeholder="Ex.: 15"
-              >
-
-            </div>
-
-            <div class="field">
-
-              <label>
-                Hora do pico
-              </label>
-
-              <input
-                name="cavalosHoraPico"
-                type="text"
-                placeholder="Ex.: 16h"
-              >
-
-            </div>
-
+            <div class="availability-name"><strong>Cavalos</strong><span>Disponibilidade da frota</span></div>
+            <div class="field"><label>Média %</label><input name="cavalosMedia" type="number" step="0.1" placeholder="Ex.: 7.8"></div>
+            <div class="field"><label>Período</label><input name="cavalosPeriodo" type="text" placeholder="Ex.: 10h–16h"></div>
+            <div class="field"><label>Pico %</label><input name="cavalosPico" type="number" step="0.1" placeholder="Ex.: 15"></div>
+            <div class="field"><label>Hora do pico</label><input name="cavalosHoraPico" type="text" placeholder="Ex.: 16h"></div>
           </div>
-
         </div>
-
       </section>
 
-
-      <!-- ===================================================
-           04 - OPERAÇÃO
-      ==================================================== -->
-
+      <!-- 04 - OPERAÇÃO -->
       <section class="card">
-
-        <div class="section-title">
-
-          <div class="section-number">
-            04
-          </div>
-
-          <div>
-            <h3>
-              Operação e ofensores
-            </h3>
-
-            <p>
-              Aqui entra a leitura operacional do COA.
-            </p>
-          </div>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="ofensores">
-            Ofensores / frentes / déficit de entrega
-          </label>
-
-          <textarea
-            id="ofensores"
-            name="ofensores"
-            rows="5"
-            placeholder="Ex.: F23 com baixa entrega por manutenção de colhedora. F20 com déficit de 1.000 t. F04 em mudança de área."
-          ></textarea>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="eventos">
-            Eventos operacionais
-          </label>
-
-          <textarea
-            id="eventos"
-            name="eventos"
-            rows="5"
-            placeholder="Ex.: Interdição de rota por 2h, mudança de frente, manutenção, falta de motorista, carregamento de nova área..."
-          ></textarea>
-
-        </div>
-
-
+        <div class="section-title"><div class="section-number">04</div><div><h3>Operação e ofensores</h3><p>Aqui entra a leitura operacional do COA.</p></div></div>
+        <div class="field"><label for="ofensores">Ofensores / frentes / déficit de entrega</label><textarea id="ofensores" name="ofensores" rows="5" placeholder="Ex.: F23 com baixa entrega por manutenção de colhedora. F20 com déficit de 1.000 t."></textarea></div>
+        <div class="field"><label for="eventos">Eventos operacionais</label><textarea id="eventos" name="eventos" rows="5"></textarea></div>
         <div class="grid grid-2">
-
-          <div class="field">
-
-            <label for="ciclo">
-              Situação do ciclo CTT
-            </label>
-
-            <textarea
-              id="ciclo"
-              name="ciclo"
-              rows="5"
-              placeholder="Ex.: ciclo normal, déficit de cavalos, viagens aguardando alocação, raio elevado, retorno das frentes ainda não estabilizado..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="trocasTurno">
-              Trocas de turno / horários críticos
-            </label>
-
-            <textarea
-              id="trocasTurno"
-              name="trocasTurno"
-              rows="5"
-              placeholder="Ex.: Trocas às 18h e 21h. Necessário garantir transição sem perda de ciclo."
-            ></textarea>
-
-          </div>
-
+          <div class="field"><label for="ciclo">Situação do ciclo CTT</label><textarea id="ciclo" name="ciclo" rows="5"></textarea></div>
+          <div class="field"><label for="trocasTurno">Trocas de turno / horários críticos</label><textarea id="trocasTurno" name="trocasTurno" rows="5"></textarea></div>
         </div>
-
-
-        <div class="field">
-
-          <label for="tercForn">
-            Terceiros / fornecedores
-          </label>
-
-          <textarea
-            id="tercForn"
-            name="tercForn"
-            rows="4"
-            placeholder="Ex.: Terc/Forn abaixo da necessidade, déficit acumulado, condição de área..."
-          ></textarea>
-
-        </div>
-
+        <div class="field"><label for="tercForn">Terceiros / fornecedores</label><textarea id="tercForn" name="tercForn" rows="4"></textarea></div>
       </section>
 
-
-      <!-- ===================================================
-           05 - PLANO DE RECUPERAÇÃO
-      ==================================================== -->
-
+      <!-- 05 - PLANO DE RECUPERAÇÃO -->
       <section class="card">
-
-        <div class="section-title">
-
-          <div class="section-number">
-            05
-          </div>
-
-          <div>
-            <h3>
-              Ações e recuperação
-            </h3>
-
-            <p>
-              Informe o que já foi feito e o que deve ser priorizado.
-            </p>
-          </div>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="acoesCOA">
-            Ações já realizadas pelo COA
-          </label>
-
-          <textarea
-            id="acoesCOA"
-            name="acoesCOA"
-            rows="5"
-            placeholder="Ex.: Enviadas 3 viagens para F503 da UIM. Ajustada alocação. Priorizada frente de menor raio."
-          ></textarea>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="prioridadeAlocacao">
-            Prioridade de alocação
-          </label>
-
-          <textarea
-            id="prioridadeAlocacao"
-            name="prioridadeAlocacao"
-            rows="5"
-            placeholder="Ex.: Priorizar frentes de menor raio e maior déficit. Evitar concentração de frota em frente com ciclo instável."
-          ></textarea>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="sinergia">
-            Sinergia entre unidades
-          </label>
-
-          <textarea
-            id="sinergia"
-            name="sinergia"
-            rows="5"
-            placeholder="Ex.: Com melhora da UISJ, direcionar 1 viagem/h para F83. Utilizar sinergia para recuperar entrega da unidade."
-          ></textarea>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="observacoes">
-            Observações adicionais
-          </label>
-
-          <textarea
-            id="observacoes"
-            name="observacoes"
-            rows="5"
-            placeholder="Outras informações relevantes para a análise..."
-          ></textarea>
-
-        </div>
-
+        <div class="section-title"><div class="section-number">05</div><div><h3>Ações e recuperação</h3><p>Informe o que já foi feito e o que deve ser priorizado.</p></div></div>
+        <div class="field"><label for="acoesCOA">Ações já realizadas pelo COA</label><textarea id="acoesCOA" name="acoesCOA" rows="5"></textarea></div>
+        <div class="field"><label for="prioridadeAlocacao">Prioridade de alocação</label><textarea id="prioridadeAlocacao" name="prioridadeAlocacao" rows="5"></textarea></div>
+        <div class="field"><label for="sinergia">Sinergia entre unidades</label><textarea id="sinergia" name="sinergia" rows="5"></textarea></div>
+        <div class="field"><label for="observacoes">Observações adicionais</label><textarea id="observacoes" name="observacoes" rows="5"></textarea></div>
       </section>
-
-
-      <!-- ===================================================
-           AÇÕES
-      ==================================================== -->
 
       <div class="form-actions">
-
-        <button
-          type="button"
-          id="clearButton"
-          class="button secondary"
-        >
-          Limpar
-        </button>
-
-
-        <button
-          type="submit"
-          id="analyzeButton"
-          class="button primary"
-        >
-          <span id="buttonText">
-            Gerar Plano de Voo
-          </span>
-
-          <span
-            id="buttonLoader"
-            class="loader hidden"
-          ></span>
-
-        </button>
-
+        <button type="button" id="clearButton" class="button secondary">Limpar</button>
+        <button type="submit" id="analyzeButton" class="button primary"><span id="buttonText">Gerar Plano de Voo</span><span id="buttonLoader" class="loader hidden"></span></button>
       </div>
-
     </form>
 
-
-    <!-- =====================================================
-         RESULTADO
-    ====================================================== -->
-
-    <section
-      id="resultSection"
-      class="result-section hidden"
-    >
-
-      <div class="result-header">
-
-        <div>
-
-          <span class="eyebrow">
-            ANÁLISE GERADA
-          </span>
-
-          <h2>
-            Plano de Voo
-          </h2>
-
-        </div>
-
-        <button
-          id="copyButton"
-          class="button secondary small"
-        >
-          Copiar
-        </button>
-
-      </div>
-
-
-      <!-- KPIs -->
-
-      <div
-        id="kpiGrid"
-        class="kpi-grid"
-      ></div>
-
-
-      <!-- Plano -->
-
-      <div class="plan-card">
-
-        <div
-          id="analysisOutput"
-          class="analysis-output"
-        ></div>
-
-      </div>
-
-
-      <div class="result-footer">
-
-        <span id="generationInfo">
-          -
-        </span>
-
-      </div>
-
+    <section id="resultSection" class="result-section hidden">
+      <div class="result-header"><div><span class="eyebrow">ANÁLISE GERADA</span><h2>Plano de Voo</h2></div><button id="copyButton" class="button secondary small">Copiar</button></div>
+      <div id="kpiGrid" class="kpi-grid"></div>
+      <div class="plan-card"><div id="analysisOutput" class="analysis-output"></div></div>
+      <div class="result-footer"><span id="generationInfo">-</span></div>
     </section>
 
-
-    <!-- =====================================================
-         ERRO
-    ====================================================== -->
-
-    <div
-      id="errorBox"
-      class="error-box hidden"
-    ></div>
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <footer>
-
-      <span>
-        COA • CTT Agroindustrial
-      </span>
-
-      <span>
-        Plano de Voo
-      </span>
-
-    </footer>
-
+    <div id="errorBox" class="error-box hidden"></div>
+    <footer><span>COA • CTT Agroindustrial</span><span>Plano de Voo</span></footer>
   </div>
-
-
   <script src="app.js"></script>
-
 </body>
-
 </html>
