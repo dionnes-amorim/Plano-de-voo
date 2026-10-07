@@ -258,6 +258,94 @@
       </section>
 
 
+            <!-- 01.5 - HISTÓRICO RECENTE INTEGRADO -->
+      <section class="card">
+        <div class="section-title">
+          <div class="section-number">01.5</div>
+          <div>
+            <h3>Histórico integrado - últimas 3h</h3>
+            <p>Base para cálculo de tendência real. O mais importante da análise.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="field">
+            <label>19h-20h | Entrou (t)</label>
+            <input name="h19_20_entrada" type="number" step="1" placeholder="Ex: 650">
+          </div>
+          <div class="field">
+            <label>19h-20h | Moído (t)</label>
+            <input name="h19_20_moagem" type="number" step="1" placeholder="Ex: 620">
+          </div>
+          <div class="field">
+            <label>20h | Estoque fechamento</label>
+            <input name="h19_20_estoque" type="number" step="1" placeholder="Ex: 8">
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="field">
+            <label>20h-21h | Entrou (t)</label>
+            <input name="h20_21_entrada" type="number" step="1" placeholder="Ex: 540">
+          </div>
+          <div class="field">
+            <label>20h-21h | Moído (t)</label>
+            <input name="h20_21_moagem" type="number" step="1" placeholder="Ex: 600">
+          </div>
+          <div class="field">
+            <label>21h | Estoque fechamento</label>
+            <input name="h20_21_estoque" type="number" step="1" placeholder="Ex: 6">
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="field">
+            <label>21h-22h | Entrou (t)</label>
+            <input name="h21_22_entrada" type="number" step="1" placeholder="Ex: 480">
+          </div>
+          <div class="field">
+            <label>21h-22h | Moído (t)</label>
+            <input name="h21_22_moagem" type="number" step="1" placeholder="Ex: 610">
+          </div>
+          <div class="field">
+            <label>22h | Estoque ATUAL</label>
+            <input name="h21_22_estoque" type="number" step="1" placeholder="Ex: 4">
+          </div>
+        </div>
+      </section>
+
+      <!-- 01.6 - PROJEÇÃO FUTURA -->
+      <section class="card">
+        <div class="section-title">
+          <div class="section-number">01.6</div>
+          <div>
+            <h3>Projeção próximas 12h</h3>
+            <p>Potencial das frentes vs meta de moagem.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="field">
+            <label>Potencial prod. 12h (t)</label>
+            <input name="potencial12h" type="number" step="1" placeholder="Ex: 7800">
+          </div>
+          <div class="field">
+            <label>Meta moagem 12h (t)</label>
+            <input name="metaMoagem12h" type="number" step="1" placeholder="Ex: 8000">
+          </div>
+          <div class="field">
+            <label>Moagem desejada (t/h)</label>
+            <input name="moagemDesejada" type="number" step="1" placeholder="Ex: 667">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Frentes que vão produzir nas próximas 12h (potencial por frente)</label>
+          <textarea name="potencialFrentes" rows="3" placeholder="Ex: F501-150t/h, F502-130t/h com limitação de colhedora 450060, F505-80t/h em fim de área..."></textarea>
+        </div>
+      </section>
+      
+
       <!-- ===================================================
            02 - MOAGEM E ESTOQUE
       ==================================================== -->
