@@ -1,19 +1,17 @@
 {
   "name": "coa-plano-voo-ctt",
   "version": "1.0.0",
-  "description": "COA - Plano de Voo CTT Agroindustrial",
+  "description": "COA - Plano de Voo CTT Agroindustrial com análise Gemini",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node server.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
-    "express": "^5.1.0",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^8.1.0"
+    "express": "^4.21.2",
+    "helmet": "^8.0.0"
   }
 }
