@@ -17,9 +17,9 @@
 
     <title>Plano de Voo | CTT Agroindustrial</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/logo.ico">
-    <link rel="shortcut icon" href="/logo.ico">
+    <!-- FAVICON -->
+    <link rel="icon" href="/logo.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/logo.ico" type="image/x-icon">
 
     <!-- CSS -->
     <link rel="stylesheet" href="/estilo.css">
@@ -37,14 +37,6 @@
 
             <div class="brand">
 
-                <div class="brand-logo">
-                    <img
-                        src="/logo.ico"
-                        alt="Logo"
-                        onerror="this.style.display='none';"
-                    >
-                </div>
-
                 <div class="brand-info">
                     <div class="brand-title">
                         PLANO DE VOO
@@ -57,10 +49,12 @@
 
             </div>
 
-            <div class="header-status">
-                <span class="status-dot"></span>
-                <span>Sistema operacional</span>
-            </div>
+            <!-- LOGO PEQUENO NO CANTO -->
+            <img
+                src="/logo.ico"
+                alt="Logo"
+                class="header-logo-small"
+            >
 
         </div>
 
@@ -750,8 +744,26 @@ Você pode colar diretamente a tabela copiada do sistema."
 
 
     <!-- =========================================================
-         JAVASCRIPT
+         LOGO PEQUENO — GARANTE QUE NÃO FIQUE GIGANTE
     ========================================================== -->
+
+    <style>
+        .header-logo-small {
+            width: 34px !important;
+            height: 34px !important;
+            max-width: 34px !important;
+            max-height: 34px !important;
+            min-width: 34px !important;
+            min-height: 34px !important;
+            object-fit: contain !important;
+            display: block !important;
+            flex: 0 0 34px !important;
+            border-radius: 6px;
+        }
+    </style>
+
+
+    <!-- JAVASCRIPT -->
 
     <script src="/app.js"></script>
 
