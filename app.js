@@ -679,3 +679,14 @@ clearButton.addEventListener(
       );
   }
 );
+
+const numericFields = [
+  "moagemAtual","moagemNominal","entregaMedia",
+  "estoqueAtual","estoqueMinimo","estoqueProjetado","moagemContingencia",
+  "colhedorasMedia","colhedorasPico","tracoesMedia","tracoesPico","cavalosMedia","cavalosPico",
+  // NOVOS INTEGRADOS
+  "h19_20_entrada","h19_20_moagem","h19_20_estoque",
+  "h20_21_entrada","h20_21_moagem","h20_21_estoque",
+  "h21_22_entrada","h21_22_moagem","h21_22_estoque",
+  "potencial12h","metaMoagem12h","moagemDesejada"
+];
