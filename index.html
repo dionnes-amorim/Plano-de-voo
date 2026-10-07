@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -13,626 +15,350 @@
         content="Plano de Voo - Análise operacional CTT Agroindustrial"
     >
 
-    <meta name="theme-color" content="#101719">
+    <meta
+        name="theme-color"
+        content="#101719"
+    >
 
     <title>Plano de Voo | CTT Agroindustrial</title>
 
-    <!-- FAVICON -->
-    <link rel="icon" href="/logo.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/logo.ico" type="image/x-icon">
+    <link
+        rel="icon"
+        href="/logo.ico"
+        type="image/x-icon"
+    >
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/estilo.css">
+    <link
+        rel="shortcut icon"
+        href="/logo.ico"
+        type="image/x-icon"
+    >
+
+    <!-- CSS PRINCIPAL -->
+    <link
+        rel="stylesheet"
+        href="/estilo.css"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- =========================================================
-         CABEÇALHO
-    ========================================================== -->
 
-    <header class="topbar">
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
-        <div class="topbar-content">
+<header class="topbar">
 
-            <div class="brand">
+    <div class="topbar-content">
 
-                <div class="brand-info">
-                    <div class="brand-title">
-                        PLANO DE VOO
-                    </div>
+        <div class="brand">
 
-                    <div class="brand-subtitle">
-                        CTT AGROINDUSTRIAL
-                    </div>
+            <div class="brand-info">
+
+                <div class="brand-title">
+                    PLANO DE VOO
+                </div>
+
+                <div class="brand-subtitle">
+                    CTT AGROINDUSTRIAL
                 </div>
 
             </div>
-
-            <!-- LOGO PEQUENO NO CANTO -->
-            <img
-                src="/logo.ico"
-                alt="Logo"
-                class="header-logo-small"
-            >
 
         </div>
 
-    </header>
+
+        <img
+            src="/logo.ico"
+            alt="Logo CTT"
+            class="header-logo-small"
+        >
+
+    </div>
+
+</header>
 
 
-    <!-- =========================================================
-         CONTEÚDO PRINCIPAL
-    ========================================================== -->
 
-    <main class="container">
+<!-- =========================================================
+     CONTEÚDO
+========================================================= -->
 
-        <!-- INTRODUÇÃO -->
+<main class="container">
 
-        <section class="intro">
+
+    <!-- =====================================================
+         INTRO
+    ====================================================== -->
+
+    <section class="intro">
+
+        <div>
+
+            <span class="eyebrow">
+                ANÁLISE OPERACIONAL
+            </span>
+
+            <h1>
+                Plano de Voo
+            </h1>
+
+            <p>
+                Cole a
+                <strong>Análise de Potencial de Produção</strong>,
+                informe o estoque das últimas horas e deixe o sistema
+                projetar a tendência operacional.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         01 — POTENCIAL
+    ====================================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
 
             <div>
-                <span class="eyebrow">
-                    ANÁLISE OPERACIONAL
+
+                <span class="card-number">
+                    01
                 </span>
 
-                <h1>
-                    Plano de Voo
-                </h1>
-
-                <p>
-                    Cole a <strong>Análise de Potencial de Produção</strong>,
-                    informe o estoque das últimas horas e deixe o sistema
-                    projetar a tendência operacional.
-                </p>
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             BLOCO 1 — ANÁLISE DE POTENCIAL
-        ====================================================== -->
-
-        <section class="card">
-
-            <div class="card-header">
-
-                <div>
-                    <span class="card-number">01</span>
-
-                    <div class="card-title">
-                        Análise de Potencial de Produção
-                    </div>
-
-                    <div class="card-description">
-                        Cole abaixo a tabela completa copiada do sistema.
-                    </div>
+                <div class="card-title">
+                    Análise de Potencial de Produção
                 </div>
 
-                <div class="card-badge">
-                    OBRIGATÓRIO
+                <div class="card-description">
+                    Cole abaixo a tabela completa copiada do sistema.
                 </div>
 
             </div>
 
 
-            <div class="field">
+            <div class="card-badge">
+                OBRIGATÓRIO
+            </div>
 
-                <label for="potentialInput">
-                    Dados da análise
-                </label>
+        </div>
 
-                <textarea
-                    id="potentialInput"
-                    class="main-textarea"
-                    placeholder="Cole aqui a Análise de Potencial de Produção...
+
+        <div class="field">
+
+            <label for="potentialInput">
+                Dados da análise
+            </label>
+
+
+            <textarea
+                id="potentialInput"
+                class="main-textarea"
+                spellcheck="false"
+                autocomplete="off"
+                placeholder="Cole aqui a Análise de Potencial de Produção...
 
 Exemplo:
 
+Filial: Mandu
+
 15:00  16:00  17:00  18:00  19:00
 Ritmo Colheita  644  572  501  535  606
-Ritmo Industrial  500  500  500  500  500
+Ritmo Industrial  850  850  850  850  850
 
 Você pode colar diretamente a tabela copiada do sistema."
-                    spellcheck="false"
-                    autocomplete="off"
-                ></textarea>
+            ></textarea>
 
-                <div class="field-footer">
 
-                    <span class="hint">
-                        O sistema identifica automaticamente os horários,
-                        potencial agrícola e ritmo industrial.
-                    </span>
+            <div class="field-footer">
 
-                    <span
-                        id="potentialStatus"
-                        class="input-status"
-                    ></span>
+                <span class="hint">
+                    O sistema identifica automaticamente a unidade,
+                    nominal, horários, potencial agrícola e ritmo industrial.
+                </span>
 
-                </div>
-
-            </div>
-
-
-            <!-- PRÉVIA AUTOMÁTICA -->
-
-            <div
-                id="previewArea"
-                class="preview-area hidden"
-            >
-
-                <div class="preview-header">
-
-                    <div>
-                        <span class="preview-title">
-                            Prévia identificada
-                        </span>
-
-                        <span class="preview-subtitle">
-                            Dados encontrados na tabela
-                        </span>
-                    </div>
-
-                    <span
-                        id="previewBadge"
-                        class="preview-badge"
-                    >
-                        AGUARDANDO
-                    </span>
-
-                </div>
-
-                <div
-                    id="previewContent"
-                    class="preview-content"
-                ></div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             BLOCO 2 — ESTOQUE
-        ====================================================== -->
-
-        <section class="card">
-
-            <div class="card-header">
-
-                <div>
-                    <span class="card-number">02</span>
-
-                    <div class="card-title">
-                        Estoque de Cana
-                    </div>
-
-                    <div class="card-description">
-                        Informe o fechamento das últimas 3 horas e o estoque atual.
-                    </div>
-                </div>
-
-                <div class="card-badge">
-                    OBRIGATÓRIO
-                </div>
-
-            </div>
-
-
-            <div class="stock-info">
-
-                <div class="stock-info-icon">
-                    ⓘ
-                </div>
-
-                <div>
-                    <strong>
-                        Estoque em conjuntos carregados
-                    </strong>
-
-                    <p>
-                        Os horários são preenchidos automaticamente conforme
-                        o horário atual. A projeção considera
-                        <strong>70 t por conjunto</strong>.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <div class="stock-grid">
-
-                <!-- HORA -3 -->
-
-                <div class="stock-field">
-
-                    <label id="stockLabel1" for="stock1">
-                        Hora -3
-                    </label>
-
-                    <div class="stock-input-wrapper">
-
-                        <input
-                            id="stock1"
-                            type="number"
-                            min="0"
-                            step="1"
-                            inputmode="numeric"
-                            placeholder="0"
-                            autocomplete="off"
-                        >
-
-                        <span>
-                            conjuntos
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- HORA -2 -->
-
-                <div class="stock-field">
-
-                    <label id="stockLabel2" for="stock2">
-                        Hora -2
-                    </label>
-
-                    <div class="stock-input-wrapper">
-
-                        <input
-                            id="stock2"
-                            type="number"
-                            min="0"
-                            step="1"
-                            inputmode="numeric"
-                            placeholder="0"
-                            autocomplete="off"
-                        >
-
-                        <span>
-                            conjuntos
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- HORA -1 -->
-
-                <div class="stock-field">
-
-                    <label id="stockLabel3" for="stock3">
-                        Hora -1
-                    </label>
-
-                    <div class="stock-input-wrapper">
-
-                        <input
-                            id="stock3"
-                            type="number"
-                            min="0"
-                            step="1"
-                            inputmode="numeric"
-                            placeholder="0"
-                            autocomplete="off"
-                        >
-
-                        <span>
-                            conjuntos
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ATUAL -->
-
-                <div class="stock-field current">
-
-                    <label id="stockLabel4" for="stockCurrent">
-                        Atual
-                    </label>
-
-                    <div class="stock-input-wrapper">
-
-                        <input
-                            id="stockCurrent"
-                            type="number"
-                            min="0"
-                            step="1"
-                            inputmode="numeric"
-                            placeholder="0"
-                            autocomplete="off"
-                        >
-
-                        <span>
-                            conjuntos
-                        </span>
-
-                    </div>
-
-                    <small>
-                        Estoque atual
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <!-- INDICADOR DE TENDÊNCIA -->
-
-            <div
-                id="stockTrend"
-                class="stock-trend hidden"
-            ></div>
-
-        </section>
-
-
-        <!-- =====================================================
-             BLOCO 3 — OBSERVAÇÕES
-        ====================================================== -->
-
-        <section class="card">
-
-            <div class="card-header">
-
-                <div>
-                    <span class="card-number">03</span>
-
-                    <div class="card-title">
-                        Comentários / Pontos de Atenção
-                    </div>
-
-                    <div class="card-description">
-                        Campo opcional para complementar a análise.
-                    </div>
-                </div>
-
-                <div class="card-badge optional">
-                    OPCIONAL
-                </div>
-
-            </div>
-
-
-            <div class="field">
-
-                <label for="comments">
-                    Observações operacionais
-                </label>
-
-                <div class="textarea-with-mic">
-
-                    <textarea
-                        id="comments"
-                        class="comments-textarea"
-                        placeholder="Ex.: manutenção de colhedoras, mudança de frente, dificuldade de ciclo, chuva, interdição, sinergia entre unidades, troca de turno..."
-                    ></textarea>
-
-                    <button
-                        type="button"
-                        id="micButton"
-                        class="mic-button"
-                        aria-label="Iniciar ditado por voz"
-                        title="Ditado por voz"
-                    >
-                        <span class="mic-icon">🎙</span>
-                    </button>
-
-                </div>
-
-
-                <div class="voice-status">
-
-                    <span
-                        id="voiceStatus"
-                        class="voice-status-text"
-                    >
-                        Clique no microfone para ditar.
-                    </span>
-
-                    <span
-                        id="voiceSupport"
-                        class="voice-support"
-                    ></span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             AÇÃO PRINCIPAL
-        ====================================================== -->
-
-        <section class="action-area">
-
-            <button
-                type="button"
-                id="generateButton"
-                class="generate-button"
-            >
 
                 <span
-                    id="generateIcon"
-                    class="button-icon"
-                >
-                    ✦
-                </span>
+                    id="potentialStatus"
+                    class="input-status"
+                ></span>
 
-                <span id="generateText">
-                    GERAR PLANO DE VOO
-                </span>
+            </div>
 
-            </button>
+        </div>
 
 
-            <button
-                type="button"
-                id="clearButton"
-                class="clear-button"
-            >
-                Limpar análise
-            </button>
 
-        </section>
+        <!-- =================================================
+             PRÉVIA
+        ================================================== -->
 
-
-        <!-- =====================================================
-             LOADING
-        ====================================================== -->
-
-        <section
-            id="loadingArea"
-            class="loading-area hidden"
+        <div
+            id="previewArea"
+            class="preview-area hidden"
         >
 
-            <div class="loading-spinner"></div>
+            <div class="preview-header">
+
+                <div>
+
+                    <span class="preview-title">
+                        Prévia identificada
+                    </span>
+
+                    <span class="preview-subtitle">
+                        Dados encontrados na tabela
+                    </span>
+
+                </div>
+
+
+                <span
+                    id="previewBadge"
+                    class="preview-badge"
+                >
+                    AGUARDANDO
+                </span>
+
+            </div>
+
+
+            <div
+                id="previewContent"
+                class="preview-content"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         02 — ESTOQUE
+    ====================================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-number">
+                    02
+                </span>
+
+                <div class="card-title">
+                    Estoque de Cana
+                </div>
+
+                <div class="card-description">
+                    Informe o fechamento das últimas 3 horas e o estoque atual.
+                </div>
+
+            </div>
+
+
+            <div class="card-badge">
+                OBRIGATÓRIO
+            </div>
+
+        </div>
+
+
+        <div class="stock-info">
+
+            <div class="stock-info-icon">
+                ⓘ
+            </div>
+
 
             <div>
 
                 <strong>
-                    Analisando cenário operacional...
+                    Estoque em conjuntos carregados
                 </strong>
 
                 <p>
-                    Cruzando histórico, estoque e projeção das próximas horas.
+                    Os horários são preenchidos automaticamente conforme
+                    o horário atual. A projeção considera
+                    <strong>70 t por conjunto</strong>.
                 </p>
 
             </div>
 
-        </section>
+        </div>
 
 
-        <!-- =====================================================
-             RESULTADO
-        ====================================================== -->
 
-        <section
-            id="resultArea"
-            class="result-area hidden"
-        >
+        <div class="stock-grid">
 
-            <div class="result-header">
 
-                <div>
+            <!-- HORA -3 -->
 
-                    <span class="eyebrow">
-                        RESULTADO DA ANÁLISE
-                    </span>
+            <div class="stock-field">
 
-                    <h2>
-                        Plano de Voo
-                    </h2>
-
-                </div>
-
-                <button
-                    type="button"
-                    id="copyButton"
-                    class="copy-button"
+                <label
+                    id="stockLabel1"
+                    for="stock1"
                 >
-                    Copiar análise
-                </button>
+                    Hora -3
+                </label>
 
-            </div>
+                <div class="stock-input-wrapper">
 
-
-            <!-- KPIs -->
-
-            <div
-                id="kpiGrid"
-                class="kpi-grid"
-            >
-
-                <div class="kpi-card">
-
-                    <span class="kpi-label">
-                        Estoque atual
-                    </span>
-
-                    <strong
-                        id="kpiStock"
-                        class="kpi-value"
+                    <input
+                        id="stock1"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
                     >
-                        —
-                    </strong>
 
-                    <span class="kpi-unit">
+                    <span>
                         conjuntos
                     </span>
 
                 </div>
 
+            </div>
 
-                <div class="kpi-card">
 
-                    <span class="kpi-label">
-                        Tendência
-                    </span>
 
-                    <strong
-                        id="kpiTrend"
-                        class="kpi-value"
+            <!-- HORA -2 -->
+
+            <div class="stock-field">
+
+                <label
+                    id="stockLabel2"
+                    for="stock2"
+                >
+                    Hora -2
+                </label>
+
+                <div class="stock-input-wrapper">
+
+                    <input
+                        id="stock2"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
                     >
-                        —
-                    </strong>
 
-                    <span
-                        id="kpiTrendDetail"
-                        class="kpi-unit"
-                    >
-                        —
-                    </span>
-
-                </div>
-
-
-                <div class="kpi-card">
-
-                    <span class="kpi-label">
-                        Moagem segura
-                    </span>
-
-                    <strong
-                        id="kpiSafeMoagem"
-                        class="kpi-value"
-                    >
-                        —
-                    </strong>
-
-                    <span class="kpi-unit">
-                        t/h
-                    </span>
-
-                </div>
-
-
-                <div class="kpi-card">
-
-                    <span class="kpi-label">
-                        Ponto de atenção
-                    </span>
-
-                    <strong
-                        id="kpiRiskHour"
-                        class="kpi-value"
-                    >
-                        —
-                    </strong>
-
-                    <span class="kpi-unit">
-                        projeção
+                    <span>
+                        conjuntos
                     </span>
 
                 </div>
@@ -640,132 +366,518 @@ Você pode colar diretamente a tabela copiada do sistema."
             </div>
 
 
-            <!-- ALERTA / STATUS -->
 
-            <div
-                id="resultStatus"
-                class="result-status"
-            ></div>
+            <!-- HORA -1 -->
 
+            <div class="stock-field">
 
-            <!-- TEXTO DO PLANO -->
+                <label
+                    id="stockLabel3"
+                    for="stock3"
+                >
+                    Hora -1
+                </label>
 
-            <div class="analysis-card">
+                <div class="stock-input-wrapper">
 
-                <div class="analysis-card-header">
+                    <input
+                        id="stock3"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
+                    >
 
-                    <div>
-                        <span class="analysis-title">
-                            Análise operacional
-                        </span>
-
-                        <span class="analysis-subtitle">
-                            Plano de Voo gerado a partir dos dados informados
-                        </span>
-                    </div>
+                    <span>
+                        conjuntos
+                    </span>
 
                 </div>
-
-
-                <div
-                    id="analysisText"
-                    class="analysis-text"
-                ></div>
 
             </div>
 
 
-            <!-- DADOS CALCULADOS -->
 
-            <div
-                id="calculationArea"
-                class="calculation-area"
-            >
+            <!-- ATUAL -->
 
-                <div class="calculation-header">
-                    Indicadores calculados
+            <div class="stock-field current">
+
+                <label
+                    id="stockLabel4"
+                    for="stockCurrent"
+                >
+                    Atual
+                </label>
+
+                <div class="stock-input-wrapper">
+
+                    <input
+                        id="stockCurrent"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
+                    >
+
+                    <span>
+                        conjuntos
+                    </span>
+
                 </div>
 
-                <div
-                    id="calculationContent"
-                    class="calculation-content"
-                ></div>
+                <small>
+                    Estoque atual
+                </small>
 
             </div>
 
-        </section>
+        </div>
 
-
-        <!-- =====================================================
-             ERRO
-        ====================================================== -->
 
         <div
-            id="errorArea"
-            class="error-area hidden"
-        >
+            id="stockTrend"
+            class="stock-trend hidden"
+        ></div>
 
-            <div class="error-icon">
-                !
-            </div>
+    </section>
+
+
+
+    <!-- =====================================================
+         03 — COMENTÁRIOS
+    ====================================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
 
             <div>
 
-                <strong>
-                    Não foi possível gerar a análise
-                </strong>
+                <span class="card-number">
+                    03
+                </span>
 
-                <p id="errorMessage">
-                    Verifique os dados informados e tente novamente.
-                </p>
+                <div class="card-title">
+                    Comentários / Pontos de Atenção
+                </div>
+
+                <div class="card-description">
+                    Campo opcional para complementar a análise.
+                </div>
+
+            </div>
+
+
+            <div class="card-badge optional">
+                OPCIONAL
+            </div>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="comments">
+                Observações operacionais
+            </label>
+
+
+            <div class="textarea-with-mic">
+
+                <textarea
+                    id="comments"
+                    class="comments-textarea"
+                    placeholder="Ex.: manutenção de colhedoras, mudança de frente, dificuldade de ciclo, chuva, interdição, sinergia entre unidades, troca de turno..."
+                ></textarea>
+
+
+                <button
+                    type="button"
+                    id="micButton"
+                    class="mic-button"
+                    aria-label="Iniciar ditado por voz"
+                    title="Ditado por voz"
+                >
+
+                    <span class="mic-icon">
+                        🎙
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <div class="voice-status">
+
+                <span
+                    id="voiceStatus"
+                    class="voice-status-text"
+                >
+                    Clique no microfone para ditar.
+                </span>
+
+
+                <span
+                    id="voiceSupport"
+                    class="voice-support"
+                ></span>
 
             </div>
 
         </div>
 
-    </main>
+    </section>
 
 
-    <!-- =========================================================
-         RODAPÉ
-    ========================================================== -->
 
-    <footer class="footer">
+    <!-- =====================================================
+         AÇÕES
+    ====================================================== -->
+
+    <section class="action-area">
+
+        <button
+            type="button"
+            id="generateButton"
+            class="generate-button"
+        >
+
+            <span
+                id="generateIcon"
+                class="button-icon"
+            >
+                ✦
+            </span>
+
+            <span id="generateText">
+                GERAR PLANO DE VOO
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            id="clearButton"
+            class="clear-button"
+        >
+            Limpar análise
+        </button>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <section
+        id="loadingArea"
+        class="loading-area hidden"
+    >
+
+        <div class="loading-spinner"></div>
 
         <div>
-            Plano de Voo
+
+            <strong>
+                Analisando cenário operacional...
+            </strong>
+
+            <p>
+                Cruzando histórico, estoque e projeção das próximas horas.
+            </p>
+
         </div>
 
-        <span>
-            CTT Agroindustrial
-        </span>
-
-    </footer>
+    </section>
 
 
-    <!-- =========================================================
-         LOGO PEQUENO — GARANTE QUE NÃO FIQUE GIGANTE
-    ========================================================== -->
 
-    <style>
-        .header-logo-small {
-            width: 34px !important;
-            height: 34px !important;
-            max-width: 34px !important;
-            max-height: 34px !important;
-            min-width: 34px !important;
-            min-height: 34px !important;
-            object-fit: contain !important;
-            display: block !important;
-            flex: 0 0 34px !important;
-            border-radius: 6px;
-        }
-    </style>
+    <!-- =====================================================
+         RESULTADO
+    ====================================================== -->
+
+    <section
+        id="resultArea"
+        class="result-area hidden"
+    >
+
+        <div class="result-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    RESULTADO DA ANÁLISE
+                </span>
+
+                <h2>
+                    Plano de Voo
+                </h2>
+
+            </div>
 
 
-    <!-- JAVASCRIPT -->
+            <button
+                type="button"
+                id="copyButton"
+                class="copy-button"
+            >
+                Copiar análise
+            </button>
 
-    <script src="/app.js"></script>
+        </div>
+
+
+
+        <!-- KPIs -->
+
+        <div
+            id="kpiGrid"
+            class="kpi-grid"
+        >
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Estoque atual
+                </span>
+
+                <strong
+                    id="kpiStock"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
+
+                <span class="kpi-unit">
+                    conjuntos
+                </span>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Tendência
+                </span>
+
+                <strong
+                    id="kpiTrend"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
+
+                <span
+                    id="kpiTrendDetail"
+                    class="kpi-unit"
+                >
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Moagem segura
+                </span>
+
+                <strong
+                    id="kpiSafeMoagem"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
+
+                <span class="kpi-unit">
+                    t/h
+                </span>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Ponto de atenção
+                </span>
+
+                <strong
+                    id="kpiRiskHour"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
+
+                <span class="kpi-unit">
+                    projeção
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- STATUS -->
+
+        <div
+            id="resultStatus"
+            class="result-status"
+        ></div>
+
+
+
+        <!-- ANÁLISE -->
+
+        <div class="analysis-card">
+
+            <div class="analysis-card-header">
+
+                <div>
+
+                    <span class="analysis-title">
+                        Análise operacional
+                    </span>
+
+                    <span class="analysis-subtitle">
+                        Plano de Voo gerado a partir dos dados informados
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="analysisText"
+                class="analysis-text"
+            ></div>
+
+        </div>
+
+
+
+        <!-- CÁLCULOS -->
+
+        <div
+            id="calculationArea"
+            class="calculation-area"
+        >
+
+            <div class="calculation-header">
+                Indicadores calculados
+            </div>
+
+            <div
+                id="calculationContent"
+                class="calculation-content"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ERRO
+    ====================================================== -->
+
+    <div
+        id="errorArea"
+        class="error-area hidden"
+    >
+
+        <div class="error-icon">
+            !
+        </div>
+
+
+        <div>
+
+            <strong>
+                Não foi possível gerar a análise
+            </strong>
+
+            <p id="errorMessage">
+                Verifique os dados informados e tente novamente.
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div>
+        Plano de Voo
+    </div>
+
+    <span>
+        CTT Agroindustrial
+    </span>
+
+</footer>
+
+
+
+<!-- =========================================================
+     GARANTIA DO TAMANHO DA LOGO
+========================================================= -->
+
+<style>
+
+.header-logo-small {
+
+    width: 34px !important;
+    height: 34px !important;
+
+    max-width: 34px !important;
+    max-height: 34px !important;
+
+    min-width: 34px !important;
+    min-height: 34px !important;
+
+    object-fit: contain !important;
+
+    display: block !important;
+
+    flex: 0 0 34px !important;
+
+    border-radius: 6px;
+
+}
+
+</style>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="/app.js"></script>
+
 
 </body>
+
 </html>
