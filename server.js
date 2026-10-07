@@ -1,75 +1,58 @@
-/* =========================================================
-   COA | PLANO DE VOO CTT
-   SERVER
-========================================================= */
-
 require('dotenv').config();
 
-const express =
-  require('express');
+const express = require('express');
+const path = require('path');
+const helmet = require('helmet');
 
-const path =
-  require('path');
+const app = express();
 
-const helmet =
-  require('helmet');
+const PORT = Number(process.env.PORT || 3000);
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
-const {
-  fileURLToPath
-} = require('url');
+const TONELADAS_POR_CONJUNTO = Number(
+  process.env.TONELADAS_POR_CONJUNTO || 70
+);
+
+const ESTOQUE_RISCO_CONJ = Number(
+  process.env.ESTOQUE_RISCO_CONJ || 7
+);
+
+/* =========================================================
+   CADASTRO OFICIAL DAS UNIDADES
+   ========================================================= */
+
+const UNIDADES = {
+  'MANDU': {
+    nome: 'Mandu',
+    nominal: 917
+  },
+
+  'CRUZ ALTA': {
+    nome: 'Cruz Alta',
+    nominal: 900
+  },
+
+  'SAO JOSE': {
+    nome: 'São José',
+    nominal: 750
+  },
+
+  'VERTENTE': {
+    nome: 'Vertente',
+    nominal: 500
+  },
+
+  'TANABI': {
+    nome: 'Tanabi',
+    nominal: 710
+  }
+};
 
 
 /* =========================================================
-   CONFIGURAÇÃO
-========================================================= */
-
-const app =
-  express();
-
-
-const PORT =
-  process.env.PORT || 3000;
-
-
-const GEMINI_API_KEY =
-  process.env.GEMINI_API_KEY ||
-  '';
-
-
-const GEMINI_MODEL =
-  process.env.GEMINI_MODEL ||
-  'gemini-3.8-flash';
-
-
-/*
-  Quantidade padrão de toneladas por conjunto.
-
-  Padrão COA/CTT utilizado na análise:
-  70 t/conjunto.
-*/
-
-const TONELADAS_POR_CONJUNTO =
-  Number(
-    process.env.TONELADAS_POR_CONJUNTO || 70
-  );
-
-
-/*
-  Referência operacional de zona de risco.
-
-  Pode ser alterada no Render:
-  ESTOQUE_RISCO_CONJ=7
-*/
-
-const ESTOQUE_RISCO_CONJ =
-  Number(
-    process.env.ESTOQUE_RISCO_CONJ || 7
-  );
-
-
-/* =========================================================
-   MIDDLEWARE
-========================================================= */
+   MIDDLEWARES
+   ========================================================= */
 
 app.use(
   helmet({
@@ -77,1554 +60,1134 @@ app.use(
   })
 );
 
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
-app.use(
-  express.json({
-    limit: '1mb'
-  })
-);
-
-
-app.use(
-  express.urlencoded({
-    extended: true,
-    limit: '1mb'
-  })
-);
-
-
-app.use(
-  express.static(
-    __dirname,
-    {
-      maxAge: '1h'
-    }
-  )
-);
+app.use(express.static(__dirname));
 
 
 /* =========================================================
    UTILITÁRIOS
-========================================================= */
+   ========================================================= */
 
-function numeroSeguro(valor) {
+function numeroSeguro(valor, fallback = 0) {
+  const numero = Number(valor);
 
-  const numero =
-    Number(valor);
-
-  if (
-    !Number.isFinite(numero)
-  ) {
-
-    return null;
-
-  }
-
-  return numero;
-
+  return Number.isFinite(numero)
+    ? numero
+    : fallback;
 }
 
 
-function textoSeguro(
-  valor,
-  limite = 20000
-) {
-
-  if (
-    valor === undefined ||
-    valor === null
-  ) {
-
-    return '';
-
-  }
-
-  return String(valor)
-    .replace(/\u0000/g, '')
+function textoSeguro(valor, limite = 30000) {
+  return String(valor || '')
     .trim()
-    .slice(
-      0,
-      limite
-    );
+    .slice(0, limite);
+}
 
+
+function normalizarTexto(texto) {
+  return String(texto || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .trim();
 }
 
 
 function horaNumero(hora) {
+  if (hora === null || hora === undefined) {
+    return null;
+  }
 
-  const match =
-    String(hora || '')
-      .match(
-        /^(\d{1,2}):/
-      );
+  const texto = String(hora).trim();
+
+  const match = texto.match(/\d{1,2}/);
 
   if (!match) {
     return null;
   }
 
-  return Number(
-    match[1]
+  const numero = Number(match[0]);
+
+  if (!Number.isFinite(numero)) {
+    return null;
+  }
+
+  if (numero < 0 || numero > 23) {
+    return null;
+  }
+
+  return numero;
+}
+
+
+function horaFormatada(hora) {
+  const numero = horaNumero(hora);
+
+  if (numero === null) {
+    return '--';
+  }
+
+  return `${String(numero).padStart(2, '0')}:00`;
+}
+
+
+function horaRelativa(hora, horaAtual) {
+  if (
+    !Number.isFinite(hora) ||
+    !Number.isFinite(horaAtual)
+  ) {
+    return null;
+  }
+
+  let diferenca = (hora - horaAtual + 24) % 24;
+
+  if (diferenca > 12) {
+    diferenca -= 24;
+  }
+
+  return diferenca;
+}
+
+
+/* =========================================================
+   IDENTIFICAÇÃO DA UNIDADE
+   ========================================================= */
+
+function identificarUnidade(texto) {
+  const original = textoSeguro(texto, 30000);
+
+  if (!original) {
+    return null;
+  }
+
+  const linhas = original.split(/\r?\n/);
+
+  /*
+   * Primeiro procura nas linhas que normalmente carregam
+   * a informação de filial / gestora / unidade.
+   */
+  const linhasPrioritarias = linhas.filter(linha =>
+    /FILIAL|GESTORA|UNIDADE/i.test(linha)
   );
 
-}
+  /*
+   * Depois utiliza todo o conteúdo como segunda tentativa.
+   */
+  const trechosParaPesquisar = [
+    ...linhasPrioritarias,
+    original
+  ];
 
+  for (const trecho of trechosParaPesquisar) {
+    const linha = normalizarTexto(trecho);
 
-function horaFormatada() {
-
-  return new Date()
-    .toLocaleTimeString(
-      'pt-BR',
-      {
-        hour: '2-digit',
-        minute: '2-digit'
+    for (const chave of Object.keys(UNIDADES)) {
+      if (linha.includes(chave)) {
+        return {
+          chave,
+          nome: UNIDADES[chave].nome,
+          nominal: UNIDADES[chave].nominal
+        };
       }
-    );
-
-}
-
-
-/* =========================================================
-   HORA RELATIVA
-========================================================= */
-
-function horaRelativa(
-  hora,
-  horaAtual
-) {
-
-  let distancia =
-    (
-      hora -
-      horaAtual +
-      24
-    ) % 24;
-
-
-  if (
-    distancia > 12
-  ) {
-
-    distancia -= 24;
-
+    }
   }
 
-
-  return distancia;
-
+  return null;
 }
 
 
 /* =========================================================
-   NORMALIZAR POTENCIAL
-========================================================= */
+   NORMALIZAÇÃO DA ANÁLISE DE POTENCIAL
+   ========================================================= */
 
-function normalizarPotencial(
-  lista
-) {
-
-  if (
-    !Array.isArray(lista)
-  ) {
-
+function normalizarPotencial(lista, nominalOficial) {
+  if (!Array.isArray(lista)) {
     return [];
-
   }
-
 
   return lista
+    .map((item) => {
+      const hora = horaNumero(
+        item?.hora ??
+        item?.horario ??
+        item?.horaNumero
+      );
 
-    .map(
-      item => ({
+      const potencial = numeroSeguro(
+        item?.potencial ??
+        item?.producao ??
+        item?.produção ??
+        item?.valor,
+        NaN
+      );
 
-        hora:
-          textoSeguro(
-            item?.hora,
-            20
-          ),
+      const moagem = numeroSeguro(
+        item?.moagem ??
+        item?.moagemNominal ??
+        nominalOficial,
+        nominalOficial
+      );
 
-        horaNumero:
-          numeroSeguro(
-            item?.horaNumero
-          ),
+      if (
+        hora === null ||
+        !Number.isFinite(potencial)
+      ) {
+        return null;
+      }
 
-        potencial:
-          numeroSeguro(
-            item?.potencial
-          ),
-
-        moagem:
-          numeroSeguro(
-            item?.moagem
-          ),
-
-        nominal:
-          numeroSeguro(
-            item?.nominal
-          )
-
-      })
-    )
-
-    .filter(
-      item =>
-        item.hora &&
-        item.horaNumero !== null &&
-        item.potencial !== null &&
-        item.moagem !== null
-    );
-
+      return {
+        hora,
+        horaNumero: hora,
+        potencial,
+        moagem,
+        nominal: nominalOficial
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.hora - b.hora);
 }
 
 
 /* =========================================================
-   CÁLCULOS
-========================================================= */
+   CÁLCULO DO CENÁRIO
+   ========================================================= */
 
-function calcularCenario(
-  dados
-) {
-
-  const potencial =
-    normalizarPotencial(
-      dados.potencial
-    );
-
-
-  const estoque =
-    dados.estoque || {};
-
-
-  const estoqueH3 =
-    numeroSeguro(
-      estoque.h3
-    );
-
-  const estoqueH2 =
-    numeroSeguro(
-      estoque.h2
-    );
-
-  const estoqueH1 =
-    numeroSeguro(
-      estoque.h1
-    );
-
-  const estoqueAtual =
-    numeroSeguro(
-      estoque.atual
-    );
-
-
-  const horaAtual =
-    numeroSeguro(
-      dados.horaAtual
-    ) ??
-    new Date().getHours();
-
-
-  /*
-    Histórico:
-    pegamos os três horários anteriores
-    à hora atual.
-  */
-
-  const historico =
-    potencial
-
-      .map(
-        row => ({
-          ...row,
-
-          distancia:
-            horaRelativa(
-              row.horaNumero,
-              horaAtual
-            )
-        })
-      )
-
-      .filter(
-        row =>
-          row.distancia < 0
-      )
-
-      .sort(
-        (a, b) =>
-          b.distancia -
-          a.distancia
-      )
-
-      .slice(0, 3)
-
-      .sort(
-        (a, b) =>
-          a.distancia -
-          b.distancia
-      );
-
-
-  /*
-    Projeção:
-    hora atual em diante,
-    próximas 12 horas.
-  */
-
-  const futuro =
-    potencial
-
-      .map(
-        row => ({
-          ...row,
-
-          distancia:
-            horaRelativa(
-              row.horaNumero,
-              horaAtual
-            )
-        })
-      )
-
-      .filter(
-        row =>
-          row.distancia >= 0
-      )
-
-      .sort(
-        (a, b) =>
-          a.distancia -
-          b.distancia
-      )
-
-      .slice(0, 12);
-
-
-  /*
-    Histórico quantitativo.
-  */
-
-  const mediaPotencialHistorico =
-    historico.length
-      ? historico.reduce(
-          (
-            soma,
-            row
-          ) =>
-            soma +
-            row.potencial,
-          0
-        ) / historico.length
-      : null;
-
-
-  const mediaMoagemHistorico =
-    historico.length
-      ? historico.reduce(
-          (
-            soma,
-            row
-          ) =>
-            soma +
-            row.moagem,
-          0
-        ) / historico.length
-      : null;
-
-
-  const saldoHistoricoTph =
-    (
-      mediaPotencialHistorico !== null &&
-      mediaMoagemHistorico !== null
-    )
-      ? mediaPotencialHistorico -
-        mediaMoagemHistorico
-      : null;
-
-
-  /*
-    Tendência de estoque:
-    quatro pontos de estoque.
-  */
-
-  const estoquePontos = [
-    estoqueH3,
-    estoqueH2,
-    estoqueH1,
-    estoqueAtual
-  ].filter(
-    value =>
-      value !== null
+function calcularCenario(dados, unidade) {
+  const potencial = normalizarPotencial(
+    dados.potencial,
+    unidade.nominal
   );
 
+  const estoque = dados.estoque || {};
 
-  let tendenciaEstoque =
-    null;
+  const estoqueAtual = numeroSeguro(
+    estoque.atual,
+    0
+  );
+
+  const h1 = numeroSeguro(
+    estoque.h1,
+    estoqueAtual
+  );
+
+  const h2 = numeroSeguro(
+    estoque.h2,
+    h1
+  );
+
+  const h3 = numeroSeguro(
+    estoque.h3,
+    h2
+  );
+
+  let horaAtual = horaNumero(
+    dados.horaAtual
+  );
+
+  if (horaAtual === null) {
+    horaAtual = new Date().getHours();
+  }
+
+  /*
+   * Ordena a tabela pela distância em relação à hora atual.
+   */
+  const dadosComRelacao = potencial.map(row => ({
+    ...row,
+    relativo: horaRelativa(
+      row.hora,
+      horaAtual
+    )
+  }));
 
 
-  if (
-    estoquePontos.length >= 2
-  ) {
+  /*
+   * Histórico:
+   * somente horas anteriores à atual.
+   */
+  const historico = dadosComRelacao
+    .filter(row => row.relativo !== null && row.relativo < 0)
+    .sort((a, b) => b.relativo - a.relativo)
+    .slice(0, 3)
+    .sort((a, b) => a.relativo - b.relativo);
 
-    tendenciaEstoque =
-      (
-        estoquePontos[
-          estoquePontos.length - 1
-        ] -
-        estoquePontos[0]
-      ) /
-      (
-        estoquePontos.length - 1
-      );
 
+  /*
+   * Próximas 12 horas.
+   */
+  const futuro = dadosComRelacao
+    .filter(row => row.relativo !== null && row.relativo >= 0)
+    .sort((a, b) => a.relativo - b.relativo)
+    .slice(0, 12);
+
+
+  const atual =
+    potencial.find(
+      row => row.hora === horaAtual
+    ) || futuro[0] || null;
+
+
+  /* =====================================================
+     MÉDIAS HISTÓRICAS
+     ===================================================== */
+
+  const mediaHistoricoPotencial =
+    historico.length > 0
+      ? historico.reduce(
+          (total, row) => total + row.potencial,
+          0
+        ) / historico.length
+      : 0;
+
+
+  const mediaHistoricoMoagem =
+    historico.length > 0
+      ? historico.reduce(
+          (total, row) => total + row.moagem,
+          0
+        ) / historico.length
+      : unidade.nominal;
+
+
+  const saldoHistorico =
+    mediaHistoricoPotencial -
+    mediaHistoricoMoagem;
+
+
+  /* =====================================================
+     TENDÊNCIA DO ESTOQUE
+     ===================================================== */
+
+  const estoqueHistorico = [
+    h3,
+    h2,
+    h1,
+    estoqueAtual
+  ];
+
+  const variacaoEstoque =
+    estoqueAtual - h3;
+
+
+  let tendenciaEstoque = 'ESTÁVEL';
+
+  if (variacaoEstoque > 0.2) {
+    tendenciaEstoque = 'SUBINDO';
+  } else if (variacaoEstoque < -0.2) {
+    tendenciaEstoque = 'CAINDO';
   }
 
 
-  /*
-    Projeção do estoque.
-  */
+  /* =====================================================
+     PROJEÇÃO DE ESTOQUE
+     ===================================================== */
 
-  let estoqueProjetado =
-    estoqueAtual;
-
+  let estoqueProjetado = estoqueAtual;
 
   const projecaoEstoque = [];
 
+  let menorEstoque = estoqueAtual;
+  let horaMenorEstoque = horaAtual;
 
-  for (
-    const row of futuro
-  ) {
+  let primeiraHoraRisco = null;
 
+  for (const row of futuro) {
     const saldoToneladas =
-      row.potencial -
-      row.moagem;
-
+      row.potencial - row.moagem;
 
     const variacaoConjuntos =
       saldoToneladas /
       TONELADAS_POR_CONJUNTO;
 
+    estoqueProjetado += variacaoConjuntos;
 
-    estoqueProjetado +=
-      variacaoConjuntos;
+    const utilizacaoNominal =
+      unidade.nominal > 0
+        ? (row.moagem / unidade.nominal) * 100
+        : 0;
 
+    const disponibilidadePercentual =
+      unidade.nominal > 0
+        ? (row.potencial / unidade.nominal) * 100
+        : 0;
 
     projecaoEstoque.push({
-
-      hora:
-        row.hora,
-
-      potencial:
-        row.potencial,
-
-      moagem:
-        row.moagem,
-
-      nominal:
-        row.nominal,
-
+      hora: row.hora,
+      horaFormatada: horaFormatada(row.hora),
+      potencial: row.potencial,
+      moagem: row.moagem,
+      nominal: unidade.nominal,
+      utilizacaoNominal,
+      disponibilidadePercentual,
       saldoToneladas,
-
       variacaoConjuntos,
-
       estoqueProjetado
-
     });
 
-  }
 
-
-  /*
-    Menor estoque futuro.
-  */
-
-  let menorEstoqueProjetado =
-    estoqueAtual;
-
-
-  let horaMenorEstoque =
-    'Agora';
-
-
-  for (
-    const row of projecaoEstoque
-  ) {
-
-    if (
-      row.estoqueProjetado <
-      menorEstoqueProjetado
-    ) {
-
-      menorEstoqueProjetado =
-        row.estoqueProjetado;
-
-      horaMenorEstoque =
-        row.hora;
-
+    if (estoqueProjetado < menorEstoque) {
+      menorEstoque = estoqueProjetado;
+      horaMenorEstoque = row.hora;
     }
 
+
+    if (
+      primeiraHoraRisco === null &&
+      estoqueProjetado <= ESTOQUE_RISCO_CONJ
+    ) {
+      primeiraHoraRisco = row.hora;
+    }
   }
 
 
-  /*
-    Primeiro momento em zona de risco.
-  */
+  /* =====================================================
+     RECUPERAÇÃO
+     ===================================================== */
 
-  const primeiroRisco =
-    projecaoEstoque.find(
-      row =>
-        row.estoqueProjetado <=
-        ESTOQUE_RISCO_CONJ
+  let horaRecuperacao = null;
+
+  if (primeiraHoraRisco !== null) {
+    const pontoRisco = projecaoEstoque.find(
+      row => row.hora === primeiraHoraRisco
     );
 
-
-  /*
-    Momento de recuperação.
-  */
-
-  const menorIndice =
-    projecaoEstoque.length
-      ? projecaoEstoque
-          .reduce(
-            (
-              menor,
-              row,
-              indice,
-              array
-            ) =>
-              row.estoqueProjetado <
-              array[menor].estoqueProjetado
-                ? indice
-                : menor,
-            0
-          )
-      : -1;
-
-
-  let horaRecuperacao =
-    null;
-
-
-  if (
-    menorIndice >= 0
-  ) {
-
-    for (
-      let i = menorIndice + 1;
-      i < projecaoEstoque.length;
-      i++
-    ) {
-
-      if (
-        projecaoEstoque[i]
-          .estoqueProjetado >
-        projecaoEstoque[i - 1]
-          .estoqueProjetado
-      ) {
-
-        horaRecuperacao =
-          projecaoEstoque[i]
-            .hora;
-
-        break;
-
+    if (pontoRisco) {
+      for (const row of projecaoEstoque) {
+        if (
+          row.hora > pontoRisco.hora &&
+          row.estoqueProjetado >
+            pontoRisco.estoqueProjetado
+        ) {
+          horaRecuperacao = row.hora;
+          break;
+        }
       }
-
     }
-
   }
 
 
-  /*
-    Média futura.
-  */
+  /* =====================================================
+     MÉDIAS FUTURAS
+     ===================================================== */
 
-  const mediaPotencialFuturo =
-    futuro.length
+  const mediaFuturaPotencial =
+    futuro.length > 0
       ? futuro.reduce(
-          (
-            soma,
-            row
-          ) =>
-            soma +
-            row.potencial,
+          (total, row) => total + row.potencial,
           0
-        ) /
-        futuro.length
-      : null;
+        ) / futuro.length
+      : 0;
 
 
-  const mediaMoagemFutura =
-    futuro.length
+  const mediaFuturaMoagem =
+    futuro.length > 0
       ? futuro.reduce(
-          (
-            soma,
-            row
-          ) =>
-            soma +
-            row.moagem,
+          (total, row) => total + row.moagem,
           0
-        ) /
-        futuro.length
-      : null;
+        ) / futuro.length
+      : unidade.nominal;
 
 
-  /*
-    Moagem média sustentável para terminar
-    a projeção na zona de risco.
-  */
-
-  let moagemSeguraMedia =
-    null;
+  const saldoFuturo =
+    mediaFuturaPotencial -
+    mediaFuturaMoagem;
 
 
-  if (
-    mediaPotencialFuturo !== null &&
-    futuro.length &&
-    estoqueAtual !== null
-  ) {
+  /* =====================================================
+     MAIOR DÉFICIT FUTURO
+     ===================================================== */
 
-    moagemSeguraMedia =
-      mediaPotencialFuturo +
-      (
-        (
-          estoqueAtual -
-          ESTOQUE_RISCO_CONJ
-        ) *
-        TONELADAS_POR_CONJUNTO
-      ) /
-      futuro.length;
+  let maiorDeficit = null;
 
-  }
-
-
-  /*
-    Maior déficit futuro entre potencial e moagem.
-  */
-
-  let maiorDeficit =
-    null;
-
-
-  for (
-    const row of futuro
-  ) {
-
+  for (const row of futuro) {
     const deficit =
-      row.moagem -
-      row.potencial;
-
+      row.moagem - row.potencial;
 
     if (
-      maiorDeficit === null ||
-      deficit > maiorDeficit.valor
+      !maiorDeficit ||
+      deficit > maiorDeficit.deficit
     ) {
-
       maiorDeficit = {
-
-        hora:
-          row.hora,
-
-        valor:
-          deficit
-
+        hora: row.hora,
+        deficit
       };
-
     }
+  }
 
+
+  /* =====================================================
+     MOAGEM SEGURA
+     ===================================================== */
+
+  let moagemSeguraMedia =
+    mediaFuturaPotencial;
+
+  if (futuro.length > 0) {
+    const estoqueDisponivelAcimaDoRisco =
+      Math.max(
+        estoqueAtual - ESTOQUE_RISCO_CONJ,
+        0
+      );
+
+    const toneladasDisponiveis =
+      estoqueDisponivelAcimaDoRisco *
+      TONELADAS_POR_CONJUNTO;
+
+    const reforcoPorHora =
+      toneladasDisponiveis /
+      futuro.length;
+
+    moagemSeguraMedia =
+      mediaFuturaPotencial +
+      reforcoPorHora;
   }
 
 
   /*
-    Classificação simples do cenário.
-  */
+   * Limita a moagem segura ao nominal oficial.
+   */
+  moagemSeguraMedia = Math.min(
+    moagemSeguraMedia,
+    unidade.nominal
+  );
 
-  let classificacao =
-    'ESTÁVEL';
 
+  /* =====================================================
+     CLASSIFICAÇÃO
+     ===================================================== */
 
-  if (
-    menorEstoqueProjetado <= 4
-  ) {
+  let classificacao = 'ESTÁVEL';
 
-    classificacao =
-      'CRÍTICO';
-
-  } else if (
-    menorEstoqueProjetado <=
-    ESTOQUE_RISCO_CONJ
-  ) {
-
-    classificacao =
-      'RISCO';
-
-  } else if (
-    menorEstoqueProjetado <= 9
-  ) {
-
-    classificacao =
-      'ATENÇÃO';
-
+  if (menorEstoque <= 4) {
+    classificacao = 'CRÍTICO';
+  } else if (menorEstoque <= 7) {
+    classificacao = 'RISCO';
+  } else if (menorEstoque <= 9) {
+    classificacao = 'ATENÇÃO';
   }
 
 
+  /* =====================================================
+     RETORNO
+     ===================================================== */
+
   return {
+    unidade: {
+      chave: unidade.chave,
+      nome: unidade.nome,
+      nominal: unidade.nominal
+    },
 
-    estoqueAtual,
+    horaAtual,
 
-    estoqueH3,
-    estoqueH2,
-    estoqueH1,
+    estoque: {
+      h3,
+      h2,
+      h1,
+      atual: estoqueAtual,
+      historico: estoqueHistorico,
+      variacao: variacaoEstoque,
+      tendencia: tendenciaEstoque
+    },
 
-    tendenciaEstoque,
+    atual: atual
+      ? {
+          hora: atual.hora,
+          potencial: atual.potencial,
+          moagem: atual.moagem,
+          nominal: unidade.nominal
+        }
+      : null,
 
-    historico,
+    historico: historico.map(row => ({
+      hora: row.hora,
+      potencial: row.potencial,
+      moagem: row.moagem,
+      saldo: row.potencial - row.moagem
+    })),
 
-    futuro,
+    medias: {
+      historicoPotencial: mediaHistoricoPotencial,
+      historicoMoagem: mediaHistoricoMoagem,
+      saldoHistorico,
+      futuroPotencial: mediaFuturaPotencial,
+      futuroMoagem: mediaFuturaMoagem,
+      saldoFuturo
+    },
 
     projecaoEstoque,
 
-    mediaPotencialHistorico,
-    mediaMoagemHistorico,
-
-    saldoHistoricoTph,
-
-    mediaPotencialFuturo,
-    mediaMoagemFutura,
+    risco: {
+      classificacao,
+      menorEstoque,
+      horaMenorEstoque,
+      primeiraHoraRisco,
+      horaRecuperacao
+    },
 
     moagemSeguraMedia,
 
-    menorEstoqueProjetado,
-
-    horaMenorEstoque,
-
-    primeiroRisco:
-      primeiroRisco || null,
-
-    horaRecuperacao,
-
     maiorDeficit,
 
-    classificacao,
-
-    estoqueRisco:
-      ESTOQUE_RISCO_CONJ,
-
-    toneladasPorConjunto:
-      TONELADAS_POR_CONJUNTO
-
+    parametros: {
+      toneladasPorConjunto: TONELADAS_POR_CONJUNTO,
+      estoqueRiscoConj: ESTOQUE_RISCO_CONJ,
+      nominalOficial: unidade.nominal
+    }
   };
-
 }
 
 
 /* =========================================================
-   PROMPT DO GEMINI
-========================================================= */
+   PROMPT PARA GEMINI
+   ========================================================= */
 
-function montarPrompt(
-  dados,
-  calculos
-) {
+function montarPrompt(dados, calculos, unidade) {
+  const tabelaOriginal = textoSeguro(
+    dados.tabelaOriginal,
+    30000
+  );
 
-  const comentarios =
-    textoSeguro(
-      dados.comentarios,
-      10000
-    );
+  const comentarios = textoSeguro(
+    dados.comentarios,
+    8000
+  );
 
 
   const historicoTexto =
-    calculos.historico.length
-
+    calculos.historico.length > 0
       ? calculos.historico
-          .map(
-            row =>
-              `${row.hora}: potencial/entrada ${row.potencial} t/h | moagem ${row.moagem} t/h`
+          .map(row =>
+            `${horaFormatada(row.hora)} | potencial ${row.potencial} t/h | moagem ${row.moagem} t/h | saldo ${row.saldo >= 0 ? '+' : ''}${row.saldo.toFixed(0)} t/h`
           )
           .join('\n')
-
-      : 'Não identificado na tabela.';
-
-
-  const estoqueTexto = [
-
-    `H-3: ${calculos.estoqueH3 ?? 'não informado'} conjuntos`,
-
-    `H-2: ${calculos.estoqueH2 ?? 'não informado'} conjuntos`,
-
-    `H-1: ${calculos.estoqueH1 ?? 'não informado'} conjuntos`,
-
-    `Atual: ${calculos.estoqueAtual ?? 'não informado'} conjuntos`
-
-  ].join('\n');
+      : 'Sem histórico suficiente.';
 
 
-  const futuroTexto =
-    calculos.projecaoEstoque.length
-
+  const projecaoTexto =
+    calculos.projecaoEstoque.length > 0
       ? calculos.projecaoEstoque
-          .map(
-            row =>
-              `${row.hora}: potencial ${Math.round(row.potencial)} t/h | moagem planejada ${Math.round(row.moagem)} t/h | saldo ${row.saldoToneladas >= 0 ? '+' : ''}${Math.round(row.saldoToneladas)} t/h | estoque projetado ${row.estoqueProjetado.toFixed(1)} conjuntos`
+          .map(row =>
+            `${row.horaFormatada} | potencial ${row.potencial} t/h | moagem ${row.moagem} t/h | ${row.disponibilidadePercentual.toFixed(1)}% do nominal | estoque projetado ${row.estoqueProjetado.toFixed(1)} conjuntos`
           )
           .join('\n')
-
-      : 'Não foi possível montar a projeção.';
+      : 'Sem projeção disponível.';
 
 
   return `
+Você é um analista sênior de operações agrícolas e CTT.
 
-Você é o responsável por elaborar o PLANO DE VOO operacional do COA para uma operação de CTT Agroindustrial da Tereos.
+Sua função é transformar a análise de potencial de produção em um PLANO DE VOO operacional para tomada de decisão.
 
-Sua análise deve seguir o padrão de raciocínio utilizado pelo COA em acompanhamento de moagem, entrega, estoque, ciclo e disponibilidade.
+Escreva em português do Brasil.
 
-O objetivo NÃO é simplesmente resumir os números.
+O texto será utilizado em grupo de gestão/gerência via WhatsApp.
 
-Você deve interpretar a tendência passada, o cenário atual e principalmente a projeção futura.
+Seja técnico, claro, direto e objetivo.
 
-==================================================
-REGRAS FUNDAMENTAIS
-==================================================
-
-1. Utilize somente os dados fornecidos.
-2. Não invente causas.
-3. Não invente frentes.
-4. Não invente horários.
-5. Não invente indisponibilidade.
-6. Não invente ações já realizadas.
-7. Se uma ação for recomendação, trate como recomendação.
-8. Diferencie claramente fato, projeção e recomendação.
-9. Não considere o estoque atual isoladamente.
-10. Analise a tendência das últimas três horas.
-11. Compare potencial/entrada contra moagem.
-12. Analise a velocidade de consumo ou recomposição do estoque.
-13. Analise toda a projeção futura disponível.
-14. Identifique exatamente em qual horário o cenário começa a ficar crítico ou entra em risco.
-15. Identifique quando existe recuperação do estoque.
-16. Informe uma referência de moagem segura quando os dados permitirem.
-17. Se a moagem planejada estiver acima do potencial por várias horas, explique o impacto.
-18. Se o potencial estiver acima da moagem, avalie a possibilidade de recomposição do estoque.
-19. Não recomende redução automaticamente apenas porque o estoque está baixo. Considere a tendência futura.
-20. Não recomende aumento apenas porque existe potencial. Considere estoque e sustentação.
-21. Se os dados não forem suficientes para afirmar alguma coisa, diga isso.
-22. Use linguagem de operação agroindustrial.
-23. O texto deve parecer escrito por um analista experiente do COA, e não por uma IA genérica.
-24. Seja técnico, claro, direto e explicativo.
-25. O texto será utilizado em comunicação gerencial/WhatsApp.
+Não escreva como uma IA.
+Não faça introduções genéricas.
+Não repita desnecessariamente os números.
+Não crie informações que não estejam nos dados.
 
 ==================================================
-DADOS DO CENÁRIO
+UNIDADE IDENTIFICADA
 ==================================================
 
-Hora da análise:
-${horaFormatada()}
+Unidade: ${unidade.nome}
+Moagem nominal oficial: ${unidade.nominal} t/h
 
-Hora operacional atual:
-${dados.horaAtual}h
+IMPORTANTE:
+O valor de ${unidade.nominal} t/h é o nominal oficial cadastrado no backend para esta unidade.
 
-Estoque:
-${estoqueTexto}
+Utilize esse valor como referência para avaliar utilização da capacidade, potencial, segurança de moagem e risco operacional.
+
+Não substitua o nominal oficial por outro valor encontrado na tabela.
 
 ==================================================
-HISTÓRICO DAS ÚLTIMAS HORAS
+CENÁRIO ATUAL
+==================================================
+
+Hora da análise: ${horaFormatada(calculos.horaAtual)}
+
+Estoque atual:
+${calculos.estoque.atual.toFixed(1)} conjuntos
+
+Estoque H-1:
+${calculos.estoque.h1.toFixed(1)} conjuntos
+
+Estoque H-2:
+${calculos.estoque.h2.toFixed(1)} conjuntos
+
+Estoque H-3:
+${calculos.estoque.h3.toFixed(1)} conjuntos
+
+Tendência do estoque:
+${calculos.estoque.tendencia}
+
+Variação H-3 → atual:
+${calculos.estoque.variacao.toFixed(1)} conjuntos
+
+==================================================
+HISTÓRICO
 ==================================================
 
 ${historicoTexto}
 
-Média histórica de potencial/entrada:
-${calculos.mediaPotencialHistorico !== null
-  ? Math.round(calculos.mediaPotencialHistorico) + ' t/h'
-  : 'não calculada'}
+Média histórica de potencial:
+${calculos.medias.historicoPotencial.toFixed(0)} t/h
 
 Média histórica de moagem:
-${calculos.mediaMoagemHistorico !== null
-  ? Math.round(calculos.mediaMoagemHistorico) + ' t/h'
-  : 'não calculada'}
+${calculos.medias.historicoMoagem.toFixed(0)} t/h
 
-Saldo médio histórico:
-${calculos.saldoHistoricoTph !== null
-  ? (calculos.saldoHistoricoTph >= 0 ? '+' : '') +
-    Math.round(calculos.saldoHistoricoTph) +
-    ' t/h'
-  : 'não calculado'}
-
-Tendência de estoque:
-${calculos.tendenciaEstoque !== null
-  ? (calculos.tendenciaEstoque >= 0 ? '+' : '') +
-    calculos.tendenciaEstoque.toFixed(1) +
-    ' conjuntos/h'
-  : 'não calculada'}
+Saldo histórico:
+${calculos.medias.saldoHistorico >= 0 ? '+' : ''}${calculos.medias.saldoHistorico.toFixed(0)} t/h
 
 ==================================================
 PROJEÇÃO DAS PRÓXIMAS HORAS
 ==================================================
 
-${futuroTexto}
+${projecaoTexto}
 
-Média de potencial futuro:
-${calculos.mediaPotencialFuturo !== null
-  ? Math.round(calculos.mediaPotencialFuturo) + ' t/h'
-  : 'não calculada'}
+Média futura de potencial:
+${calculos.medias.futuroPotencial.toFixed(0)} t/h
 
-Média de moagem futura:
-${calculos.mediaMoagemFutura !== null
-  ? Math.round(calculos.mediaMoagemFutura) + ' t/h'
-  : 'não calculada'}
+Média futura de moagem:
+${calculos.medias.futuroMoagem.toFixed(0)} t/h
+
+Saldo futuro:
+${calculos.medias.saldoFuturo >= 0 ? '+' : ''}${calculos.medias.saldoFuturo.toFixed(0)} t/h
+
+==================================================
+RISCO OPERACIONAL
+==================================================
+
+Classificação:
+${calculos.risco.classificacao}
 
 Menor estoque projetado:
-${calculos.menorEstoqueProjetado.toFixed(1)} conjuntos
+${calculos.risco.menorEstoque.toFixed(1)} conjuntos
 
 Horário do menor estoque:
-${calculos.horaMenorEstoque}
+${horaFormatada(calculos.risco.horaMenorEstoque)}
 
-Primeiro momento em zona de risco:
+Primeira entrada em zona de risco:
 ${
-  calculos.primeiroRisco
-    ? calculos.primeiroRisco.hora
-    : 'não entra na zona de risco durante a projeção'
+  calculos.risco.primeiraHoraRisco !== null
+    ? horaFormatada(calculos.risco.primeiraHoraRisco)
+    : 'Não entra em risco no horizonte analisado'
 }
 
-Momento de recuperação:
+Recuperação:
 ${
-  calculos.horaRecuperacao ||
-  'não identificado'
+  calculos.risco.horaRecuperacao !== null
+    ? horaFormatada(calculos.risco.horaRecuperacao)
+    : 'Não identificada'
 }
 
-Moagem média segura estimada:
-${
-  calculos.moagemSeguraMedia !== null
-    ? Math.round(calculos.moagemSeguraMedia) + ' t/h'
-    : 'não calculada'
-}
-
-Maior déficit futuro potencial x moagem:
+Maior déficit futuro:
 ${
   calculos.maiorDeficit
-    ? `${Math.round(calculos.maiorDeficit.valor)} t/h às ${calculos.maiorDeficit.hora}`
-    : 'não calculado'
+    ? `${calculos.maiorDeficit.deficit.toFixed(0)} t/h às ${horaFormatada(calculos.maiorDeficit.hora)}`
+    : 'Não identificado'
 }
 
-Referência de zona de risco:
-${calculos.estoqueRisco} conjuntos
+==================================================
+MOAGEM SEGURA
+==================================================
 
-Conversão utilizada:
-${calculos.toneladasPorConjunto} t/conjunto
+Moagem segura média estimada:
+${calculos.moagemSeguraMedia.toFixed(0)} t/h
+
+Nominal oficial:
+${unidade.nominal} t/h
 
 ==================================================
 COMENTÁRIOS OPERACIONAIS
 ==================================================
 
-${
-  comentarios ||
-  'Nenhum comentário operacional informado.'
-}
-
-==================================================
-ANÁLISE SOLICITADA
-==================================================
-
-Faça uma análise completa considerando:
-
-A) O que aconteceu nas últimas três horas.
-
-Explique se o estoque está subindo, caindo ou estabilizando e por quê.
-
-B) Situação atual.
-
-Explique se a moagem atual está compatível com a entrada/potencial observados e se existe margem operacional.
-
-C) Próximas horas.
-
-Analise hora a hora a projeção.
-
-D) Momento de atenção.
-
-Informe o horário em que o cenário começa a exigir intervenção, se houver.
-
-E) Moagem segura.
-
-Informe uma referência de moagem sustentável, quando os dados permitirem.
-
-Não trate esse número como uma ordem automática. Explique a lógica.
-
-F) Recuperação.
-
-Se existir momento em que o estoque começa a recompor, informe horário e condição.
-
-G) Ações.
-
-Indique o que deve ser tratado para preservar a moagem e evitar perda de estoque.
-
-H) Cenário final.
-
-Explique objetivamente o que acontece se nada mudar e o que precisa acontecer para manter ou recuperar a moagem.
-
-==================================================
-FORMATO DA RESPOSTA
-==================================================
-
-Retorne um texto pronto para WhatsApp.
-
-Use exatamente esta estrutura:
-
-*PLANO DE VOO — [UNIDADE IDENTIFICADA OU CTT]*
-
-*Situação atual*
-Texto explicando o comportamento atual e as últimas horas.
-
-*Projeção*
-Texto explicando a evolução das próximas horas e o comportamento esperado do estoque.
-
-*Ponto de atenção*
-Informe o horário, o risco e a causa quantitativa do risco.
-
-*Moagem segura*
-Informe a referência calculada e explique como ela se relaciona com o potencial e o estoque.
-
-*Plano de ação*
-Texto objetivo com as prioridades operacionais.
-
-*Perspectiva*
-Conclua informando o que precisa acontecer para manter, reduzir ou retomar a moagem.
-
-Não utilize tabelas na resposta.
-
-Não utilize blocos de código.
-
-Não escreva frases genéricas como "é importante monitorar".
-
-Explique exatamente o que deve ser acompanhado e em qual momento.
-
-Não diga que uma ação foi realizada se isso não estiver nos comentários.
-
-Se precisar sugerir uma ação, utilize "SUGESTÃO:".
-
-Tamanho aproximado:
-400 a 700 palavras.
+${comentarios || 'Nenhum comentário adicional informado.'}
 
 ==================================================
 TABELA ORIGINAL
 ==================================================
 
-${textoSeguro(
-  dados.tabelaOriginal,
-  30000
-)}
+${tabelaOriginal}
 
+==================================================
+FORMATO OBRIGATÓRIO DA RESPOSTA
+==================================================
+
+Monte a resposta exatamente nesta lógica:
+
+*PLANO DE VOO — ${unidade.nome}*
+
+*Situação atual*
+Explique em poucas linhas como está a relação entre potencial, moagem e estoque.
+
+*Projeção*
+Mostre o comportamento esperado do estoque nas próximas horas e destaque o horário mais crítico.
+
+*Ponto de atenção*
+Explique o principal risco operacional e a causa. Se houver déficit entre potencial e moagem, deixe isso claro.
+
+*Moagem segura*
+Informe uma faixa/referência de moagem segura considerando potencial, estoque disponível e nominal oficial da unidade.
+
+*Plano de ação*
+Indique objetivamente o que deve ser feito operacionalmente para preservar a moagem e evitar ruptura de estoque.
+
+*Perspectiva*
+Finalize com uma visão das próximas horas, indicando se o cenário tende a estabilizar, deteriorar ou recuperar.
+
+REGRAS:
+- Não inventar disponibilidade de frota.
+- Não inventar quantidade de caminhões.
+- Não inventar chuva ou condição climática.
+- Não inventar indisponibilidade de máquinas.
+- Não inventar causas que não estejam nos dados.
+- Pode interpretar tecnicamente os dados, mas diferencie fato de recomendação.
+- Priorize causa → efeito → risco → ação.
+- Use números relevantes.
+- Evite texto excessivamente longo.
+- A resposta deve ser pronta para copiar e colar no WhatsApp.
+- Use negrito com *asteriscos simples* no padrão WhatsApp.
 `;
-
 }
 
 
 /* =========================================================
-   GEMINI
-========================================================= */
+   CHAMADA GEMINI
+   ========================================================= */
 
-async function chamarGemini(
-  prompt
-) {
-
-  if (
-    !GEMINI_API_KEY
-  ) {
-
+async function chamarGemini(prompt) {
+  if (!GEMINI_API_KEY) {
     throw new Error(
-      'GEMINI_API_KEY não configurada no Render.'
+      'GEMINI_API_KEY não configurada no ambiente.'
     );
-
   }
 
-
   const url =
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
-      GEMINI_MODEL
-    )}:generateContent`;
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 
-  const controller =
-    new AbortController();
+  const controller = new AbortController();
 
-
-  const timeout =
-    setTimeout(
-      () =>
-        controller.abort(),
-      90000
-    );
+  const timeout = setTimeout(
+    () => controller.abort(),
+    90000
+  );
 
 
   try {
+    const response = await fetch(url, {
+      method: 'POST',
 
-    const resposta =
-      await fetch(
-        url,
-        {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': GEMINI_API_KEY
+      },
 
-          method:
-            'POST',
-
-          headers: {
-
-            'Content-Type':
-              'application/json',
-
-            'x-goog-api-key':
-              GEMINI_API_KEY
-
-          },
-
-          body:
-            JSON.stringify({
-
-              contents: [
-
-                {
-
-                  role:
-                    'user',
-
-                  parts: [
-
-                    {
-                      text:
-                        prompt
-                    }
-
-                  ]
-
-                }
-
-              ],
-
-              generationConfig: {
-
-                temperature:
-                  0.25,
-
-                maxOutputTokens:
-                  5000
-
+      body: JSON.stringify({
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                text: prompt
               }
+            ]
+          }
+        ],
 
-            }),
-
-          signal:
-            controller.signal
-
+        generationConfig: {
+          temperature: 0.25,
+          maxOutputTokens: 5000
         }
+      }),
+
+      signal: controller.signal
+    });
+
+
+    const textoResposta =
+      await response.text();
+
+
+    if (!response.ok) {
+      throw new Error(
+        `Gemini HTTP ${response.status}: ${textoResposta}`
       );
+    }
+
+
+    let json;
+
+    try {
+      json = JSON.parse(textoResposta);
+    } catch {
+      throw new Error(
+        'Resposta do Gemini não é um JSON válido.'
+      );
+    }
 
 
     const texto =
-      await resposta.text();
+      json?.candidates?.[0]?.content?.parts
+        ?.map(part => part.text || '')
+        .join('\n')
+        .trim();
 
 
-    let dados =
-      null;
-
-
-    try {
-
-      dados =
-        JSON.parse(
-          texto
-        );
-
-    } catch (_) {
-
+    if (!texto) {
       throw new Error(
-        'Resposta inválida da Gemini.'
+        'Gemini retornou resposta vazia.'
       );
+    }
 
+
+    return texto;
+
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+
+/* =========================================================
+   NORMALIZAÇÃO DA RESPOSTA
+   ========================================================= */
+
+function normalizarResposta(texto) {
+  return String(texto || '')
+    .replace(/\r/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+
+/* =========================================================
+   ROTA PRINCIPAL
+   ========================================================= */
+
+app.get('/', (req, res) => {
+  res.sendFile(
+    path.join(__dirname, 'index.html')
+  );
+});
+
+
+/* =========================================================
+   HEALTH CHECK
+   ========================================================= */
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+
+    gemini: Boolean(GEMINI_API_KEY),
+
+    model: GEMINI_MODEL,
+
+    parametros: {
+      toneladasPorConjunto:
+        TONELADAS_POR_CONJUNTO,
+
+      estoqueRiscoConj:
+        ESTOQUE_RISCO_CONJ
+    },
+
+    unidades: UNIDADES,
+
+    time: new Date().toISOString()
+  });
+});
+
+
+/* =========================================================
+   API — PLANO DE VOO
+   ========================================================= */
+
+app.post('/api/plano-voo', async (req, res) => {
+  try {
+    const dados = req.body || {};
+
+
+    /* -----------------------------------------------
+       VALIDAÇÕES BÁSICAS
+       ----------------------------------------------- */
+
+    if (!Array.isArray(dados.potencial)) {
+      return res.status(400).json({
+        error:
+          'A análise de potencial não foi enviada corretamente.'
+      });
     }
 
 
     if (
-      !resposta.ok
+      !dados.estoque ||
+      dados.estoque.atual === undefined ||
+      dados.estoque.atual === null
     ) {
-
-      const detalhe =
-        dados?.error?.message ||
-        `Gemini HTTP ${resposta.status}`;
-
-      throw new Error(
-        detalhe
-      );
-
+      return res.status(400).json({
+        error:
+          'O estoque atual não foi informado.'
+      });
     }
 
 
-    const partes =
-      dados?.candidates?.[0]
-        ?.content
-        ?.parts || [];
+    /* -----------------------------------------------
+       IDENTIFICAÇÃO DA UNIDADE
+       ----------------------------------------------- */
+
+    const unidade = identificarUnidade(
+      dados.tabelaOriginal
+    );
 
 
-    const resultado =
-      partes
-
-        .map(
-          part =>
-            typeof part?.text === 'string'
-              ? part.text
-              : ''
-        )
-
-        .join('')
-
-        .trim();
-
-
-    if (!resultado) {
-
-      throw new Error(
-        'A Gemini não retornou uma análise.'
-      );
-
+    if (!unidade) {
+      return res.status(400).json({
+        error:
+          'Não foi possível identificar a filial/gestora na Análise de Potencial de Produção. Informe uma análise contendo Mandu, Cruz Alta, São José, Vertente ou Tanabi.'
+      });
     }
 
 
-    return resultado;
+    /* -----------------------------------------------
+       CÁLCULO DO CENÁRIO
+       ----------------------------------------------- */
 
-  } finally {
-
-    clearTimeout(
-      timeout
-    );
-
-  }
-
-}
+    const calculos =
+      calcularCenario(
+        dados,
+        unidade
+      );
 
 
-/* =========================================================
-   NORMALIZAR RESPOSTA
-========================================================= */
+    /* -----------------------------------------------
+       MONTA PROMPT
+       ----------------------------------------------- */
 
-function normalizarResposta(
-  texto
-) {
-
-  return String(
-    texto || ''
-  )
-
-    .replace(
-      /```(?:text|markdown|md)?/gi,
-      ''
-    )
-
-    .replace(
-      /```/g,
-      ''
-    )
-
-    .replace(
-      /\n{3,}/g,
-      '\n\n'
-    )
-
-    .trim();
-
-}
+    const prompt =
+      montarPrompt(
+        dados,
+        calculos,
+        unidade
+      );
 
 
-/* =========================================================
-   HOME
-========================================================= */
+    /* -----------------------------------------------
+       CHAMA GEMINI
+       ----------------------------------------------- */
 
-app.get(
-  '/',
-  (
-    req,
-    res
-  ) => {
-
-    res.sendFile(
-      path.join(
-        __dirname,
-        'index.html'
-      )
-    );
-
-  }
-);
+    const respostaGemini =
+      await chamarGemini(prompt);
 
 
-/* =========================================================
-   HEALTH
-========================================================= */
+    const planoVoo =
+      normalizarResposta(
+        respostaGemini
+      );
 
-app.get(
-  '/api/health',
-  (
-    req,
-    res
-  ) => {
 
-    res.json({
+    /* -----------------------------------------------
+       RESPOSTA
+       ----------------------------------------------- */
 
-      ok:
-        true,
+    return res.json({
+      ok: true,
 
-      gemini:
-        Boolean(
-          GEMINI_API_KEY
+      unidade: {
+        chave: unidade.chave,
+        nome: unidade.nome,
+        nominal: unidade.nominal
+      },
+
+      horaAnalise:
+        horaFormatada(
+          calculos.horaAtual
         ),
 
-      modelo:
-        GEMINI_MODEL,
+      modelo: GEMINI_MODEL,
 
-      hora:
-        horaFormatada()
+      planoVoo,
 
+      calculos
     });
 
+
+  } catch (error) {
+    console.error(
+      'Erro /api/plano-voo:',
+      error
+    );
+
+    return res.status(500).json({
+      error:
+        error?.message ||
+        'Erro interno ao gerar o Plano de Voo.'
+    });
   }
-);
+});
 
 
 /* =========================================================
-   PLANO DE VOO
-========================================================= */
+   404 PARA API
+   ========================================================= */
 
-app.post(
-  '/api/plano-voo',
-  async (
-    req,
-    res
-  ) => {
-
-    try {
-
-      const dados =
-        req.body || {};
-
-
-      /*
-        Validação básica.
-      */
-
-      if (
-        !Array.isArray(
-          dados.potencial
-        ) ||
-        !dados.potencial.length
-      ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              'A tabela de potencial não foi interpretada.'
-
-          });
-
-      }
-
-
-      if (
-        !dados.estoque ||
-        numeroSeguro(
-          dados.estoque.atual
-        ) === null
-      ) {
-
-        return res
-          .status(400)
-          .json({
-
-            error:
-              'Informe o estoque atual.'
-
-          });
-
-      }
-
-
-      /*
-        Cálculos determinísticos.
-      */
-
-      const calculos =
-        calcularCenario(
-          dados
-        );
-
-
-      /*
-        Monta prompt.
-      */
-
-      const prompt =
-        montarPrompt(
-          dados,
-          calculos
-        );
-
-
-      /*
-        Gemini.
-      */
-
-      const resposta =
-        await chamarGemini(
-          prompt
-        );
-
-
-      const planoVoo =
-        normalizarResposta(
-          resposta
-        );
-
-
-      /*
-        Tenta identificar unidade
-        no início da tabela.
-
-        Exemplo:
-        VER | Estoque...
-      */
-
-      let unidade =
-        'CTT';
-
-
-      const primeiraLinha =
-        textoSeguro(
-          dados.tabelaOriginal,
-          1000
-        )
-        .split('\n')[0];
-
-
-      if (
-        primeiraLinha.includes('|')
-      ) {
-
-        unidade =
-          primeiraLinha
-            .split('|')[0]
-            .trim()
-            .slice(
-              0,
-              40
-            );
-
-      }
-
-
-      return res.json({
-
-        ok:
-          true,
-
-        unidade,
-
-        horaAnalise:
-          horaFormatada(),
-
-        modelo:
-          GEMINI_MODEL,
-
-        planoVoo,
-
-        calculos
-
-      });
-
-    } catch (error) {
-
-      console.error(
-        'ERRO PLANO DE VOO:',
-        error
-      );
-
-
-      return res
-        .status(500)
-        .json({
-
-          error:
-            error?.message ||
-            'Erro ao gerar Plano de Voo.'
-
-        });
-
-    }
-
-  }
-);
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    error: 'Endpoint não encontrado.'
+  });
+});
 
 
 /* =========================================================
-   404
-========================================================= */
+   TRATAMENTO DE ERRO GERAL
+   ========================================================= */
 
-app.use(
-  '/api',
-  (
-    req,
-    res
-  ) => {
+app.use((error, req, res, next) => {
+  console.error(
+    'Erro geral:',
+    error
+  );
 
-    res
-      .status(404)
-      .json({
-
-        error:
-          'Rota da API não encontrada.'
-
-      });
-
+  if (res.headersSent) {
+    return next(error);
   }
-);
+
+  res.status(500).json({
+    error:
+      'Erro interno do servidor.'
+  });
+});
 
 
 /* =========================================================
-   START
-========================================================= */
+   INICIALIZAÇÃO
+   ========================================================= */
 
-app.listen(
-  PORT,
-  () => {
+app.listen(PORT, () => {
+  console.log('');
+  console.log('==============================================');
+  console.log(' PLANO DE VOO | CTT AGROINDUSTRIAL');
+  console.log('==============================================');
+  console.log(` Servidor: http://localhost:${PORT}`);
+  console.log(` Gemini: ${GEMINI_API_KEY ? 'OK' : 'NÃO CONFIGURADO'}`);
+  console.log(` Modelo: ${GEMINI_MODEL}`);
+  console.log(` t/conjunto: ${TONELADAS_POR_CONJUNTO}`);
+  console.log(` Estoque risco: ${ESTOQUE_RISCO_CONJ} conjuntos`);
+  console.log('----------------------------------------------');
+  console.log(' Unidades cadastradas:');
 
+  Object.values(UNIDADES).forEach(unidade => {
     console.log(
-      '=========================================='
+      ` - ${unidade.nome}: ${unidade.nominal} t/h`
     );
+  });
 
-    console.log(
-      'COA | PLANO DE VOO CTT'
-    );
-
-    console.log(
-      `Porta: ${PORT}`
-    );
-
-    console.log(
-      `Gemini: ${
-        GEMINI_API_KEY
-          ? 'CONFIGURADO'
-          : 'NÃO CONFIGURADO'
-      }`
-    );
-
-    console.log(
-      `Modelo: ${GEMINI_MODEL}`
-    );
-
-    console.log(
-      `Ton/conjunto: ${TONELADAS_POR_CONJUNTO}`
-    );
-
-    console.log(
-      `Estoque risco: ${ESTOQUE_RISCO_CONJ}`
-    );
-
-    console.log(
-      '=========================================='
-    );
-
-  }
-);
+  console.log('==============================================');
+  console.log('');
+});
