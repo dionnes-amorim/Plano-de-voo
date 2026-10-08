@@ -1,4 +1,9 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
 
 <meta
     name="viewport"
@@ -17,58 +22,131 @@
 
 <title>Plano de Voo | CTT Agroindustrial</title>
 
-<!-- Favicon -->
+
+<!-- =========================================================
+     FAVICON
+========================================================= -->
+
 <link
     rel="icon"
-    href="/logo.ico"
+    href="./logo.ico"
     type="image/x-icon"
 >
 
-<!-- CSS PRINCIPAL -->
+
+<!-- =========================================================
+     CSS PRINCIPAL
+========================================================= -->
+
 <link
     rel="stylesheet"
-    href="/estilo.css"
+    href="./estilo.css"
 >
 
-</head><body><!-- =========================================================
+
+<!-- =========================================================
+     PROTEÇÃO VISUAL
+     
+     Se o estilo.css estiver demorando para carregar,
+     evita que a página fique completamente "crua".
+========================================================= -->
+
+<style>
+
+html,
+body{
+    margin:0;
+    padding:0;
+    background:#101719;
+    color:#f5f7f8;
+}
+
+body{
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+.hidden{
+    display:none !important;
+}
+
+button,
+input,
+textarea{
+    font-family:inherit;
+}
+
+img{
+    max-width:100%;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
      HEADER
-========================================================= --><header class="topbar"><div class="topbar-content">
+========================================================= -->
 
-    <div class="brand">
+<header class="topbar">
 
-        <div class="brand-mark" aria-hidden="true">
-            <span>PV</span>
+    <div class="topbar-content">
+
+        <div class="brand">
+
+            <div
+                class="brand-mark"
+                aria-hidden="true"
+            >
+                <span>PV</span>
+            </div>
+
+
+            <div class="brand-info">
+
+                <div class="brand-title">
+                    PLANO DE VOO
+                </div>
+
+                <div class="brand-subtitle">
+                    CTT AGROINDUSTRIAL
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="brand-info">
 
-            <div class="brand-title">
-                PLANO DE VOO
-            </div>
+        <div class="header-status">
 
-            <div class="brand-subtitle">
-                CTT AGROINDUSTRIAL
-            </div>
+            <span class="status-dot"></span>
+
+            <span>
+                OPERAÇÃO
+            </span>
 
         </div>
 
     </div>
 
-    <div class="header-status">
+</header>
 
-        <span class="status-dot"></span>
 
-        <span>
-            OPERAÇÃO
-        </span>
 
-    </div>
-
-</div>
-
-</header><!-- =========================================================
+<!-- =========================================================
      CONTEÚDO
-========================================================= --><main class="container"><!-- =====================================================
+========================================================= -->
+
+<main class="container">
+
+
+<!-- =====================================================
      INTRO
 ====================================================== -->
 
@@ -150,7 +228,8 @@ Ritmo Colheita  644  572  501  535  606
 Ritmo Industrial  850  850  850  850  850
 
 Você pode colar diretamente a tabela copiada do sistema."
-></textarea>
+        ></textarea>
+
 
         <div class="field-footer">
 
@@ -796,16 +875,34 @@ Você pode colar diretamente a tabela copiada do sistema."
 
 </div>
 
-</main><!-- =========================================================
+</main>
+
+
+
+<!-- =========================================================
      FOOTER
-========================================================= --><footer class="footer"><div>
-    Plano de Voo
-</div>
+========================================================= -->
 
-<span>
-    CTT Agroindustrial
-</span>
+<footer class="footer">
 
-</footer><!-- =========================================================
+    <div>
+        Plano de Voo
+    </div>
+
+    <span>
+        CTT Agroindustrial
+    </span>
+
+</footer>
+
+
+
+<!-- =========================================================
      JAVASCRIPT
-========================================================= --><script src="/app.js"></script></body></html>
+========================================================= -->
+
+<script src="./app.js"></script>
+
+
+</body>
+</html>
