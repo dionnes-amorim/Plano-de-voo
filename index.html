@@ -23,319 +23,1290 @@
     <title>Plano de Voo | CTT Agroindustrial</title>
 
 
-<style>
+    <!-- =========================================================
+         CSS
+    ========================================================== -->
 
-* {
-    box-sizing:border-box;
-}
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            margin: 0;
+            padding: 0;
+            background: #0b1113;
+        }
 
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
 
-html {
-    margin:0;
-    padding:0;
-    background:#0b1113;
-}
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(40, 130, 94, 0.10),
+                    transparent 35%
+                ),
+                #0b1113;
+
+            color: #e8eeee;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
 
+            font-size: 15px;
+            line-height: 1.5;
+        }
 
-body {
+        button,
+        input,
+        textarea {
+            font: inherit;
+        }
 
-    margin:0;
-    padding:0;
+        button {
+            cursor: pointer;
+        }
 
-    min-height:100vh;
 
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(40,130,94,.10),
-            transparent 35%
-        ),
-        #0b1113;
+        /* =========================================================
+           HEADER
+        ========================================================== */
 
-    color:#e8eeee;
+        .topbar {
+            width: 100%;
 
-    font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+            background: rgba(13, 21, 23, 0.96);
 
-    font-size:15px;
-    line-height:1.5;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
 
-}
+            position: sticky;
+            top: 0;
+            z-index: 20;
 
+            backdrop-filter: blur(12px);
+        }
 
-button,
-input,
-textarea {
-    font:inherit;
-}
+        .topbar-content {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
 
+            min-height: 78px;
 
-button {
-    cursor:pointer;
-}
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
+            gap: 20px;
+        }
 
-/* HEADER */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-.topbar {
+        .brand-mark {
+            width: 42px;
+            height: 42px;
 
-    width:100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    background:
-        rgba(13,21,23,.96);
+            border-radius: 11px;
 
-    border-bottom:
-        1px solid rgba(255,255,255,.07);
+            background:
+                linear-gradient(
+                    135deg,
+                    #31b87a,
+                    #177653
+                );
 
-    position:sticky;
+            color: white;
 
-    top:0;
+            font-weight: 900;
+            font-size: 13px;
 
-    z-index:20;
+            box-shadow:
+                0 8px 25px rgba(25, 170, 108, 0.20);
+        }
 
-    backdrop-filter:blur(12px);
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
 
-}
+        .brand-title {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #f4f7f7;
+        }
 
+        .brand-subtitle {
+            margin-top: 5px;
 
-.topbar-content {
+            font-size: 11px;
+            font-weight: 600;
 
-    width:min(1180px, calc(100% - 40px));
+            letter-spacing: 0.13em;
 
-    margin:auto;
+            color: #7f9690;
+        }
 
-    min-height:78px;
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
 
-    display:flex;
+            color: #8fa49f;
 
-    align-items:center;
+            font-size: 11px;
+            font-weight: 700;
 
-    justify-content:space-between;
+            letter-spacing: 0.12em;
+        }
 
-    gap:20px;
+        .status-dot {
+            width: 8px;
+            height: 8px;
 
-}
+            border-radius: 50%;
 
+            background: #38c98a;
 
-.brand {
+            box-shadow:
+                0 0 0 4px rgba(56, 201, 138, 0.10),
+                0 0 15px rgba(56, 201, 138, 0.55);
+        }
 
-    display:flex;
 
-    align-items:center;
+        /* =========================================================
+           CONTAINER
+        ========================================================== */
 
-    gap:14px;
+        .container {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
 
-}
+            padding: 52px 0 70px;
+        }
 
 
-.brand-mark {
+        /* =========================================================
+           INTRO
+        ========================================================== */
 
-    width:42px;
+        .intro {
+            margin-bottom: 32px;
+        }
 
-    height:42px;
+        .eyebrow {
+            display: block;
 
-    display:flex;
+            margin-bottom: 8px;
 
-    align-items:center;
+            color: #42c98d;
 
-    justify-content:center;
+            font-size: 11px;
+            font-weight: 800;
 
-    border-radius:11px;
+            letter-spacing: 0.16em;
+        }
 
-    background:
-        linear-gradient(
-            135deg,
-            #31b87a,
-            #177653
-        );
+        .intro h1 {
+            margin: 0 0 12px;
 
-    color:white;
+            color: #f5f8f8;
 
-    font-weight:900;
+            font-size: clamp(32px, 5vw, 48px);
+            line-height: 1.08;
 
-}
+            letter-spacing: -0.035em;
+        }
 
+        .intro p {
+            max-width: 780px;
 
-.brand-info {
+            margin: 0;
 
-    display:flex;
+            color: #94a6a2;
 
-    flex-direction:column;
+            font-size: 15px;
+            line-height: 1.7;
+        }
 
-}
+        .intro strong {
+            color: #dce7e4;
+        }
 
 
-.brand-title {
+        /* =========================================================
+           CARDS
+        ========================================================== */
 
-    font-size:14px;
+        .card {
+            margin-bottom: 18px;
 
-    font-weight:800;
+            padding: 26px;
 
-    letter-spacing:.08em;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(23, 34, 36, 0.98),
+                    rgba(15, 24, 26, 0.98)
+                );
 
-}
+            border: 1px solid rgba(255,255,255,0.075);
 
+            border-radius: 18px;
 
-.brand-subtitle {
+            box-shadow:
+                0 18px 50px rgba(0,0,0,0.18);
+        }
 
-    margin-top:5px;
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
 
-    font-size:11px;
+            gap: 20px;
 
-    color:#7f9690;
+            margin-bottom: 24px;
+        }
 
-    letter-spacing:.13em;
+        .card-number {
+            display: block;
 
-}
+            margin-bottom: 5px;
 
+            color: #39bd82;
 
-.header-status {
+            font-size: 11px;
+            font-weight: 900;
 
-    display:flex;
+            letter-spacing: 0.15em;
+        }
 
-    align-items:center;
+        .card-title {
+            color: #eef4f2;
 
-    gap:8px;
+            font-size: 18px;
+            font-weight: 800;
 
-    color:#8fa49f;
+            letter-spacing: -0.015em;
+        }
 
-    font-size:11px;
+        .card-description {
+            margin-top: 4px;
 
-    font-weight:700;
+            color: #81928e;
 
-}
+            font-size: 13px;
+        }
 
+        .card-badge {
+            flex-shrink: 0;
 
-.status-dot {
+            padding: 6px 10px;
 
-    width:8px;
+            border-radius: 7px;
 
-    height:8px;
+            background: rgba(52, 191, 130, 0.10);
 
-    border-radius:50%;
+            border: 1px solid rgba(52, 191, 130, 0.18);
 
-    background:#38c98a;
+            color: #48c98e;
 
-}
+            font-size: 9px;
+            font-weight: 900;
 
+            letter-spacing: 0.10em;
+        }
 
+        .card-badge.optional {
+            color: #8eaaa3;
 
-/* CONTAINER */
+            background: rgba(255,255,255,0.035);
 
+            border-color: rgba(255,255,255,0.07);
+        }
 
-.container {
 
-    width:min(1180px, calc(100% - 40px));
+        /* =========================================================
+           CAMPOS
+        ========================================================== */
 
-    margin:auto;
+        .field label,
+        .stock-field label {
+            display: block;
 
-    padding:52px 0 70px;
+            margin-bottom: 8px;
 
-}
+            color: #b8c6c3;
 
+            font-size: 12px;
+            font-weight: 700;
+        }
 
+        .main-textarea {
+            width: 100%;
+            min-height: 190px;
 
-/* INTRO */
+            resize: vertical;
 
+            padding: 15px 16px;
 
-.intro {
+            color: #e7eeee;
 
-    margin-bottom:32px;
+            background: #0b1315;
 
-}
+            border: 1px solid #26383a;
 
+            border-radius: 11px;
 
-.eyebrow {
+            outline: none;
 
-    display:block;
+            font-size: 13px;
+            line-height: 1.55;
 
-    margin-bottom:8px;
+            transition:
+                border-color .2s,
+                box-shadow .2s;
+        }
 
-    color:#42c98d;
+        .main-textarea::placeholder,
+        .comments-textarea::placeholder {
+            color: #62736f;
+        }
 
-    font-size:11px;
+        .main-textarea:focus,
+        .comments-textarea:focus,
+        .stock-input-wrapper input:focus {
+            border-color: #36b97e;
 
-    font-weight:800;
+            box-shadow:
+                0 0 0 3px rgba(54,185,126,0.10);
+        }
 
-    letter-spacing:.16em;
+        .field-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-}
+            gap: 15px;
 
+            margin-top: 9px;
+        }
 
-.intro h1 {
+        .hint {
+            color: #71827e;
 
-    margin:0 0 12px;
+            font-size: 11px;
+        }
 
-    font-size:clamp(32px,5vw,48px);
+        .input-status {
+            color: #43c78b;
 
-    line-height:1.08;
+            font-size: 11px;
+            font-weight: 700;
+        }
 
-    color:#f5f8f8;
 
-}
+        /* =========================================================
+           PREVIEW
+        ========================================================== */
 
+        .preview-area {
+            margin-top: 20px;
 
-.intro p {
+            padding: 17px;
 
-    max-width:780px;
+            border-radius: 12px;
 
-    margin:0;
+            background: rgba(9, 17, 19, 0.65);
 
-    color:#94a6a2;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
 
-    line-height:1.7;
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-}
+            gap: 15px;
 
+            margin-bottom: 13px;
+        }
 
-.intro strong {
+        .preview-title {
+            display: block;
 
-    color:#dce7e4;
+            color: #dbe6e3;
 
-}
+            font-size: 12px;
+            font-weight: 800;
+        }
 
+        .preview-subtitle {
+            display: block;
 
+            margin-top: 2px;
 
-/* CARD */
+            color: #687b76;
 
+            font-size: 10px;
+        }
 
-.card {
+        .preview-badge {
+            padding: 5px 8px;
 
-    margin-bottom:18px;
+            border-radius: 6px;
 
-    padding:26px;
+            background: rgba(255,255,255,0.04);
 
-    background:
+            color: #7c908b;
 
-        linear-gradient(
-            145deg,
-            rgba(23,34,36,.98),
-            rgba(15,24,26,.98)
-        );
+            font-size: 9px;
+            font-weight: 800;
+        }
 
-    border:
+        .preview-content {
+            color: #9db0ab;
 
-        1px solid rgba(255,255,255,.075);
+            font-size: 12px;
+        }
 
-    border-radius:18px;
 
-}
+        /* =========================================================
+           ESTOQUE
+        ========================================================== */
 
+        .stock-info {
+            display: flex;
+            align-items: flex-start;
 
-/* restante do CSS permanece igual ao seu original */
+            gap: 12px;
 
-</style>
+            padding: 15px;
+
+            margin-bottom: 24px;
+
+            background: rgba(50, 187, 128, 0.045);
+
+            border: 1px solid rgba(50, 187, 128, 0.10);
+
+            border-radius: 11px;
+        }
+
+        .stock-info-icon {
+            width: 25px;
+            height: 25px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(55, 195, 133, 0.12);
+
+            color: #43c78b;
+
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .stock-info strong {
+            display: block;
+
+            margin-bottom: 3px;
+
+            color: #cddbd8;
+
+            font-size: 12px;
+        }
+
+        .stock-info p {
+            margin: 0;
+
+            color: #71847f;
+
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        .stock-info p strong {
+            display: inline;
+
+            color: #a8bbb6;
+        }
+
+        .stock-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 13px;
+        }
+
+        .stock-field {
+            min-width: 0;
+        }
+
+        .stock-input-wrapper {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+        }
+
+        .stock-input-wrapper input {
+            width: 100%;
+            min-width: 0;
+
+            height: 45px;
+
+            padding: 0 13px;
+
+            color: #eaf1ef;
+
+            background: #0b1315;
+
+            border: 1px solid #26383a;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            transition:
+                border-color .2s,
+                box-shadow .2s;
+        }
+
+        .stock-input-wrapper span {
+            flex-shrink: 0;
+
+            color: #6f827d;
+
+            font-size: 10px;
+        }
+
+        .stock-field small {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #566864;
+
+            font-size: 9px;
+        }
+
+        .stock-field.current label {
+            color: #48c98e;
+        }
+
+        .stock-field.current input {
+            border-color: rgba(55, 194, 132, 0.30);
+        }
+
+        .stock-trend {
+            margin-top: 18px;
+
+            padding: 12px 14px;
+
+            border-radius: 9px;
+
+            color: #93aaa4;
+
+            background: rgba(255,255,255,0.025);
+
+            border: 1px solid rgba(255,255,255,0.055);
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           COMENTÁRIOS
+        ========================================================== */
+
+        .textarea-with-mic {
+            display: flex;
+            align-items: stretch;
+
+            gap: 9px;
+        }
+
+        .comments-textarea {
+            flex: 1;
+
+            min-height: 105px;
+
+            resize: vertical;
+
+            padding: 13px 14px;
+
+            color: #e7eeee;
+
+            background: #0b1315;
+
+            border: 1px solid #26383a;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+        .mic-button {
+            width: 48px;
+
+            align-self: flex-start;
+
+            padding: 0;
+
+            height: 43px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #172426;
+
+            color: #8ca29c;
+
+            border: 1px solid #2b3d3e;
+
+            border-radius: 9px;
+
+            transition:
+                background .2s,
+                color .2s,
+                border-color .2s;
+        }
+
+        .mic-button:hover {
+            background: #1d302c;
+
+            color: #4bcf91;
+
+            border-color: #347d60;
+        }
+
+        .mic-button.recording {
+            background: rgba(208, 65, 65, 0.12);
+
+            color: #ff7777;
+
+            border-color: rgba(208,65,65,0.35);
+        }
+
+        .mic-icon {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .04em;
+        }
+
+        .voice-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: 7px;
+        }
+
+        .voice-status-text,
+        .voice-support {
+            color: #637570;
+
+            font-size: 10px;
+        }
+
+
+        /* =========================================================
+           AÇÕES
+        ========================================================== */
+
+        .action-area {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            margin: 22px 0;
+        }
+
+        .generate-button {
+            min-height: 48px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            padding: 0 20px;
+
+            border: 0;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #32bd80,
+                    #238e62
+                );
+
+            color: white;
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: .04em;
+
+            box-shadow:
+                0 9px 25px rgba(35, 142, 98, 0.18);
+
+            transition:
+                transform .2s,
+                filter .2s;
+        }
+
+        .generate-button:hover {
+            filter: brightness(1.08);
+
+            transform: translateY(-1px);
+        }
+
+        .generate-button:disabled {
+            opacity: .55;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+        .button-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .clear-button {
+            min-height: 48px;
+
+            padding: 0 16px;
+
+            border-radius: 10px;
+
+            background: transparent;
+
+            border: 1px solid #293a3c;
+
+            color: #778a85;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .clear-button:hover {
+            color: #bdcac7;
+
+            border-color: #405255;
+
+            background: rgba(255,255,255,0.025);
+        }
+
+
+        /* =========================================================
+           LOADING
+        ========================================================== */
+
+        .loading-area {
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 18px;
+
+            padding: 17px;
+
+            border-radius: 12px;
+
+            background: #111d1f;
+
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .loading-spinner {
+            width: 25px;
+            height: 25px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            border: 3px solid rgba(255,255,255,0.08);
+
+            border-top-color: #3bc88b;
+
+            animation: spin .8s linear infinite;
+        }
+
+        .loading-area strong {
+            display: block;
+
+            color: #dce7e4;
+
+            font-size: 12px;
+        }
+
+        .loading-area p {
+            margin: 3px 0 0;
+
+            color: #6e817c;
+
+            font-size: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        /* =========================================================
+           RESULTADO
+        ========================================================== */
+
+        .result-area {
+            margin-top: 22px;
+
+            padding: 26px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(21, 34, 35, 0.99),
+                    rgba(13, 23, 25, 0.99)
+                );
+
+            border: 1px solid rgba(58, 194, 133, 0.14);
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.20);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+        }
+
+        .result-header h2 {
+            margin: 0;
+
+            color: #f0f6f4;
+
+            font-size: 27px;
+            letter-spacing: -.025em;
+        }
+
+        .copy-button {
+            min-height: 40px;
+
+            padding: 0 14px;
+
+            border-radius: 8px;
+
+            background: rgba(255,255,255,0.035);
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            color: #9cb0ab;
+
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .copy-button:hover {
+            color: #dce8e5;
+
+            background: rgba(255,255,255,0.06);
+        }
+
+
+        /* =========================================================
+           KPIs
+        ========================================================== */
+
+        .kpi-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 11px;
+
+            margin-bottom: 16px;
+        }
+
+        .kpi-card {
+            padding: 16px;
+
+            border-radius: 11px;
+
+            background: rgba(8, 16, 18, 0.60);
+
+            border: 1px solid rgba(255,255,255,0.055);
+        }
+
+        .kpi-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #6d807b;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: .08em;
+        }
+
+        .kpi-value {
+            display: inline-block;
+
+            color: #e7f1ee;
+
+            font-size: 21px;
+            line-height: 1;
+
+            letter-spacing: -.02em;
+        }
+
+        .kpi-unit {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #657873;
+
+            font-size: 9px;
+        }
+
+        .result-status {
+            margin-bottom: 16px;
+
+            padding: 11px 13px;
+
+            border-radius: 9px;
+
+            background: rgba(57, 197, 134, 0.06);
+
+            border: 1px solid rgba(57, 197, 134, 0.10);
+
+            color: #8eaaa3;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           ANÁLISE
+        ========================================================== */
+
+        .analysis-card {
+            padding: 20px;
+
+            border-radius: 12px;
+
+            background: rgba(7, 15, 17, 0.55);
+
+            border: 1px solid rgba(255,255,255,0.055);
+        }
+
+        .analysis-card-header {
+            margin-bottom: 17px;
+
+            padding-bottom: 13px;
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .analysis-title {
+            display: block;
+
+            color: #dbe7e4;
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .analysis-subtitle {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #647772;
+
+            font-size: 10px;
+        }
+
+        .analysis-text {
+            color: #a9b9b5;
+
+            font-size: 12px;
+
+            line-height: 1.75;
+        }
+
+        .analysis-text strong {
+            color: #dce8e5;
+        }
+
+
+        /* =========================================================
+           CÁLCULOS
+        ========================================================== */
+
+        .calculation-area {
+            margin-top: 14px;
+
+            padding: 17px;
+
+            border-radius: 11px;
+
+            background: rgba(255,255,255,0.018);
+
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .calculation-header {
+            margin-bottom: 10px;
+
+            color: #a8bbb6;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .calculation-content {
+            color: #758984;
+
+            font-size: 10px;
+
+            line-height: 1.65;
+        }
+
+
+        /* =========================================================
+           ERRO
+        ========================================================== */
+
+        .error-area {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 12px;
+
+            margin: 18px 0;
+
+            padding: 15px;
+
+            border-radius: 11px;
+
+            background: rgba(180, 57, 57, 0.07);
+
+            border: 1px solid rgba(220, 78, 78, 0.18);
+        }
+
+        .error-icon {
+            width: 25px;
+            height: 25px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(220, 78, 78, 0.12);
+
+            color: #f17d7d;
+
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .error-area strong {
+            color: #efaaaa;
+
+            font-size: 12px;
+        }
+
+        .error-area p {
+            margin: 3px 0 0;
+
+            color: #9b7373;
+
+            font-size: 10px;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================== */
+
+        .footer {
+            width: min(1180px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 22px 0 30px;
+
+            border-top: 1px solid rgba(255,255,255,0.055);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            color: #52635f;
+
+            font-size: 10px;
+        }
+
+        .footer span {
+            color: #3f514d;
+        }
+
+
+        /* =========================================================
+           UTILITÁRIO
+        ========================================================== */
+
+        .hidden {
+            display: none !important;
+        }
+
+
+        /* =========================================================
+           RESPONSIVO
+        ========================================================== */
+
+        @media (max-width: 800px) {
+
+            .container {
+                width: min(100% - 24px, 1180px);
+
+                padding-top: 32px;
+            }
+
+            .topbar-content {
+                width: calc(100% - 24px);
+
+                min-height: 68px;
+            }
+
+            .header-status {
+                display: none;
+            }
+
+            .card,
+            .result-area {
+                padding: 19px;
+            }
+
+            .stock-grid,
+            .kpi-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+        @media (max-width: 520px) {
+
+            .intro h1 {
+                font-size: 32px;
+            }
+
+            .card-header,
+            .result-header {
+                flex-direction: column;
+            }
+
+            .card-badge {
+                align-self: flex-start;
+            }
+
+            .stock-grid,
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-area {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .generate-button,
+            .clear-button {
+                width: 100%;
+            }
+
+            .footer {
+                width: calc(100% - 24px);
+
+                flex-direction: column;
+                align-items: flex-start;
+
+                gap: 5px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
-    <body>
 
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
 <header class="topbar">
 
@@ -343,10 +1314,12 @@ button {
 
         <div class="brand">
 
-            <div class="brand-mark">
-                PV
+            <div
+                class="brand-mark"
+                aria-hidden="true"
+            >
+                <span>PV</span>
             </div>
-
 
             <div class="brand-info">
 
@@ -378,1305 +1351,761 @@ button {
 </header>
 
 
+<!-- =========================================================
+     CONTEÚDO
+========================================================= -->
 
 <main class="container">
 
 
+    <!-- =====================================================
+         INTRO
+    ====================================================== -->
 
-<section class="intro">
+    <section class="intro">
 
-    <span class="eyebrow">
-        ANÁLISE OPERACIONAL
-    </span>
+        <div>
 
+            <span class="eyebrow">
+                ANÁLISE OPERACIONAL
+            </span>
 
-    <h1>
-        Plano de Voo
-    </h1>
+            <h1>
+                Plano de Voo
+            </h1>
 
-
-    <p>
-
-        Cole o relatório de
-        <strong>
-            Análise de Potencial de Produção
-        </strong>
-        exportado do sistema, informe o estoque das últimas horas
-        e deixe o sistema projetar a tendência operacional.
-
-    </p>
-
-
-</section>
-
-
-
-
-
-<!-- =====================================================
-01 - POTENCIAL
-===================================================== -->
-
-
-<section class="card">
-
-
-<div class="card-header">
-
-    <div>
-
-        <span class="card-number">
-            01
-        </span>
-
-
-        <div class="card-title">
-            Análise de Potencial de Produção
-        </div>
-
-
-        <div class="card-description">
-
-            Cole abaixo a tabela Hora a Hora exportada
-            diretamente do sistema.
+            <p>
+                Cole a
+                <strong>Análise de Potencial de Produção</strong>,
+                informe o estoque das últimas horas e deixe o sistema
+                projetar a tendência operacional.
+            </p>
 
         </div>
 
-
-    </div>
-
-
-    <div class="card-badge">
-        OBRIGATÓRIO
-    </div>
-
-
-</div>
+    </section>
 
 
 
+    <!-- =====================================================
+         01 — POTENCIAL
+    ====================================================== -->
 
-<div class="field">
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-number">
+                    01
+                </span>
+
+                <div class="card-title">
+                    Análise de Potencial de Produção
+                </div>
+
+                <div class="card-description">
+                    Cole abaixo a tabela completa copiada do sistema.
+                </div>
+
+            </div>
+
+            <div class="card-badge">
+                OBRIGATÓRIO
+            </div>
+
+        </div>
 
 
-<label for="potentialInput">
-    Dados da análise
-</label>
+        <div class="field">
 
+            <label for="potentialInput">
+                Dados da análise
+            </label>
 
-
-<textarea
-
-    id="potentialInput"
-
-    class="main-textarea"
-
-    spellcheck="false"
-
-    autocomplete="off"
-
-
-    placeholder="Cole aqui a Análise de Potencial de Produção...
+            <textarea
+                id="potentialInput"
+                class="main-textarea"
+                spellcheck="false"
+                autocomplete="off"
+                placeholder="Cole aqui a Análise de Potencial de Produção...
 
 Exemplo:
 
-Safra
-2026
+Filial: Mandu
 
-Filial
-USINA MANDU
+15:00  16:00  17:00  18:00  19:00
+Ritmo Colheita  644  572  501  535  606
+Ritmo Industrial  850  850  850  850  850
 
-Tipo
-Hora a Hora
+Você pode colar diretamente a tabela copiada do sistema."
+            ></textarea>
 
-Hora   Máquinas (t)   Tratores (t)   Restrição Cap. (t)   Cota (t)   Despacho (t)
 
-00 - 01   1657   1780   1418   917   991
+            <div class="field-footer">
 
-01 - 02   1708   1605   1360   917   1025
+                <span class="hint">
+                    O sistema identifica automaticamente a unidade,
+                    nominal, horários, potencial agrícola e ritmo industrial.
+                </span>
 
+                <span
+                    id="potentialStatus"
+                    class="input-status"
+                ></span>
 
-O sistema identifica automaticamente:
+            </div>
 
-✓ Safra
-✓ Filial
-✓ Horários
-✓ Potencial agrícola
-✓ Restrição de capacidade
-✓ Cota
-✓ Despacho operacional"
+        </div>
 
-></textarea>
 
+        <!-- PRÉVIA -->
 
+        <div
+            id="previewArea"
+            class="preview-area hidden"
+        >
 
+            <div class="preview-header">
 
-<div class="field-footer">
+                <div>
 
+                    <span class="preview-title">
+                        Prévia identificada
+                    </span>
 
-<span class="hint">
+                    <span class="preview-subtitle">
+                        Dados encontrados na tabela
+                    </span>
 
-O sistema interpreta automaticamente o relatório
-Hora a Hora Transporte.
+                </div>
 
-</span>
+                <span
+                    id="previewBadge"
+                    class="preview-badge"
+                >
+                    AGUARDANDO
+                </span>
 
+            </div>
 
 
-<span
+            <div
+                id="previewContent"
+                class="preview-content"
+            ></div>
 
-id="potentialStatus"
+        </div>
 
-class="input-status"
+    </section>
 
-></span>
 
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<!-- PREVIEW NOVO -->
-
-
-<div
-
-id="previewArea"
-
-class="preview-area hidden"
-
->
-
-
-
-<div class="preview-header">
-
-
-<div>
-
-<span class="preview-title">
-
-Prévia identificada
-
-</span>
-
-
-<span class="preview-subtitle">
-
-Dados encontrados no relatório
-
-</span>
-
-
-</div>
-
-
-
-<span
-
-id="previewBadge"
-
-class="preview-badge"
-
->
-
-AGUARDANDO
-
-</span>
-
-
-</div>
-
-
-
-
-
-
-<div
-
-id="previewContent"
-
-class="preview-content"
-
->
-
-
-<div>
-
-Filial:
-<strong id="previewFilial">
-—
-</strong>
-
-</div>
-
-
-
-<div>
-
-Safra:
-<strong id="previewSafra">
-—
-</strong>
-
-</div>
-
-
-
-
-<div>
-
-Período:
-<strong id="previewPeriodo">
-—
-</strong>
-
-</div>
-
-
-
-
-<div>
-
-Horas analisadas:
-<strong id="previewHoras">
-—
-</strong>
-
-</div>
-
-
-
-<div>
-
-Potencial agrícola médio:
-<strong id="previewAgricola">
-—
-</strong>
-
-</div>
-
-
-
-
-<div>
-
-Restrição média:
-<strong id="previewRestricao">
-—
-</strong>
-
-</div>
-
-
-
-<div>
-
-Despacho médio:
-<strong id="previewDespacho">
-—
-</strong>
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-
-<!-- =====================================================
-02 - ESTOQUE
-===================================================== -->
-
-
-<section class="card">
-
-
-<div class="card-header">
-
-
-<div>
-
-
-<span class="card-number">
-02
-</span>
-
-
-
-<div class="card-title">
-Estoque de Cana
-</div>
-
-
-
-<div class="card-description">
-
-Informe o fechamento das últimas 3 horas
-e o estoque atual.
-
-</div>
-
-
-</div>
-
-
-
-<div class="card-badge">
-
-OBRIGATÓRIO
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="stock-info">
-
-
-<div class="stock-info-icon">
-
-i
-
-</div>
-
-
-
-<div>
-
-
-<strong>
-Estoque em conjuntos carregados
-</strong>
-
-
-
-<p>
-
-Os horários são preenchidos automaticamente.
-A projeção considera
-
-<strong>
-70 toneladas por conjunto.
-</strong>
-
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<div class="stock-grid">
-
-
-
-<div class="stock-field">
-
-
-<label id="stockLabel1">
-
-Hora -3
-
-</label>
-
-
-
-<div class="stock-input-wrapper">
-
-
-<input
-
-id="stock1"
-
-type="number"
-
-min="0"
-
-step="1"
-
-placeholder="0"
-
->
-
-
-<span>
-conjuntos
-</span>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="stock-field">
-
-
-<label id="stockLabel2">
-
-Hora -2
-
-</label>
-
-
-
-<div class="stock-input-wrapper">
-
-
-<input
-
-id="stock2"
-
-type="number"
-
-min="0"
-
-step="1"
-
-placeholder="0"
-
->
-
-
-<span>
-conjuntos
-</span>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="stock-field">
-
-
-<label id="stockLabel3">
-
-Hora -1
-
-</label>
-
-
-
-<div class="stock-input-wrapper">
-
-
-<input
-
-id="stock3"
-
-type="number"
-
-min="0"
-
-step="1"
-
-placeholder="0"
-
->
-
-
-<span>
-conjuntos
-</span>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div class="stock-field current">
-
-
-<label id="stockLabel4">
-
-Atual
-
-</label>
-
-
-
-<div class="stock-input-wrapper">
-
-
-<input
-
-id="stockCurrent"
-
-type="number"
-
-min="0"
-
-step="1"
-
-placeholder="0"
-
->
-
-
-<span>
-conjuntos
-</span>
-
-
-</div>
-
-
-
-<small>
-Estoque atual
-</small>
-
-
-</div>
-
-
-
-
-</div>
-
-
-
-
-
-<div
-
-id="stockTrend"
-
-class="stock-trend hidden"
-
-></div>
-
-
-
-
-</section>
-
-
-
-
-
-
-<!-- =====================================================
-03 - COMENTÁRIOS
-===================================================== -->
-
-
-<section class="card">
-
-
-<div class="card-header">
-
-
-<div>
-
-
-<span class="card-number">
-
-03
-
-</span>
-
-
-
-<div class="card-title">
-
-Comentários / Pontos de Atenção
-
-</div>
-
-
-
-<div class="card-description">
-
-Campo opcional para complementar a análise.
-
-</div>
-
-
-</div>
-
-
-
-<div class="card-badge optional">
-
-OPCIONAL
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="field">
-
-
-<label for="comments">
-
-Observações operacionais
-
-</label>
-
-
-
-<div class="textarea-with-mic">
-
-
-<textarea
-
-id="comments"
-
-class="comments-textarea"
-
-placeholder="Ex.: manutenção de colhedoras, chuva, mudança de frente, quebra de equipamento, dificuldade de transporte..."
-
-></textarea>
-
-
-
-<button
-
-type="button"
-
-id="micButton"
-
-class="mic-button"
-
->
-
-MIC
-
-</button>
-
-
-</div>
-
-
-
-<div class="voice-status">
-
-
-<span id="voiceStatus">
-
-Clique no microfone para ditar.
-
-</span>
-
-
-<span id="voiceSupport">
-
-</span>
-
-
-</div>
-
-
-
-</div>
-
-
-
-</section>
 
     <!-- =====================================================
-     AÇÕES
-===================================================== -->
+         02 — ESTOQUE
+    ====================================================== -->
 
-<section class="action-area">
+    <section class="card">
 
+        <div class="card-header">
 
-<button
+            <div>
 
-type="button"
+                <span class="card-number">
+                    02
+                </span>
 
-id="generateButton"
+                <div class="card-title">
+                    Estoque de Cana
+                </div>
 
-class="generate-button"
+                <div class="card-description">
+                    Informe o fechamento das últimas 3 horas e o estoque atual.
+                </div>
 
->
+            </div>
 
+            <div class="card-badge">
+                OBRIGATÓRIO
+            </div>
 
-<span
+        </div>
 
-id="generateIcon"
 
-class="button-icon"
+        <div class="stock-info">
 
->
-→
-</span>
+            <div
+                class="stock-info-icon"
+                aria-hidden="true"
+            >
+                i
+            </div>
 
+            <div>
 
+                <strong>
+                    Estoque em conjuntos carregados
+                </strong>
 
-<span id="generateText">
+                <p>
+                    Os horários são preenchidos automaticamente conforme
+                    o horário atual. A projeção considera
+                    <strong>70 t por conjunto</strong>.
+                </p>
 
-GERAR PLANO DE VOO
+            </div>
 
-</span>
+        </div>
 
 
-</button>
+        <div class="stock-grid">
 
 
+            <!-- HORA -3 -->
 
+            <div class="stock-field">
 
+                <label
+                    id="stockLabel1"
+                    for="stock1"
+                >
+                    Hora -3
+                </label>
 
-<button
+                <div class="stock-input-wrapper">
 
-type="button"
+                    <input
+                        id="stock1"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
+                    >
 
-id="clearButton"
+                    <span>
+                        conjuntos
+                    </span>
 
-class="clear-button"
+                </div>
 
->
+            </div>
 
-Limpar análise
 
-</button>
+            <!-- HORA -2 -->
 
+            <div class="stock-field">
 
+                <label
+                    id="stockLabel2"
+                    for="stock2"
+                >
+                    Hora -2
+                </label>
 
-</section>
+                <div class="stock-input-wrapper">
 
+                    <input
+                        id="stock2"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
+                    >
 
+                    <span>
+                        conjuntos
+                    </span>
 
+                </div>
 
+            </div>
 
 
+            <!-- HORA -1 -->
 
-<!-- =====================================================
-     LOADING
-===================================================== -->
+            <div class="stock-field">
 
+                <label
+                    id="stockLabel3"
+                    for="stock3"
+                >
+                    Hora -1
+                </label>
 
-<section
+                <div class="stock-input-wrapper">
 
-id="loadingArea"
+                    <input
+                        id="stock3"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
+                    >
 
-class="loading-area hidden"
+                    <span>
+                        conjuntos
+                    </span>
 
->
+                </div>
 
+            </div>
 
-<div class="loading-spinner"></div>
 
+            <!-- ATUAL -->
 
+            <div class="stock-field current">
 
-<div>
+                <label
+                    id="stockLabel4"
+                    for="stockCurrent"
+                >
+                    Atual
+                </label>
 
+                <div class="stock-input-wrapper">
 
-<strong>
+                    <input
+                        id="stockCurrent"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="0"
+                        autocomplete="off"
+                    >
 
-Analisando cenário operacional...
+                    <span>
+                        conjuntos
+                    </span>
 
-</strong>
+                </div>
 
+                <small>
+                    Estoque atual
+                </small>
 
-<p>
+            </div>
 
-Cruzando histórico, estoque e projeção das próximas horas.
+        </div>
 
-</p>
 
+        <div
+            id="stockTrend"
+            class="stock-trend hidden"
+        ></div>
 
-</div>
+    </section>
 
 
-</section>
 
+    <!-- =====================================================
+         03 — COMENTÁRIOS
+    ====================================================== -->
 
+    <section class="card">
 
+        <div class="card-header">
 
+            <div>
 
+                <span class="card-number">
+                    03
+                </span>
 
+                <div class="card-title">
+                    Comentários / Pontos de Atenção
+                </div>
 
-<!-- =====================================================
-     RESULTADO
-===================================================== -->
+                <div class="card-description">
+                    Campo opcional para complementar a análise.
+                </div>
 
+            </div>
 
-<section
+            <div class="card-badge optional">
+                OPCIONAL
+            </div>
 
-id="resultArea"
+        </div>
 
-class="result-area hidden"
 
->
+        <div class="field">
 
+            <label for="comments">
+                Observações operacionais
+            </label>
 
 
+            <div class="textarea-with-mic">
 
-<div class="result-header">
+                <textarea
+                    id="comments"
+                    class="comments-textarea"
+                    placeholder="Ex.: manutenção de colhedoras, mudança de frente, dificuldade de ciclo, chuva, interdição, sinergia entre unidades, troca de turno..."
+                ></textarea>
 
 
-<div>
+                <button
+                    type="button"
+                    id="micButton"
+                    class="mic-button"
+                    aria-label="Iniciar ditado por voz"
+                    title="Ditado por voz"
+                >
 
+                    <span
+                        class="mic-icon"
+                        aria-hidden="true"
+                    >
+                        MIC
+                    </span>
 
-<span class="eyebrow">
+                </button>
 
-RESULTADO DA ANÁLISE
+            </div>
 
-</span>
 
+            <div class="voice-status">
 
-<h2>
+                <span
+                    id="voiceStatus"
+                    class="voice-status-text"
+                >
+                    Clique no microfone para ditar.
+                </span>
 
-Plano de Voo
+                <span
+                    id="voiceSupport"
+                    class="voice-support"
+                ></span>
 
-</h2>
+            </div>
 
+        </div>
 
-</div>
+    </section>
 
 
 
-<button
+    <!-- =====================================================
+         AÇÕES
+    ====================================================== -->
 
-type="button"
+    <section class="action-area">
 
-id="copyButton"
+        <button
+            type="button"
+            id="generateButton"
+            class="generate-button"
+        >
 
-class="copy-button"
+            <span
+                id="generateIcon"
+                class="button-icon"
+                aria-hidden="true"
+            >
+                →
+            </span>
 
->
+            <span id="generateText">
+                GERAR PLANO DE VOO
+            </span>
 
-Copiar análise
+        </button>
 
-</button>
 
+        <button
+            type="button"
+            id="clearButton"
+            class="clear-button"
+        >
+            Limpar análise
+        </button>
 
-</div>
+    </section>
 
 
 
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
 
+    <section
+        id="loadingArea"
+        class="loading-area hidden"
+    >
 
+        <div class="loading-spinner"></div>
 
+        <div>
 
-<div
+            <strong>
+                Analisando cenário operacional...
+            </strong>
 
-id="kpiGrid"
+            <p>
+                Cruzando histórico, estoque e projeção das próximas horas.
+            </p>
 
-class="kpi-grid"
+        </div>
 
->
+    </section>
 
 
 
-<div class="kpi-card">
+    <!-- =====================================================
+         RESULTADO
+    ====================================================== -->
 
+    <section
+        id="resultArea"
+        class="result-area hidden"
+    >
 
-<span class="kpi-label">
+        <div class="result-header">
 
-Estoque atual
+            <div>
 
-</span>
+                <span class="eyebrow">
+                    RESULTADO DA ANÁLISE
+                </span>
 
+                <h2>
+                    Plano de Voo
+                </h2>
 
+            </div>
 
-<strong
 
-id="kpiStock"
+            <button
+                type="button"
+                id="copyButton"
+                class="copy-button"
+            >
+                Copiar análise
+            </button>
 
-class="kpi-value"
+        </div>
 
->
-—
-</strong>
 
 
+        <!-- KPIs -->
 
-<span class="kpi-unit">
+        <div
+            id="kpiGrid"
+            class="kpi-grid"
+        >
 
-conjuntos
+            <div class="kpi-card">
 
-</span>
+                <span class="kpi-label">
+                    Estoque atual
+                </span>
 
+                <strong
+                    id="kpiStock"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
 
-</div>
+                <span class="kpi-unit">
+                    conjuntos
+                </span>
 
+            </div>
 
 
+            <div class="kpi-card">
 
+                <span class="kpi-label">
+                    Tendência
+                </span>
 
-<div class="kpi-card">
+                <strong
+                    id="kpiTrend"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
 
+                <span
+                    id="kpiTrendDetail"
+                    class="kpi-unit"
+                >
+                    —
+                </span>
 
-<span class="kpi-label">
+            </div>
 
-Tendência
 
-</span>
+            <div class="kpi-card">
 
+                <span class="kpi-label">
+                    Moagem segura
+                </span>
 
+                <strong
+                    id="kpiSafeMoagem"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
 
-<strong
+                <span class="kpi-unit">
+                    t/h
+                </span>
 
-id="kpiTrend"
+            </div>
 
-class="kpi-value"
 
->
-—
-</strong>
+            <div class="kpi-card">
 
+                <span class="kpi-label">
+                    Ponto de atenção
+                </span>
 
+                <strong
+                    id="kpiRiskHour"
+                    class="kpi-value"
+                >
+                    —
+                </strong>
 
-<span
+                <span class="kpi-unit">
+                    projeção
+                </span>
 
-id="kpiTrendDetail"
+            </div>
 
-class="kpi-unit"
+        </div>
 
->
-—
-</span>
 
 
-</div>
+        <!-- STATUS -->
 
+        <div
+            id="resultStatus"
+            class="result-status"
+        ></div>
 
 
 
+        <!-- ANÁLISE -->
 
+        <div class="analysis-card">
 
+            <div class="analysis-card-header">
 
-<div class="kpi-card">
+                <div>
 
+                    <span class="analysis-title">
+                        Análise operacional
+                    </span>
 
-<span class="kpi-label">
+                    <span class="analysis-subtitle">
+                        Plano de Voo gerado a partir dos dados informados
+                    </span>
 
-Moagem segura
+                </div>
 
-</span>
+            </div>
 
 
+            <div
+                id="analysisText"
+                class="analysis-text"
+            ></div>
 
-<strong
+        </div>
 
-id="kpiSafeMoagem"
 
-class="kpi-value"
 
->
-—
-</strong>
+        <!-- CÁLCULOS -->
 
+        <div
+            id="calculationArea"
+            class="calculation-area"
+        >
 
+            <div class="calculation-header">
+                Indicadores calculados
+            </div>
 
-<span class="kpi-unit">
+            <div
+                id="calculationContent"
+                class="calculation-content"
+            ></div>
 
-t/h
+        </div>
 
-</span>
+    </section>
 
 
-</div>
 
+    <!-- =====================================================
+         ERRO
+    ====================================================== -->
 
+    <div
+        id="errorArea"
+        class="error-area hidden"
+    >
 
+        <div
+            class="error-icon"
+            aria-hidden="true"
+        >
+            !
+        </div>
 
+        <div>
 
+            <strong>
+                Não foi possível gerar a análise
+            </strong>
 
+            <p id="errorMessage">
+                Verifique os dados informados e tente novamente.
+            </p>
 
+        </div>
 
-<div class="kpi-card">
-
-
-<span class="kpi-label">
-
-Ponto de atenção
-
-</span>
-
-
-
-<strong
-
-id="kpiRiskHour"
-
-class="kpi-value"
-
->
-—
-</strong>
-
-
-
-<span class="kpi-unit">
-
-projeção
-
-</span>
-
-
-</div>
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div
-
-id="resultStatus"
-
-class="result-status"
-
-></div>
-
-
-
-
-
-
-
-<div class="analysis-card">
-
-
-<div class="analysis-card-header">
-
-
-<span class="analysis-title">
-
-Análise operacional
-
-</span>
-
-
-
-<span class="analysis-subtitle">
-
-Plano de Voo gerado considerando potencial,
-restrição, despacho e estoque.
-
-</span>
-
-
-</div>
-
-
-
-
-
-<div
-
-id="analysisText"
-
-class="analysis-text"
-
-></div>
-
-
-
-
-</div>
-
-
-
-
-
-
-
-<div
-
-id="calculationArea"
-
-class="calculation-area"
-
->
-
-
-<div class="calculation-header">
-
-Indicadores calculados
-
-</div>
-
-
-
-
-<div
-
-id="calculationContent"
-
-class="calculation-content"
-
-></div>
-
-
-
-</div>
-
-
-
-
-
-</section>
-
-
-
-
-
-
-
-<!-- =====================================================
-     ERRO
-===================================================== -->
-
-
-<div
-
-id="errorArea"
-
-class="error-area hidden"
-
->
-
-
-<div class="error-icon">
-
-!
-
-</div>
-
-
-
-<div>
-
-
-<strong>
-
-Não foi possível gerar a análise
-
-</strong>
-
-
-
-<p
-
-id="errorMessage"
-
->
-
-Verifique os dados informados e tente novamente.
-
-</p>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
+    </div>
 
 </main>
 
 
-
-
-
-
-
-<!-- =====================================================
+<!-- =========================================================
      FOOTER
-===================================================== -->
-
+========================================================= -->
 
 <footer class="footer">
 
+    <div>
+        Plano de Voo
+    </div>
 
-<div>
-
-Plano de Voo
-
-</div>
-
-
-
-<span>
-
-CTT Agroindustrial
-
-</span>
-
-
+    <span>
+        CTT Agroindustrial
+    </span>
 
 </footer>
 
 
-
-
-
-
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
 
 <script src="/app.js"></script>
 
 
-
 </body>
-
 </html>
