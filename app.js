@@ -1483,10 +1483,66 @@ if ($('potentialInput')) {
       'input',
       function() {
 
-        const resultado =
-          interpretarTabela(
-            this.value
-          );
+        let resultado;
+
+if (window.__parsePotential) {
+
+  const parsed =
+    window.__parsePotential(tabela);
+
+  if (!parsed) {
+
+    throw new Error(
+      'Não foi possível interpretar a análise de potencial.'
+    );
+
+  }
+
+  resultado = {
+
+    rows:
+      parsed.dados.map(d => ({
+
+        hora:
+          d.hora,
+
+        horaNumero:
+          Number(
+            d.hora.split('-')[0]
+          ),
+
+        potencial:
+          d.entrada,
+
+        moagem:
+          d.saida,
+
+        nominal:
+          917
+
+      })),
+
+    unidade: {
+
+      chave: 'MANDU',
+
+      nome:
+        parsed.filial || 'Mandu',
+
+      nominal: 917
+
+    },
+
+    error: null
+
+  };
+
+} else {
+
+  resultado =
+    interpretarTabela(tabela);
+
+}
 
 
         if (resultado.error) {
