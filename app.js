@@ -488,85 +488,347 @@ function encontrarLinha(
 
 function interpretarTabela(texto) {
 
-  if (!texto.trim()) {
+  if (!texto || !texto.trim()) {
 
     return {
-
       rows: [],
-
-      error:
-        'Cole a tabela de potencial.'
-
+      unidade: identificarUnidade(texto),
+      error: 'Cole a tabela de potencial.'
     };
 
   }
 
+  const unidade =
+    identificarUnidade(texto);
 
   const linhas =
     texto
       .replace(/\r/g, '')
       .split('\n')
-      .map(
-        linha =>
-          linha.trim()
-      )
+      .map(l => l.trim())
       .filter(Boolean);
 
-
   /*
-    IDENTIFICA UNIDADE
+   =====================================================
+   FORMATO NOVO
+   ANÁLISE DE POTENCIAL - HORA A HORA
+   =====================================================
+
+   Ex:
+
+   00 - 01 1.236 1.288 1.045 917 920 ...
+   01 - 02 1.178 1.291 1.003 917 910 ...
+   =====================================================
   */
 
-  const unidade =
-    identificarUnidade(texto);
+  const rowsHoraHora = [];
 
+  for (const linha of linhas) {
+
+    const faixaHora =
+      linha.match(/^(\d{2})\s*-\s*(\d{2})/);
+
+    if (!faixaHora) {
+      continue;
+    }
+
+    const horaInicial =
+      Number(faixaHora[1]);
+
+    /*
+      Extrai todos os números da linha.
+      Ex:
+
+      00 - 01
+      1.236
+      1.288
+      1.045
+      917
+      920
+      12,6
+      ...
+    */
+
+    const numeros =
+      linha.match(/[\d.,]+/g) || [];
+
+    if (numeros.length < 6) {
+      continue;
+    }
+
+    /*
+      Estrutura identificada:
+
+      [0] 00
+      [1] 01
+      [2] Máquinas
+      [3] Tratores
+      [4] Restrição Cap.
+      [5] Cota
+      [6] Despacho
+      ...
+    */
+
+    const maquinas =
+      numeroBR(numeros[2]);
+
+    const tratores =
+      numeroBR(numeros[3]);
+
+    const restricao =
+      numeroBR(numeros[4]);
+
+    const cota =
+      numeroBR(numeros[5]);
+
+    const despacho =
+      numeroBR(numeros[6]);
+
+    /*
+      Planejamento:
+
+      Potencial = Restrição Cap.
+      Moagem = Despacho
+
+      É o cenário mais aderente para
+      tomada de decisão operacional.
+    */
+
+    rowsHoraHora.push({
+
+      hora:
+        `${String(horaInicial).padStart(2, '0')}:00`,
+
+      horaNumero:
+        horaInicial,
+
+      potencial:
+        restricao,
+
+      moagem:
+        despacho,
+
+      nominal:
+        unidade?.nominal ||
+        cota,
+
+      maquinas,
+      tratores,
+      restricao,
+      cota,
+      despacho
+
+    });
+
+  }
 
   /*
-    PROCURA CABEÇALHO DE HORAS
+    Se conseguiu interpretar pelo menos
+    metade do dia, assume formato novo.
+  */
+
+  if (rowsHoraHora.length >= 10) {
+
+    return {
+
+      rows: rowsHoraHora,
+
+      unidade,
+
+      nominal:
+        unidade?.nominal || null,
+
+      error: null
+
+    };
+
+  }
+
+  /*
+   =====================================================
+   FORMATO ANTIGO
+   =====================================================
   */
 
   let linhaCabecalho = null;
-
 
   for (const linha of linhas) {
 
     const horas =
       extrairHorasLinha(linha);
 
-
     if (horas.length >= 3) {
 
-      linhaCabecalho =
-        linha;
-
+      linhaCabecalho = linha;
       break;
 
     }
 
   }
 
-
   if (!linhaCabecalho) {
 
     return {
 
       rows: [],
-
       unidade,
 
       error:
-        'Não consegui identificar as horas da tabela. Cole a tabela completa do Análise de Potencial.'
+        'Não consegui identificar as horas da tabela.'
 
     };
 
   }
-
 
   const horas =
     extrairHorasLinha(
       linhaCabecalho
     );
 
+  const linhaPotencial =
+    encontrarLinha(
+      linhas,
+      [
+        'ritmo colheita',
+        'ritmo agrícola',
+        'ritmo agricola',
+        'potencial agrícola',
+        'potencial agricola',
+        'potencial produção',
+        'potencial producao'
+      ]
+    );
+
+  const linhaMoagem =
+    encontrarLinha(
+      linhas,
+      [
+        'ritmo industrial',
+        'ritmo moagem',
+        'industrial (t/h)',
+        'industrial t/h'
+      ]
+    );
+
+  const linhaNominal =
+    encontrarLinha(
+      linhas,
+      [
+        'nominal ind',
+        'nominal industrial'
+      ]
+    );
+
+  if (!linhaPotencial) {
+
+    return {
+
+      rows: [],
+      unidade,
+
+      error:
+        'Não encontrei a linha "Ritmo Colheita" / "Potencial".'
+
+    };
+
+  }
+
+  if (!linhaMoagem) {
+
+    return {
+
+      rows: [],
+      unidade,
+
+      error:
+        'Não encontrei a linha "Ritmo Industrial".'
+
+    };
+
+  }
+
+  const potencial =
+    extrairValoresLinha(
+      linhaPotencial.linha,
+      linhaPotencial.posicao
+    );
+
+  const moagem =
+    extrairValoresLinha(
+      linhaMoagem.linha,
+      linhaMoagem.posicao
+    );
+
+  const nominalTabela =
+    linhaNominal
+      ? extrairValoresLinha(
+          linhaNominal.linha,
+          linhaNominal.posicao
+        )
+      : [];
+
+  const quantidade =
+    Math.min(
+      horas.length,
+      potencial.length,
+      moagem.length
+    );
+
+  const rows = [];
+
+  for (let i = 0; i < quantidade; i++) {
+
+    rows.push({
+
+      hora:
+        horas[i],
+
+      horaNumero:
+        horaNumero(
+          horas[i]
+        ),
+
+      potencial:
+        potencial[i],
+
+      moagem:
+        moagem[i],
+
+      nominalTabela:
+        nominalTabela[i] ?? null
+
+    });
+
+  }
+
+  const nominalOficial =
+    unidade
+      ? unidade.nominal
+      : null;
+
+  rows.forEach(row => {
+
+    row.nominal =
+      nominalOficial ??
+      row.nominalTabela ??
+      null;
+
+  });
+
+  return {
+
+    rows,
+
+    unidade,
+
+    nominal:
+      nominalOficial,
+
+    error: null
+
+  };
+
+}
 
   /*
     RITMO DE COLHEITA / POTENCIAL
