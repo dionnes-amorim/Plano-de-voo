@@ -485,7 +485,6 @@ function encontrarLinha(
 /* =========================================================
    PARSER DA TABELA DE POTENCIAL
 ========================================================= */
-
 function interpretarTabela(texto) {
 
   if (!texto || !texto.trim()) {
@@ -509,65 +508,55 @@ function interpretarTabela(texto) {
       .filter(Boolean);
 
   /*
-   =====================================================
-   FORMATO NOVO
-   ANÁLISE DE POTENCIAL - HORA A HORA
-   =====================================================
+  ====================================================
+  FORMATO NOVO
+  HORA A HORA / TRANSPORTE
+  ====================================================
 
-   Ex:
+  Exemplo:
 
-   00 - 01 1.236 1.288 1.045 917 920 ...
-   01 - 02 1.178 1.291 1.003 917 910 ...
-   =====================================================
+  08 - 09
+  1.407
+  1.612
+  1.284
+  917
+  956
+  ...
   */
 
   const rowsHoraHora = [];
 
   for (const linha of linhas) {
 
-    const faixaHora =
+    const matchHora =
       linha.match(/^(\d{2})\s*-\s*(\d{2})/);
 
-    if (!faixaHora) {
+    if (!matchHora) {
       continue;
     }
-
-    const horaInicial =
-      Number(faixaHora[1]);
-
-    /*
-      Extrai todos os números da linha.
-      Ex:
-
-      00 - 01
-      1.236
-      1.288
-      1.045
-      917
-      920
-      12,6
-      ...
-    */
 
     const numeros =
       linha.match(/[\d.,]+/g) || [];
 
-    if (numeros.length < 6) {
-      continue;
-    }
-
     /*
-      Estrutura identificada:
+      Estrutura esperada:
 
       [0] 00
       [1] 01
       [2] Máquinas
       [3] Tratores
-      [4] Restrição Cap.
+      [4] Restrição
       [5] Cota
       [6] Despacho
       ...
     */
+
+    if (numeros.length < 7) {
+      continue;
+    }
+
+    const horaInicial =
+      Number(matchHora[1]);
 
     const maquinas =
       numeroBR(numeros[2]);
@@ -584,16 +573,6 @@ function interpretarTabela(texto) {
     const despacho =
       numeroBR(numeros[6]);
 
-    /*
-      Planejamento:
-
-      Potencial = Restrição Cap.
-      Moagem = Despacho
-
-      É o cenário mais aderente para
-      tomada de decisão operacional.
-    */
-
     rowsHoraHora.push({
 
       hora:
@@ -609,7 +588,7 @@ function interpretarTabela(texto) {
         despacho,
 
       nominal:
-        unidade?.nominal ||
+        unidade?.nominal ??
         cota,
 
       maquinas,
@@ -621,6 +600,214 @@ function interpretarTabela(texto) {
     });
 
   }
+
+  /*
+    Se encontrou várias linhas,
+    assume formato Hora a Hora.
+  */
+
+  if (rowsHoraHora.length >= 5) {
+
+    return {
+
+      rows: rowsHoraHora,
+
+      unidade,
+
+      nominal:
+        unidade?.nominal || null,
+
+      error: null
+
+    };
+
+  }
+
+  /*
+  ====================================================
+  FORMATO ANTIGO
+  ====================================================
+  */
+
+  let linhaCabecalho = null;
+
+  for (const linha of linhas) {
+
+    const horas =
+      extrairHorasLinha(linha);
+
+    if (horas.length >= 3) {
+
+      linhaCabecalho = linha;
+      break;
+
+    }
+
+  }
+
+  if (!linhaCabecalho) {
+
+    return {
+
+      rows: [],
+      unidade,
+
+      error:
+        'Não consegui identificar o formato da tabela.'
+
+    };
+
+  }
+
+  const horas =
+    extrairHorasLinha(
+      linhaCabecalho
+    );
+
+  const linhaPotencial =
+    encontrarLinha(
+      linhas,
+      [
+        'ritmo colheita',
+        'ritmo agrícola',
+        'ritmo agricola',
+        'potencial agrícola',
+        'potencial agricola',
+        'potencial produção',
+        'potencial producao'
+      ]
+    );
+
+  const linhaMoagem =
+    encontrarLinha(
+      linhas,
+      [
+        'ritmo industrial',
+        'ritmo moagem',
+        'industrial (t/h)',
+        'industrial t/h'
+      ]
+    );
+
+  const linhaNominal =
+    encontrarLinha(
+      linhas,
+      [
+        'nominal ind',
+        'nominal industrial'
+      ]
+    );
+
+  if (!linhaPotencial) {
+
+    return {
+
+      rows: [],
+      unidade,
+
+      error:
+        'Não encontrei a linha de Potencial.'
+
+    };
+
+  }
+
+  if (!linhaMoagem) {
+
+    return {
+
+      rows: [],
+      unidade,
+
+      error:
+        'Não encontrei a linha de Moagem.'
+
+    };
+
+  }
+
+  const potencial =
+    extrairValoresLinha(
+      linhaPotencial.linha,
+      linhaPotencial.posicao
+    );
+
+  const moagem =
+    extrairValoresLinha(
+      linhaMoagem.linha,
+      linhaMoagem.posicao
+    );
+
+  const nominalTabela =
+    linhaNominal
+      ? extrairValoresLinha(
+          linhaNominal.linha,
+          linhaNominal.posicao
+        )
+      : [];
+
+  const quantidade =
+    Math.min(
+      horas.length,
+      potencial.length,
+      moagem.length
+    );
+
+  const rows = [];
+
+  for (let i = 0; i < quantidade; i++) {
+
+    rows.push({
+
+      hora:
+        horas[i],
+
+      horaNumero:
+        horaNumero(
+          horas[i]
+        ),
+
+      potencial:
+        potencial[i],
+
+      moagem:
+        moagem[i],
+
+      nominalTabela:
+        nominalTabela[i] ?? null
+
+    });
+
+  }
+
+  const nominalOficial =
+    unidade
+      ? unidade.nominal
+      : null;
+
+  rows.forEach(row => {
+
+    row.nominal =
+      nominalOficial ??
+      row.nominalTabela ??
+      null;
+
+  });
+
+  return {
+
+    rows,
+
+    unidade,
+
+    nominal:
+      nominalOficial,
+
+    error: null
+
+  };
+
+}
 
   /*
     Se conseguiu interpretar pelo menos
