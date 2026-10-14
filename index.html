@@ -6,6 +6,8 @@
     <meta name="description" content="Plano de Voo - Análise operacional CTT Agroindustrial">
     <meta name="theme-color" content="#0b1113">
     <title>Plano de Voo | CTT Agroindustrial</title>
+    <!-- Ícone do navegador puxando da raiz do repositório -->
+    <link rel="icon" type="image/x-icon" href="/logo.ico">
     <style>
         *{box-sizing:border-box}
         html{margin:0;padding:0;background:#0b1113}
@@ -16,7 +18,8 @@
         .topbar{width:100%;background:rgba(11,18,20,0.92);border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:20;backdrop-filter:blur(16px)}
         .topbar-content{width:min(1180px,calc(100% - 40px));margin:0 auto;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
         .brand{display:flex;align-items:center;gap:14px}
-        .brand-mark{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:linear-gradient(135deg,#2cc681,#107e54);color:white;font-weight:900;font-size:13px;box-shadow:0 8px 24px rgba(44,198,129,0.22)}
+        .brand-mark{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:linear-gradient(135deg,#2cc681,#107e54);color:white;font-weight:900;font-size:13px;box-shadow:0 8px 24px rgba(44,198,129,0.22);overflow:hidden}
+        .brand-mark img{width:24px;height:24px;object-fit:contain}
         .brand-info{display:flex;flex-direction:column;line-height:1.15}
         .brand-title{font-size:14px;font-weight:800;letter-spacing:0.08em;color:#f4f7f7}
         .brand-subtitle{margin-top:4px;font-size:11px;font-weight:600;letter-spacing:0.12em;color:#708a83}
@@ -147,7 +150,11 @@
 <header class="topbar">
     <div class="topbar-content">
         <div class="brand">
-            <div class="brand-mark"><span>PV</span></div>
+            <div class="brand-mark">
+                <!-- Logo puxado diretamente da raiz do repositório -->
+                <img src="/logo.ico" alt="Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+                <span style="display:none">PV</span>
+            </div>
             <div class="brand-info">
                 <div class="brand-title">PLANO DE VOO</div>
                 <div class="brand-subtitle">CTT AGROINDUSTRIAL</div>
@@ -163,7 +170,7 @@
 <main class="container">
     <section class="intro">
         <div>
-            <span class="eyebrow">INTeligênCIA OPERACIONAL</span>
+            <span class="eyebrow">INTELIGÊNCIA OPERACIONAL</span>
             <h1>Plano de Voo</h1>
             <p>Cole a <strong>Análise de Potencial de Produção</strong>, preencha o estoque das últimas horas e gere diretrizes analíticas com foco em ajustes graduais e preservação da moagem.</p>
         </div>
