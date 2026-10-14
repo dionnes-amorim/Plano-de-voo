@@ -142,13 +142,11 @@ async function gerarPlanoVoo(){
     let moagemAtualOperacional = Math.round(mediaSai);
     let moagemSugerida = moagemAtualOperacional;
     let acaoGradual = '';
-    const agora = new Date().getHours();
     const fmtH = (h) => String((h+24)%24).padStart(2,'0')+':00';
 
     let nivel = 'ESTÁVEL';
     if(saldo3 < -400 || estoqueAtual <= 5){
       nivel = 'CRÍTICO';
-      // Redução gradual de 50 a 100 t/h, nunca agressiva
       moagemSugerida = Math.max(minTotal, moagemAtualOperacional - 100);
       acaoGradual = `Redução preventiva e gradual de ${moagemAtualOperacional} t/h para ${moagemSugerida} t/h (recuo de 100 t/h). Redução é o ÚLTIMO CASO, priorizando acelerar frentes de corte e transporte próprio.`;
     } else if(saldo3 < -150 || estoqueAtual <= 8){
@@ -198,12 +196,14 @@ ${dados.comentarios ? `\nOBSERVAÇÃO OPERACIONAL:\n${dados.comentarios}` : ''}`
     if($('kpiRiskHour'))$('kpiRiskHour').textContent=horaCritica!=null?fmtH(horaCritica):nivel;
     if($('resultStatus'))$('resultStatus').textContent=`${uni.sigla} • Nominal ${formatarNumero(nominal)} t/h • Mín ${minTotal} t/h • ${nivel} • Autonomia ${autonomiaAtual}h`;
     if($('analysisText'))$('analysisText').textContent=lastAnalysisText;
-    if($('calculationContent'))$('calculationContent'.innerHTML=`Média Ent ${mediaEnt.toFixed(0)} t/h | Média Sai ${mediaSai.toFixed(0)} t/h | Saldo 3h ${saldo3.toFixed(0)}t<br>Estoque ${estoqueAtual} conj = ${estoqueTon.toFixed(0)}t | Autonomia ${autonomiaAtual}h<br>Moagem Sugerida (Gradual): ${moagemSugerida} t/h`);
+    
+    // CORREÇÃO APLICADA AQUI (fechamento correto do parêntese)
+    if($('calculationContent'))$('calculationContent').innerHTML=`Média Ent ${mediaEnt.toFixed(0)} t/h | Média Sai ${mediaSai.toFixed(0)} t/h | Saldo 3h ${saldo3.toFixed(0)}t<br>Estoque ${estoqueAtual} conj = ${estoqueTon.toFixed(0)}t | Autonomia ${autonomiaAtual}h<br>Moagem Sugerida (Gradual): ${moagemSugerida} t/h`;
 
     if($('resultArea'))$('resultArea').classList.remove('hidden');
     window.scrollTo({top:$('resultArea').offsetTop-20,behavior:'smooth'});
   }catch(err){
-    console.error(err); if($('errorMessage'))$('errorMessage').textContent=err.message; if($('errorArea'))$('errorArea').classList.remove('hidden');
+    console.error(err); if($('errorMessage'))$('errorMessage').textContent=err.message; if($('errorArea'))$('errorArea').classList.add('hidden');
   }finally{
     if(botao) botao.disabled=false; if(txt) txt.textContent='GERAR PLANO DE VOO'; if(ico) ico.textContent='→'; if($('loadingArea'))$('loadingArea').classList.add('hidden');
   }
