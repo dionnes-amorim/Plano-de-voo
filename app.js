@@ -1,6 +1,6 @@
 /* =========================================================
-   COA | PLANO DE VOO CTT - FRONTEND CORRIGIDO
-   VERSÃO COMPLETA - SEM BACKEND
+   COA | PLANO DE VOO CTT - FRONTEND 100% LOCAL
+   VERSÃO CORRIGIDA FINAL - SEM API / SEM IA
 ========================================================= */
 
 /* CONFIG DAS UNIDADES */
@@ -28,30 +28,28 @@ function normalizarTexto(texto) {
 /* IDENTIFICAR UNIDADE */
 function identificarUnidade(texto) {
   const normalizado = normalizarTexto(texto);
-  const linhas = texto.replace(/\r/g,'').split('\n').map(l=>l.trim()).filter(Boolean);
-  for (const linha of linhas) {
-    const ln = normalizarTexto(linha);
-    if (ln.includes('FILIAL') || ln.includes('GESTORA') || ln.includes('UNIDADE')) {
-      for (const chave of Object.keys(CONFIG_UNIDADES)) {
-        if (ln.includes(chave)) return { chave,...CONFIG_UNIDADES[chave] };
-      }
-    }
-  }
   for (const chave of Object.keys(CONFIG_UNIDADES)) {
-    if (normalizado.includes(chave)) return { chave,...CONFIG_UNIDADES[chave] };
+    if (normalizado.includes(chave)) {
+      return { chave,...CONFIG_UNIDADES[chave] };
+    }
   }
   return null;
 }
 
-/* NÚMERO BR */
+/* NÚMERO BR - CORRIGIDO */
 function numeroBR(valor) {
   if (valor === null || valor === undefined) return null;
-  let texto = String(valor).trim().replace(/[^\d.,-]/g, '');
+  let texto = String(valor).trim();
   if (!texto) return null;
-  if (texto.includes('.') && texto.includes(',')) texto = texto.replace(/\./g,'').replace(',','.');
-  else if (/^\d{1,3}(\.\d{3})+$/.test(texto)) texto = texto.replace(/\./g,'');
-  else if (/^\d{1,3}(,\d{3})+$/.test(texto)) texto = texto.replace(/,/g,'');
-  else texto = texto.replace(',','.');
+  // Remove tudo menos dígito,. -
+  texto = texto.replace(/[^\d.,-]/g, '');
+  if (texto.includes('.') && texto.includes(',')) {
+    texto = texto.replace(/\./g,'').replace(',','.');
+  } else if (/^\d{1,3}(\.\d{3})+$/.test(texto)) {
+    texto = texto.replace(/\./g,'');
+  } else if (texto.includes(',')) {
+    texto = texto.replace(',','.');
+  }
   const n = Number(texto);
   return Number.isFinite(n)? n : null;
 }
@@ -63,7 +61,8 @@ function formatarNumero(numero, casas = 0) {
 
 /* LABELS ESTOQUE */
 function atualizarLabelsEstoque() {
-  const agora = new Date(); const h = agora.getHours();
+  const agora = new Date();
+  const h = agora.getHours();
   const fmt = v => String((v+24)%24).padStart(2,'0')+'h';
   if ($('stockLabel1')) $('stockLabel1').textContent = fmt(h-3)+' - 3h';
   if ($('stockLabel2')) $('stockLabel2').textContent = fmt(h-2)+' - 2h';
@@ -73,51 +72,54 @@ function atualizarLabelsEstoque() {
 atualizarLabelsEstoque();
 setInterval(atualizarLabelsEstoque, 60000);
 
-/* PARSER PRINCIPAL - USA O DO INDEX.HTML SE EXISTIR */
+/* PARSER PRINCIPAL */
 function interpretarTabela(texto) {
   if (!texto ||!texto.trim()) return { rows:[], unidade: null, error:'Cole a tabela de potencial.' };
 
-  // 1 - Tenta usar o parser do index.html (que já funciona e você validou)
+  // 1 - Usa o parser do index.html se existir (o que você validou)
   if (window.__parsePotential) {
-    const p = window.__parsePotential(texto);
-    if (p && p.dados && p.dados.length) {
-      const unidade = identificarUnidade(texto) || { chave:'MANDU', nome: p.filial||'Mandu', nominal:917 };
-      const rows = p.dados.map(d => ({
-        hora: d.hora,
-        horaNumero: Number(d.hora.split('-')[0]),
-        potencial: d.entrada,
-        moagem: d.saida,
-        entrada: d.entrada,
-        saida: d.saida,
-        maquinas: d.maquinas,
-        despacho: d.despacho,
-        nominal: unidade.nominal
-      }));
-      return { rows, unidade, nominal: unidade.nominal, parsedMandu: p, error: null };
-    }
+    try {
+      const p = window.__parsePotential(texto);
+      if (p && p.dados && p.dados.length) {
+        const unidade = identificarUnidade(texto) || { chave:'MANDU', nome: p.filial||'Mandu', nominal:917 };
+        const nominalFinal = CONFIG_UNIDADES[unidade.chave]?.nominal || unidade.nominal || 917;
+        const rows = p.dados.map(d => ({
+          hora: d.hora,
+          horaNumero: Number(String(d.hora).split(':')[0]),
+          potencial: d.entrada,
+          moagem: d.saida,
+          entrada: d.entrada,
+          saida: d.saida,
+          maquinas: d.maquinas,
+          despacho: d.despacho,
+          nominal: nominalFinal
+        }));
+        return { rows, unidade: {...unidade, nominal: nominalFinal}, nominal: nominalFinal, parsedMandu: p, error: null };
+      }
+    } catch(e) { console.warn('Parser index falhou, usando fallback', e); }
   }
 
-  // 2 - Fallback parser próprio (hora a hora)
-  const unidade = identificarUnidade(texto);
+  // 2 - Fallback
+  const unidade = identificarUnidade(texto) || { chave:'MANDU', nome:'Mandu', nominal:917 };
   const linhas = texto.replace(/\r/g,'').split('\n').map(l=>l.trim()).filter(Boolean);
   const rows = [];
   for (const linha of linhas) {
-    const m = linha.match(/^(\d{2})\s*-\s*(\d{2})/);
+    const m = linha.match(/^(\d{1,2})\s*-\s*(\d{1,2})/);
     if (!m) continue;
     const nums = linha.match(/[\d.,]+/g) || [];
-    if (nums.length < 7) continue;
+    if (nums.length < 4) continue;
     const entrada = numeroBR(nums[nums.length-2]);
     const saida = numeroBR(nums[nums.length-1]);
+    if (entrada === null || saida === null) continue;
     rows.push({
       hora: `${String(Number(m[1])).padStart(2,'0')}:00`,
       horaNumero: Number(m[1]),
       potencial: entrada, moagem: saida, entrada, saida,
-      maquinas: numeroBR(nums[2]), despacho: numeroBR(nums[6]),
-      nominal: unidade?.nominal || 917
+      nominal: unidade.nominal
     });
   }
-  if (rows.length >= 3) return { rows, unidade, nominal: unidade?.nominal || 917, error: null };
-  return { rows:[], unidade, error:'Não consegui identificar o formato da tabela.' };
+  if (rows.length >= 3) return { rows, unidade, nominal: unidade.nominal, error: null };
+  return { rows:[], unidade, error:'Não consegui identificar o formato. Verifique se copiou hora, entrada e saída.' };
 }
 
 function horaRelativa(hora, atual){ let d=(hora-atual+24)%24; if(d>12) d-=24; return d; }
@@ -143,18 +145,27 @@ function renderizarPreview(){
   html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">';
   futuro.forEach(r=>{ html+=`<div style="padding:8px;background:rgba(255,255,255,0.03);border-radius:8px"><strong>${r.hora}</strong><br><span style="font-size:11px">Ent ${Math.round(r.potencial)} / Moag ${Math.round(r.moagem)} t/h</span></div>`; });
   html+='</div>';
-  if(historico.length) html+=`<div style="margin-top:10px;font-size:11px"><strong>Histórico:</strong> ${historico.map(r=>`${r.hora} → ${Math.round(r.potencial)}/${Math.round(r.moagem)}`).join(' • ')}</div>`;
+  if(historico.length) html+=`<div style="margin-top:10px;font-size:11px"><strong>Histórico 3h:</strong> ${historico.map(r=>`${r.hora} → ${Math.round(r.potencial)}/${Math.round(r.moagem)}`).join(' • ')}</div>`;
   if(content) content.innerHTML=html;
   if(preview) preview.classList.remove('hidden');
 }
 
-/* INPUT DA TABELA - CORRIGIDO: usa this.value */
-if($('potentialInput')){
-  $('potentialInput').addEventListener('input', function(){
-    const tabela = this.value; // <-- antes estava undefined
+/* INPUT DA TABELA */
+const potentialInputEl = $('potentialInput');
+if(potentialInputEl){
+  potentialInputEl.addEventListener('input', function(){
+    const tabela = this.value;
     const resultado = interpretarTabela(tabela);
-    if(resultado.error){ parsedPotential=[]; unidadeDetectada=resultado.unidade||null; if($('potentialStatus')){ $('potentialStatus').textContent=resultado.error; $('potentialStatus').className='input-status error'; } if($('previewArea')) $('previewArea').classList.add('hidden'); return; }
-    parsedPotential = resultado.rows; unidadeDetectada = resultado.unidade || null; renderizarPreview();
+    if(resultado.error){
+      parsedPotential=[];
+      unidadeDetectada=resultado.unidade||null;
+      if($('potentialStatus')){ $('potentialStatus').textContent=resultado.error; $('potentialStatus').className='input-status error'; }
+      if($('previewArea')) $('previewArea').classList.add('hidden');
+      return;
+    }
+    parsedPotential = resultado.rows;
+    unidadeDetectada = resultado.unidade || null;
+    renderizarPreview();
   });
 }
 
@@ -173,20 +184,23 @@ if($('micButton')) $('micButton').addEventListener('click', ()=>{ if(!recognitio
 
 /* MONTAR DADOS */
 function montarDados(){
-  const tabela = $('potentialInput').value.trim();
+  const inputEl = $('potentialInput');
+  if(!inputEl) throw new Error('Campo de tabela não encontrado.');
+  const tabela = inputEl.value.trim();
   if(!tabela) throw new Error('Cole a Análise de Potencial de Produção.');
   const resultado = interpretarTabela(tabela);
   if(resultado.error) throw new Error(resultado.error);
   parsedPotential = resultado.rows; unidadeDetectada = resultado.unidade || null;
-  if(!unidadeDetectada) throw new Error('Não consegui identificar a filial. Verifique se "FILIAL" ou "USINA MANDU" está no texto copiado.');
+  if(!unidadeDetectada) throw new Error('Não consegui identificar a filial. Inclua no texto "MANDU, CRUZ ALTA, SAO JOSE..."');
 
-  const e1 = $('stock1').value; const e2 = $('stock2').value; const e3 = $('stock3').value; const eAtual = $('stockCurrent').value;
-  if(eAtual==='' || eAtual===null) throw new Error('Informe o estoque atual.');
+  const e1 = $('stock1')?.value; const e2 = $('stock2')?.value; const e3 = $('stock3')?.value; const eAtual = $('stockCurrent')?.value;
+  if(eAtual==='' || eAtual===null || eAtual===undefined) throw new Error('Informe o estoque atual.');
   const estoque1 = Number(e1||0); const estoque2 = Number(e2||0); const estoque3 = Number(e3||0); const estoqueAtual = Number(eAtual);
+  if(isNaN(estoqueAtual)) throw new Error('Estoque atual inválido.');
   return { tabelaOriginal: tabela, unidade: unidadeDetectada, nominal: unidadeDetectada.nominal, potencial: parsedPotential, parsedMandu: resultado.parsedMandu, estoque:{h3:estoque1,h2:estoque2,h1:estoque3,atual:estoqueAtual}, comentarios: $('comments')?$('comments').value.trim():'' };
 }
 
-/* GERAR - LOCAL, SEM /api/plano-voo */
+/* GERAR - LOCAL */
 async function gerarPlanoVoo(){
   const botao=$('generateButton'); const textoBotao=$('generateText'); const icone=$('generateIcon');
   try{
@@ -198,7 +212,8 @@ async function gerarPlanoVoo(){
     if($('loadingArea')) $('loadingArea').classList.remove('hidden');
     if($('resultArea')) $('resultArea').classList.add('hidden');
 
-    // Usa dados do parser Mandu para cálculo preciso de entrada/saída
+    await new Promise(r => setTimeout(r, 150)); // pra UI respirar
+
     let entradaTotal, saidaTotal, ultimas3Entrada, ultimas3Saida, saldo3;
     if(dados.parsedMandu){
       entradaTotal=dados.parsedMandu.entradaTotal; saidaTotal=dados.parsedMandu.saidaTotal; ultimas3Entrada=dados.parsedMandu.ultimas3Entrada; ultimas3Saida=dados.parsedMandu.ultimas3Saida; saldo3=dados.parsedMandu.saldo3;
@@ -216,17 +231,40 @@ async function gerarPlanoVoo(){
     const tendencia = estoqueAtual - dados.estoque.h1;
     const nominal = dados.nominal;
 
-    let moagemSegura = Math.round(mediaSaida);
+    let moagemSegura = Math.round(mediaSaida || nominal * 0.9);
     let status='', horaRisco='', acao='';
-    if(saldo3 < -200){ moagemSegura=Math.round(Math.max(mediaEntrada, mediaSaida*0.92)); status=`⚠ Pátio em queda. Saldo 3h ${saldo3.toFixed(0)}t. Reduzir moagem para ${moagemSegura} t/h.`; horaRisco='2-3h'; acao='Reduzir moagem e acelerar frente de corte/entrada. Priorizar despacho.'; }
-    else if(saldo3 > 200){ moagemSegura=Math.round(Math.min(mediaSaida*1.05, mediaEntrada+50)); status=`✓ Pátio recuperando. Saldo 3h +${saldo3.toFixed(0)}t. Estoque suporta ${Math.floor(estoqueTon/moagemSegura)}h de moagem.`; horaRisco='Sem risco'; acao='Manter moagem em '+moagemSegura+' t/h. Aproveitar para elevar estoque de segurança.'; }
-    else { status=`Pátio estável. Saldo 3h ${saldo3.toFixed(0)}t. Manter ritmo atual.`; horaRisco='Manter'; acao='Manter moagem em '+moagemSegura+' t/h e monitorar entrada hora a hora.'; }
+
+    if(saldo3 < -200){
+      moagemSegura=Math.round(Math.max(mediaEntrada*0.95, (mediaSaida||nominal)*0.85));
+      status=`⚠ Pátio em queda. Saldo 3h ${saldo3.toFixed(0)}t.`;
+      horaRisco='2-3h';
+      acao='Reduzir moagem para '+moagemSegura+' t/h e acelerar frente de corte/entrada.';
+    } else if(saldo3 > 200){
+      moagemSegura=Math.round(Math.min((mediaSaida||nominal)*1.05, mediaEntrada+50));
+      status=`✓ Pátio recuperando. Saldo 3h +${saldo3.toFixed(0)}t.`;
+      horaRisco='Sem risco';
+      acao='Manter moagem em '+moagemSegura+' t/h. Elevar estoque de segurança.';
+    } else {
+      status=`→ Pátio estável. Saldo 3h ${saldo3.toFixed(0)}t.`;
+      horaRisco='Estável';
+      acao='Manter moagem em '+moagemSegura+' t/h e monitorar hora a hora.';
+    }
 
     const autonomia = moagemSegura>0? (estoqueTon/moagemSegura).toFixed(1) : '0';
 
-    lastAnalysisText = `PLANO DE VOO - ${dados.unidade.nome.toUpperCase()} • Nominal ${formatarNumero(nominal)} t/h\nEstoque atual: ${estoqueAtual} conjuntos (${estoqueTon.toFixed(0)}t) - Autonomia aprox. ${autonomia}h a ${moagemSegura} t/h\n\nÚltimas 3h: Entrada ${ultimas3Entrada.toFixed(0)}t / Moagem ${ultimas3Saida.toFixed(0)}t\nMédia: Entrada ${mediaEntrada.toFixed(0)} t/h | Moagem ${mediaSaida.toFixed(0)} t/h\nSaldo dia: Entrada ${entradaTotal.toFixed(0)}t / Saída ${saidaTotal.toFixed(0)}t (${(entradaTotal-saidaTotal).toFixed(0)}t)\n\nMOAGEM SEGURA RECOMENDADA: ${moagemSegura} t/h\n${status}\n\nAÇÃO: ${acao}\n${dados.comentarios? '\nOBSERVAÇÕES: '+dados.comentarios : ''}`;
+    lastAnalysisText = `PLANO DE VOO - ${dados.unidade.nome.toUpperCase()} • Nominal ${formatarNumero(nominal)} t/h
+Estoque atual: ${estoqueAtual} conjuntos (${estoqueTon.toFixed(0)}t) - Autonomia ${autonomia}h a ${moagemSegura} t/h
 
-    // KPIs
+Últimas 3h: Entrada ${ultimas3Entrada.toFixed(0)}t / Moagem ${ultimas3Saida.toFixed(0)}t
+Média 3h: Entrada ${mediaEntrada.toFixed(0)} t/h | Moagem ${mediaSaida.toFixed(0)} t/h
+Saldo dia: Entrada ${entradaTotal.toFixed(0)}t / Saída ${saidaTotal.toFixed(0)}t (Saldo ${(entradaTotal-saidaTotal).toFixed(0)}t)
+
+MOAGEM SEGURA: ${moagemSegura} t/h
+${status}
+
+AÇÃO: ${acao}
+${dados.comentarios? '\nOBS: '+dados.comentarios : ''}`;
+
     if($('kpiStock')) $('kpiStock').textContent = `${estoqueAtual} (${estoqueTon.toFixed(0)}t)`;
     if($('kpiTrend')){ $('kpiTrend').textContent = `${tendencia>=0?'+':''}${formatarNumero(tendencia,1)}`; $('kpiTrend').className = `kpi-value ${tendencia<0?'danger':'positive'}`; }
     if($('kpiTrendDetail')) $('kpiTrendDetail').textContent='conj./h';
@@ -234,7 +272,7 @@ async function gerarPlanoVoo(){
     if($('kpiRiskHour')) $('kpiRiskHour').textContent = horaRisco;
     if($('resultStatus')) $('resultStatus').textContent = `${dados.unidade.nome} • Nominal ${formatarNumero(nominal)} t/h • ${status}`;
     if($('analysisText')) $('analysisText').textContent = lastAnalysisText;
-    if($('calculationContent')) $('calculationContent').innerHTML = `Entrada média 3h: ${mediaEntrada.toFixed(0)} t/h • Saída média 3h: ${mediaSaida.toFixed(0)} t/h<br>Saldo 3h: ${saldo3.toFixed(0)}t • Estoque: ${estoqueAtual} conj x 70t = ${estoqueTon.toFixed(0)}t<br>Autonomia: ${estoqueTon.toFixed(0)} / ${moagemSegura} = ${autonomia}h • Tendência estoque: ${tendencia>0?'+':''}${tendencia} conj`;
+    if($('calculationContent')) $('calculationContent').innerHTML = `Entrada média 3h: ${mediaEntrada.toFixed(0)} t/h • Saída média 3h: ${mediaSaida.toFixed(0)} t/h<br>Saldo 3h: ${saldo3.toFixed(0)}t • Estoque: ${estoqueAtual} conj x 70t = ${estoqueTon.toFixed(0)}t<br>Autonomia: ${estoqueTon.toFixed(0)} / ${moagemSegura} = ${autonomia}h • Tendência: ${tendencia>0?'+':''}${tendencia} conj`;
 
     if($('resultArea')) $('resultArea').classList.remove('hidden');
     if($('resultArea')) window.scrollTo({ top: $('resultArea').offsetTop-20, behavior:'smooth' });
