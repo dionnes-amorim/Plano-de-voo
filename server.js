@@ -330,7 +330,7 @@ REGRAS PARA ESCREVER IGUAL AOS EXEMPLOS - OBRIGATÓRIO:
 - 1º parágrafo: De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos. Entretanto, média de entrada das últimas 3h está em ${calc.medias.historicoPotencial.toFixed(0)} t/h. Se parada: Usina parada no momento, pátio contabilizando ${calc.estoque.atual} conjuntos.
 - 2º: Motivo técnico (indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção)
 - 3º: Projeção futura usando potencial futuro informado (${calc.potencialFuturo.media.toFixed(0)} t/h) - se ganha ou perde pátio
-- 4º: Risco com horário exato para reduzir/aumentar/voltar, usando gatilho ${unidade.gatilho} conj
+- 4º: Risco com horário exato para reduzir/aumentar/voltar, usando gatilho, mas sem usar a palavra gatilho ${unidade.gatilho} conj
 - 5º: Como melhora e alinhamento CTT/indústria/transporte
 - 6º: Seguimos acompanhando hora a hora - COA CTT
 - Texto formal, técnico, 5-7 parágrafos, grande e detalhado
