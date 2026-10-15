@@ -6,8 +6,17 @@ const helmet = require('helmet');
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 const TONELADAS_POR_CONJUNTO = 70;
+
+// MODELOS IGUAIS AO SEU SISTEMA QUE FUNCIONA - NUNCA DÁ 503
+const GEMINI_MODELS = [
+  'gemini-3.8-flash',
+  'gemini-flash-latest',
+  'gemini-flash-lite-latest',
+  'gemini-2.5-flash-lite',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash'
+];
 
 const UNIDADES = {
   'MANDU': { nome: 'Mandu', sigla: 'UIM', nominal: 917, tipo: 'MOENDA', min: 650, gatilhoReducao: 12 },
@@ -19,10 +28,11 @@ const UNIDADES = {
 
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 function numeroSeguro(v,f=0){ const n=Number(v); return Number.isFinite(n)?n:f; }
-function textoSeguro(v,l=30000){ return String(v||'').trim().slice(0,l); }
+function textoSeguro(v,l=30000){ return String(v||'').replace(/\u0000/g,'').trim().slice(0,l); }
 function normalizarTexto(t){ return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim(); }
 function horaNumero(h){ const m=String(h||'').match(/\d{1,2}/); if(!m) return null; const n=Number(m[0]); return n>=0&&n<=23?n:null; }
 function horaFormatada(h){ const n=horaNumero(h); return n==null?'--':`${String(n).padStart(2,'0')}:00`; }
@@ -34,7 +44,7 @@ function identificarUnidade(texto){
   if(n.includes('UIM')) return {chave:'MANDU',...UNIDADES['MANDU']};
   if(n.includes('UICA')) return {chave:'CRUZ ALTA',...UNIDADES['CRUZ ALTA']};
   if(n.includes('UISJ')) return {chave:'SAO JOSE',...UNIDADES['SAO JOSE']};
-  if(n.includes('UIV')||n.includes('VER')) return {chave:'VERTENTE',...UNIDADES['VERTENTE']};
+  if(n.includes('UIV')||n.includes('VERTENTE')) return {chave:'VERTENTE',...UNIDADES['VERTENTE']};
   if(n.includes('UIT')) return {chave:'TANABI',...UNIDADES['TANABI']};
   return null;
 }
@@ -67,139 +77,167 @@ function calcularCenario(dados, unidade){
   if(atual < unidade.gatilhoReducao){ const recuo=Math.min(100, Math.max(50, Math.round((unidade.gatilhoReducao-atual)*20))); moagemSugerida=Math.max(unidade.min, moagemSugerida-recuo); }
   else if(atual < unidade.gatilhoReducao+3 && (mediaHistPot-mediaHistMoag)<-100){ moagemSugerida=Math.max(unidade.min, Math.round(mediaHistMoag)-50); }
   else if(mediaHistMoag>unidade.nominal){ moagemSugerida=unidade.nominal; }
-  else if(atual>=12 && (mediaHistPot-mediaHistMoag)>150){ moagemSugerida=Math.min(unidade.nominal, Math.round(mediaHistMoag)+50); }
   return {unidade, horaAtual, estoque:{h3,h2,h1,atual, variacao:atual-h3}, medias:{historicoPotencial:mediaHistPot, historicoMoagem:mediaHistMoag, saldoHistorico:mediaHistPot-mediaHistMoag}, historico, projecaoEstoque:projecao, risco:{menorEstoque, horaMenorEstoque:horaMenor, primeiraHoraRisco, horaQueda, janelasRecuperacao:janelas}, moagemSugerida};
 }
 
-/* PROMPT GESTÃO */
+function normalizarPublicacaoIA(texto){
+  return String(texto||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/```(?:text|markdown|md)?/gi,'').replace(/```/g,'').replace(/^#{1,6}\s*/gm,'').replace(/\*{2,}/g,'*').replace(/^={3,}.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
+}
+
+function obterConfigPensamento(modelo, nivel){
+  if(modelo.includes('3.8')||modelo.includes('flash-latest')){
+    return { thinkingConfig:{ thinkingLevel: nivel||'medium' } };
+  }
+  if(modelo.includes('2.5')){
+    const budget=nivel==='high'?4096:nivel==='low'?1024:2048;
+    return { thinkingConfig:{ thinkingBudget: budget } };
+  }
+  return {};
+}
+
+function extrairTextoGemini(data){
+  const partes=data?.candidates?.[0]?.content?.parts||[];
+  const textos=partes.filter(p=>p&&typeof p.text==='string'&&p.thought!==true).map(p=>p.text);
+  return textos.join('\n').trim();
+}
+
+async function chamarIA(prompt, options={}){
+  if(!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY não configurada no Render.');
+  const maxOutputTokens=options.maxOutputTokens||5000;
+  const timeoutMs=options.timeoutMs||45000;
+  const thinkingLevel=options.thinkingLevel||'medium';
+  let ultimoErro='Erro desconhecido na IA.';
+  for(const modelo of GEMINI_MODELS){
+    const controller=new AbortController();
+    let timeout=null;
+    try{
+      console.log(`[IA] Tentando modelo: ${modelo}`);
+      timeout=setTimeout(()=>controller.abort(), timeoutMs);
+      const url=`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${GEMINI_API_KEY}`;
+      const generationConfig={
+        temperature: options.temperature??0.3,
+        maxOutputTokens,
+       ...obterConfigPensamento(modelo, thinkingLevel)
+      };
+      const response=await fetch(url,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ contents:[{parts:[{text:prompt}]}], generationConfig }),
+        signal:controller.signal
+      });
+      console.log(`[IA] HTTP ${modelo} ${response.status}`);
+      const raw=await response.text();
+      if(!raw) throw new Error(`Gemini ${modelo} retornou vazio`);
+      let data; try{ data=JSON.parse(raw); }catch{ throw new Error(`Gemini ${modelo} JSON inválido`); }
+      if(!response.ok){
+        const detalhe=data?.error?.message||raw.slice(0,800);
+        ultimoErro=`Gemini ${modelo} HTTP ${response.status}: ${detalhe}`;
+        console.error(ultimoErro);
+        if([400,401,403].includes(response.status)) throw new Error(ultimoErro);
+        continue;
+      }
+      const resposta=extrairTextoGemini(data);
+      if(!resposta){ ultimoErro=`Gemini ${modelo} sem texto`; continue; }
+      console.log(`[IA] SUCESSO ${modelo} ${resposta.length} chars`);
+      return { texto: normalizarPublicacaoIA(resposta), modelo };
+    }catch(error){
+      ultimoErro=error.name==='AbortError'?`Timeout ${timeoutMs/1000}s no modelo ${modelo}`:(error.message||'Erro IA');
+      console.error(`[IA] Falha ${modelo}:`, ultimoErro);
+      if(String(ultimoErro).includes('HTTP 400')||String(ultimoErro).includes('HTTP 401')||String(ultimoErro).includes('HTTP 403')) throw new Error(ultimoErro);
+      continue;
+    }finally{ if(timeout) clearTimeout(timeout); }
+  }
+  throw new Error(ultimoErro);
+}
+
 function montarPrompt(dados, calculos, unidade){
-  const comentarios=textoSeguro(dados.comentarios,8000)||'Acompanhamento de frentes e quebras.';
-  const projTxt=calculos.projecaoEstoque.map(r=>`${r.horaFormatada}: Ent ${r.potencial.toFixed(0)} / Moag ${r.moagem.toFixed(0)} | Estoque ${r.estoqueProjetado.toFixed(1)}`).join('\n');
-  return `Gere COMUNICADO WhatsApp gestão padrão: UNIDADE ${unidade.sigla} ${unidade.tipo} Nom ${unidade.nominal} Min ${unidade.min} Gatilho <${unidade.gatilhoReducao} Estoque ${calculos.estoque.atual} conj Media 3h Ent ${calculos.medias.historicoPotencial.toFixed(0)} Moag ${calculos.medias.historicoMoagem.toFixed(0)} Saldo ${calculos.medias.saldoHistorico.toFixed(0)} Moagem sugerida ${calculos.moagemSugerida} Projeção ${projTxt} Menor estoque ${calculos.risco.menorEstoque.toFixed(1)} às ${horaFormatada(calculos.risco.horaMenorEstoque)} Risco ${calculos.risco.primeiraHoraRisco!=null?horaFormatada(calculos.risco.primeiraHoraRisco):'sem risco'} Comentários: ${comentarios} Use modelo: *Comunicado UIM* No momento, a moagem da UIM está liberada para nominal, porém a média das últimas 3 horas está em 999 t/h... Atualmente, está sendo realizada mudança parcial das frentes... Com base nos pontos... necessidade de manter moagem próximo nominal... a partir das 19:00 tendência queda... pátio contabiliza 11 conjuntos... risco iminente redução até 21:00... contato supervisão... troca turno transporte 18:00 e 21:00... Ajuste gradual 50-100t/h sempre voltar nominal. Retorne APENAS comunicado.`;
-}
+  const comentarios=textoSeguro(dados.comentarios,8000)||'Acompanhamento de frentes e quebras de colhedoras, transbordos.';
+  const projTxt=calculos.projecaoEstoque.map(r=>`${r.horaFormatada}: Ent ${r.potencial.toFixed(0)} / Moag ${r.moagem.toFixed(0)} | Saldo ${r.saldoToneladas>=0?'+':''}${r.saldoToneladas.toFixed(0)}t | Estoque proj ${r.estoqueProjetado.toFixed(1)} conj`).join('\n');
+  const histTxt=calculos.historico.map(r=>`${horaFormatada(r.hora)}: ${r.potencial.toFixed(0)}/${r.moagem.toFixed(0)} saldo ${r.potencial-r.moagem>=0?'+':''}${(r.potencial-r.moagem).toFixed(0)}t`).join('\n');
+  return `
+Você é analista sênior CTT Plano de Voo.
 
-/* FALLBACK LOCAL SE GEMINI CAIR - TEXTO COMPLEXO */
-function gerarComunicadoLocalFallback(dados, calculos, unidade){
-  const fmtH=h=>String((h+24)%24).padStart(2,'0')+':00';
-  const estoque=calculos.estoque;
-  const saldo=calculos.medias.saldoHistorico;
-  const projDet=calculos.projecaoEstoque;
-  const horaQueda=calculos.risco.horaQueda!=null?fmtH(calculos.risco.horaQueda):'19:00';
-  const horaRisco=calculos.risco.primeiraHoraRisco!=null?fmtH(calculos.risco.primeiraHoraRisco):'21:00';
-  const comentarios=dados.comentarios||'está sendo realizada mudança parcial das frentes conforme programação operacional. Estamos em acompanhamento das frentes de corte, com atenção para quebras de colhedoras, transbordos e caminhões.';
-  const tendencia=saldo<0?'nova redução':'estabilização';
-  const janelas=calculos.risco.janelasRecuperacao.join(', ')||'avaliar próximas horas';
+UNIDADE: ${unidade.nome} (${unidade.sigla}) ${unidade.tipo} Nominal ${unidade.nominal} t/h MAXIMA Mín operacional ${unidade.min} t/h Gatilho redução <${unidade.gatilhoReducao} conj (VERTENTE <4, demais <12)
+ESTOQUE: Atual ${calculos.estoque.atual} conj H-3 ${calculos.estoque.h3} H-2 ${calculos.estoque.h2} H-1 ${calculos.estoque.h1} Variação ${calculos.estoque.variacao.toFixed(1)}
+MÉDIA 3h: Ent ${calculos.medias.historicoPotencial.toFixed(0)} Moag ${calculos.medias.historicoMoagem.toFixed(0)} Saldo ${calculos.medias.saldoHistorico.toFixed(0)}t
+MOAGEM SUGERIDA GRADUAL 50-100t/h: ${calculos.moagemSugerida} t/h - Nominal é TETO, sempre focar voltar para nominal o mais rápido possível com passos +50t/h quando pátio >${unidade.gatilhoReducao+2} e entrada >${Math.round(unidade.nominal*0.85)}
+PROJEÇÃO:
+${projTxt}
+Menor estoque ${calculos.risco.menorEstoque.toFixed(1)} às ${horaFormatada(calculos.risco.horaMenorEstoque)} Risco gatilho ${calculos.risco.primeiraHoraRisco!=null?horaFormatada(calculos.risco.primeiraHoraRisco):'sem risco'} Queda a partir de ${calculos.risco.horaQueda!=null?horaFormatada(calculos.risco.horaQueda):'--'} Janelas recuperação: ${calculos.risco.janelasRecuperacao.join(', ')||'nenhuma'}
+HISTÓRICO:
+${histTxt}
+COMENTÁRIOS OPERAÇÃO: ${comentarios}
 
-  return `*Comunicado ${unidade.sigla}*
+FORMATO OBRIGATÓRIO - USE EXATAMENTE ESSE MODELO MAIOR E ASSERTIVO:
 
-No momento, a moagem da ${unidade.sigla} está liberada para ${calculos.moagemSugerida} t/h (nominal máxima ${unidade.nominal} t/h / mínimo operacional ${unidade.min} t/h - ${unidade.tipo}${unidade.difusores?` ${unidade.difusores}x${unidade.minPorDifusor}`:''}), porém a média das últimas 3 horas está em ${calculos.medias.historicoMoagem.toFixed(0)} t/h, com entrada média de ${calculos.medias.historicoPotencial.toFixed(0)} t/h e saldo de ${saldo.toFixed(0)}t no período. Diante disso, ${calculos.medias.historicoMoagem>unidade.nominal?'foi realizado um ajuste para manter a moagem dentro da capacidade nominal da planta':'foi avaliado cenário para manter a moagem o mais próximo possível da nominal, com ajuste gradual de 50 a 100 t/h até estabilizar entrega com estoque'}.
+*Comunicado ${unidade.sigla}*
 
-Análise de pátio: O pátio saiu de ${estoque.h3} conj (3h atrás) para ${estoque.h2} conj (2h atrás), depois para ${estoque.h1} conj (1h atrás) e agora contabiliza ${estoque.atual} conj, representando variação de ${(estoque.atual-estoque.h3).toFixed(1)} conj nas últimas 3h. Acumulado do dia com entrada e saída conforme projeção, mantendo tendência de ${tendencia}.
+No momento, a moagem da ${unidade.sigla} está liberada para nominal, porém a média das últimas 3 horas está em 999 t/h. Diante disso, foi realizado um ajuste para manter a moagem dentro da capacidade nominal da planta.
 
-Atualmente, ${comentarios}
+Atualmente, está sendo realizada mudança parcial das frentes 501, 505, 506 e 542. A mudança da F506 está próxima e, posteriormente, após à troca de turno, será realizada mudança também da F503.
 
-Com base nos pontos citados acima, estamos reforçando junto à indústria a necessidade de manter a moagem o mais próximo possível da nominal de ${unidade.nominal} t/h, evitando uma redução ainda maior, visto que a partir das ${horaQueda} a projeção indica entrada de ${projDet.find(p=>p.hora==calculos.risco.horaQueda)?.potencial.toFixed(0)||'-'} t/h abaixo da moagem.
+Com base nos pontos citados acima, estamos reforçando junto à indústria a necessidade de manter a moagem o mais próximo possível da nominal, evitando uma redução ainda maior, visto que a partir das 19:00 a tendência é de queda na entrega.
 
-Como pode ser observado no gráfico acima, o pátio contabiliza no momento ${estoque.atual} conjuntos carregados, com tendência de ${tendencia} nas próximas horas, ${calculos.risco.primeiraHoraRisco!=null?`gerando risco iminente de atingir o gatilho de ${unidade.gatilhoReducao} conj e necessidade de redução de moagem até as ${horaRisco}.`:`com menor nível projetado de ${calculos.risco.menorEstoque.toFixed(1)} conj às ${fmtH(calculos.risco.horaMenorEstoque)}.`} Janelas de recuperação identificadas: ${janelas} - oportunidade para elevar +50 t/h.
+Como pode ser observado no gráfico acima, o pátio contabiliza no momento 11 conjuntos carregados, com tendência de nova redução nas próximas horas, gerando risco iminente de redução de moagem até as 21:00.
 
-Estamos em contato com a supervisão da unidade para garantir a entrega das demais frentes, buscando manter a moagem nominal, mesmo operando com o pátio em nível baixo. Sugestões para melhorar o cenário:
-- Acelerar mudança de frentes com maior rendimento e menor distância média
-- Verificar quebras de colhedoras e transbordos que estão impactando a entrega
-- Priorizar transporte próprio e checagem de tempo de ciclo dos caminhões
-- Alinhar troca de turno do transporte (18h / 21h / 06h) para evitar quebra de ciclo
+Estamos em contato com a supervisão da unidade para garantir a entrega das demais frentes, buscando manter a moagem nominal, mesmo operando com o pátio em nível baixo.
 
-Outro fator crítico para a quebra de ciclo será a troca de turno do transporte e da colheita. Caso ocorram atrasos nesse processo, a moagem corre grande risco de sofrer novas reduções graduais de 50 a 100 t/h até estabilizar em ${unidade.min} t/h (mínimo da ${unidade.sigla}) e só retornando para nominal após recuperação do pátio acima de ${unidade.gatilhoReducao+2} conjuntos.
+Outro fator crítico para a quebra de ciclo será a troca de turno do transporte, prevista uma para às 18:00 e 21:00 de hoje, e outra 06:00 do dia 10/05. Caso ocorram atrasos nesse processo, a moagem corre grande risco de sofrer novas reduções.
 
-*Projeção hora a hora:*
-${projDet.map(p=>`${p.horaFormatada}: Ent ${p.potencial.toFixed(0)} / Moag ${p.moagem.toFixed(0)} | Saldo ${p.saldoToneladas>=0?'+':''}${p.saldoToneladas.toFixed(0)}t | Estoque proj ${p.estoqueProjetado.toFixed(1)} conj ${p.estoqueProjetado<unidade.gatilhoReducao?'⚠ ABAIXO GATILHO':''}`).join('\n')}`;
-}
-
-const MODELOS_FALLBACK = [
-  GEMINI_MODEL,
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b',
-  'gemini-2.0-flash-lite',
-  'gemini-2.0-flash',
-  'gemini-1.5-flash-latest'
-].filter((v,i,a)=>a.indexOf(v)===i);
-
-async function chamarUmModelo(prompt, modelo){
-  const url=`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`;
-  try{
-    console.log(`[IA] Tentando ${modelo}`);
-    const resp=await fetch(url,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_API_KEY},
-      body:JSON.stringify({contents:[{role:'user', parts:[{text:prompt}]}], generationConfig:{temperature:0.3, maxOutputTokens:5000}})
-    });
-    const txt=await resp.text();
-    if(!resp.ok){
-      console.warn(`[IA] Falha ${modelo} ${resp.status}`);
-      return {ok:false};
-    }
-    const json=JSON.parse(txt);
-    const out=json?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n').trim();
-    if(!out) return {ok:false};
-    console.log(`[IA] OK ${modelo}`);
-    return {ok:true, texto:out, modelo};
-  }catch(e){
-    console.warn(`[IA] Erro ${modelo} ${e.message}`);
-    return {ok:false};
-  }
-}
-
-async function chamarGeminiComFallback(prompt){
-  if(!GEMINI_API_KEY){
-    console.warn('[IA] Sem GEMINI_API_KEY, usando fallback local');
-    return {ok:false, fallback:true};
-  }
-  for(const modelo of MODELOS_FALLBACK){
-    const r=await chamarUmModelo(prompt, modelo);
-    if(r.ok) return r;
-    await new Promise(res=>setTimeout(res, 600));
-  }
-  return {ok:false, fallback:true};
+REGRAS:
+- Nominal é MÁXIMA, não obrigatória. Se não sustenta, sugira redução gradual 50-100t/h até estabilizar. Se estoque <${unidade.gatilhoReducao} (UIV <4), reduz. Se não, mantém.
+- Sempre sugerir retorno para nominal o mais rápido possível.
+- Dar sugestões práticas: acelerar mudança frentes, verificar quebra colhedora, transbordo, caminhão, ciclo.
+- Use dados reais, inclua média 3h, estoque, horário risco, queda, janelas.
+- Use *negrito* simples, pronto WhatsApp.
+- Retorne APENAS comunicado.
+`.trim();
 }
 
 app.get('/', (req,res)=>{ res.sendFile(path.join(__dirname, 'index.html')); });
-app.get('/api/health', (req,res)=>{ res.json({ok:true, gemini:!!GEMINI_API_KEY, modelos:MODELOS_FALLBACK, unidades:UNIDADES}); });
+app.get('/api/health', (req,res)=>{ res.json({ok:true, gemini:!!GEMINI_API_KEY, modelos:GEMINI_MODELS, modelo_principal:GEMINI_MODELS[0], unidades:UNIDADES, time:new Date().toISOString()}); });
 
 app.post('/api/plano-voo', async (req,res)=>{
   try{
     const dados=req.body||{};
-    if(!Array.isArray(dados.potencial)) return res.status(400).json({error:'potencial array não enviado'});
-    if(dados.estoque?.atual==null) return res.status(400).json({error:'estoque atual não informado'});
+    if(!Array.isArray(dados.potencial)) return res.status(400).json({error:'potencial array não enviado. Verifique app.js'});
+    if(dados.estoque?.atual==null||dados.estoque.atual==='') return res.status(400).json({error:'estoque atual não informado'});
     const unidade=identificarUnidade(dados.tabelaOriginal||'');
-    if(!unidade) return res.status(400).json({error:'unidade não identificada'});
-
+    if(!unidade) return res.status(400).json({error:'Unidade não identificada. Inclua Mandu, Cruz Alta, São José, Vertente ou Tanabi na tabela.'});
     const calculos=calcularCenario(dados, unidade);
     const prompt=montarPrompt(dados, calculos, unidade);
 
-    const iaResult = await chamarGeminiComFallback(prompt);
+    console.log(`[REQ] ${unidade.sigla} - Estoque ${dados.estoque.atual} - Sugerida ${calculos.moagemSugerida}`);
 
-    let textoFinal;
-    let origem = 'GEMINI';
+    const resultado=await chamarIA(prompt,{
+      maxOutputTokens:6000,
+      timeoutMs:45000,
+      thinkingLevel:'high',
+      temperature:0.25
+    });
 
-    if(iaResult.ok){
-      textoFinal = iaResult.texto;
-      origem = `GEMINI ${iaResult.modelo}`;
-    } else {
-      console.log('[IA] Todos modelos falharam, usando fallback local complexo');
-      textoFinal = gerarComunicadoLocalFallback(dados, calculos, unidade);
-      origem = 'LOCAL FALLBACK (Gemini em alta demanda)';
-    }
-
-    return res.json({ok:true, texto:textoFinal, planoVoo:textoFinal, comunicado:textoFinal, unidade, calculos, modelo:origem});
-
+    return res.json({
+      ok:true,
+      texto: resultado.texto,
+      planoVoo: resultado.texto,
+      comunicado: resultado.texto,
+      unidade,
+      calculos,
+      modelo: resultado.modelo
+    });
   }catch(e){
-    console.error('[ERRO]', e.message);
+    console.error('[ERRO] /api/plano-voo', e.message);
     return res.status(500).json({error:e.message});
   }
 });
 
 app.listen(PORT, '0.0.0.0', ()=>{
-  console.log(`\n=== PLANO DE VOO CTT PORTA ${PORT} ===`);
-  Object.values(UNIDADES).forEach(u=>console.log(` ${u.sigla} ${u.nome} Nom ${u.nominal} Min ${u.min} Gatilho <${u.gatilhoReducao}`));
-  console.log(`Modelos: ${MODELOS_FALLBACK.join(' -> ')}`);
-  console.log('Fallback local ATIVADO se Gemini 503\n');
+  console.log('');
+  console.log('==============================================');
+  console.log(` PLANO DE VOO CTT - PORTA ${PORT}`);
+  console.log(` Modelo principal: ${GEMINI_MODELS[0]}`);
+  console.log(` Fallback: ${GEMINI_MODELS.slice(1).join(', ')}`);
+  console.log('==============================================');
+  Object.values(UNIDADES).forEach(u=>console.log(` - ${u.sigla} ${u.nome}: Nom ${u.nominal} / Min ${u.min} / Gatilho <${u.gatilhoReducao} - ${u.tipo}`));
+  console.log('==============================================\n');
 });
