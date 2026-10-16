@@ -80,7 +80,7 @@ button,input,textarea{font:inherit} button{cursor:pointer} button:disabled{opaci
 }
 .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--orange); box-shadow:0 0 12px var(--orange-glow); animation:pulseDot 2s infinite}
 .intro h1{
-  margin:0 0 14px; font-size:clamp(30px, 4.2vw, 46px); line-height:.95; font-weight:900;
+  margin:0 0 14px; font-size:clamp(30px, 4.2vw, 46px); line-height:.95; font-weight:700;
   background:linear-gradient(108deg,#ffffff 0%, #cfe2ff 45%, #7ec8ff 80%, #5dadef 100%); 
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   filter: drop-shadow(0 0 30px rgba(0,180,255,.2));
