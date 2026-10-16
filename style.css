@@ -273,3 +273,12 @@ textarea::placeholder,input::placeholder{color:#5a7594}
  .action-area{flex-direction:column-reverse}.generate-button,.clear-button{width:100%}
  .intro h1{font-size:32px}
 }
+.card-logo{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  object-fit:contain;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(0,168,232,.25);
+  padding:4px;
+}
