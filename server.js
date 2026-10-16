@@ -379,7 +379,7 @@ function montarPrompt(dados, calc, unidade){
   const histTxt=calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} / Saída ${r.moagem.toFixed(0)}`).join('\n');
 
   return `
-VOCÊ É UM COPIADOR DE PADRÃO. NÃO É CRIADOR. COPIE O JEITO DOS 27 EXEMPLOS.
+VOCÊ É UM ANALISTA SENIOR DO COA E COPIADOR DE PADRÃO. NÃO É CRIADOR. COPIE O JEITO DOS 27 EXEMPLOS.
 
 UNIDADE: ${unidade.nome} (${unidade.sigla}) - Nominal ${unidade.nominal} t/h / Mín ${unidade.min} t/h / Gatilho ${unidade.gatilho} conj
 HORA: ${horaFmt(calc.horaAtual)}
@@ -402,17 +402,15 @@ ${comentarios}
 
 ### ESTRUTURA FIXA - 6 PARÁGRAFOS GRANDES - MÍNIMO 1000 CARACTERES:
 
-1 - Comece com "Comunicado ${unidade.sigla}" em linha isolada. Depois: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h." Se parada use: "No momento, a moagem da unidade está parada, com pátio contabilizando ${calc.estoque.atual} conjuntos."
+1 - Comece com "*Comunicado ${unidade.sigla}*" em linha isolada. Depois: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h." Se parada use: "No momento, a moagem da unidade está parada, com pátio contabilizando ${calc.estoque.atual} conjuntos."
+Logo abaixo, com "O principal motivo" ou "O principal ponto de atenção". Explique indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção. Use dados da OBS.
 
-2 - Comece com "O principal motivo" ou "O principal ponto de atenção". Explique indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção. Use dados da OBS.
+2 - Comece com "Além da" ou "Além das manutenções". Segunda causa, déficit de frente, troca de turno.
 
-3 - Comece com "Além da" ou "Além das manutenções". Segunda causa, déficit de frente, troca de turno.
+3 - Comece OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima," e use os números da projeção. Ex: "mantendo moagem em ${calc.moagemAtual} t/h o pátio tende a cair para ${calc.risco.menorEstoque.toFixed(0)} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}. Dessa forma, o ideal seria ajustar para X t/h entre HH:00 e HH:00"
+Continue dando a solução com horários exatos: "Conforme as frentes entrarem em regime e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h às HH:00"
 
-4 - Comece OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima," e use os números da projeção. Ex: "mantendo moagem em ${calc.moagemAtual} t/h o pátio tende a cair para ${calc.risco.menorEstoque.toFixed(0)} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}. Dessa forma, o ideal seria ajustar para X t/h entre HH:00 e HH:00"
-
-5 - Dê solução com horários exatos: "Conforme as frentes entrarem em regime e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h às HH:00"
-
-6 - Finalize SEMPRE com: "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
+4 - Finalize SEMPRE com: "Seguimos acompanhando o cenário hora a hora junto à supervisão agrícola da unidade e reforçando o alinhamento com a indústria."
 
 ### VOCABULÁRIO:
 
@@ -420,7 +418,7 @@ PROIBIDO: escoamento, escoar, volumetria, volumétrico, cessamento, cessar, mat�
 
 OBRIGATÓRIO USAR: pátio, conjuntos carregados, moagem, entrada, saída, potencial, frente, mudança, indisponibilidade mecânica, manutenção, chuva, solo úmido, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima.
 
-TAMANHO: MÍNIMO 1000 caracteres, MÁXIMO 1600. 5 a 7 parágrafos. Se ficar menor que 1000, ESTÁ ERRADO.
+TAMANHO: MÍNIMO 1000 caracteres, SEM MÁXIMO PARA MANDAR SEMPRE A MELHOR ANÁLISE. 5 a 7 parágrafos. Se ficar menor que 1000, ESTÁ ERRADO.
 
 EXEMPLOS REAIS PARA COPIAR O ESTILO:
 ${EXEMPLOS_TODOS}
