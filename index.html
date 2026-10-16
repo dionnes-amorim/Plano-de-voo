@@ -40,8 +40,8 @@
 <main class="container">
   <section class="intro">
     <span class="eyebrow">PAINEL ANALÍTICO | ENTRADA / MOAGEM</span>
-    <h1>Análise do Potencial de Produção.</h1>
-    <p>Cole a tela do Logtrac <strong>Análise do Potencial de Produção</strong>, informe <strong>moagem atual</strong> e <strong>pátio</strong>, e projeção futura de <strong>3h</strong>. O painel gera o comunicado da unidade automaticamente.</p>
+    <h1>Análise do Potencial de Produção</h1>
+    <p>Cole a tela do Logtrac <strong>Análise do Potencial de Produção</strong>, informe <strong>moagem atual</strong> e <strong>pátio</strong>, e potencial futuro de <strong>3h</strong>. O painel gera o comunicado da unidade automaticamente.</p>
   </section>
 
   <!-- 01 -->
@@ -218,7 +218,7 @@ async function gerar(){
     $('errorMessage').textContent=e.message;
     $('errorArea').classList.remove('hidden');
   }finally{
-    btn.disabled=false; btn.textContent='✦ GERAR PLANO DE VOO FORMAL';
+    btn.disabled=false; btn.textContent='✦ GERAR PLANO DE VOO';
     $('loadingArea').classList.add('hidden');
   }
 }
