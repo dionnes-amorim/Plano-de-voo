@@ -3,9 +3,27 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Plano de Vôo | COA</title>
-<link rel="icon" href="/logo.ico">
+<link rel="icon" href="/logo.png">
 <link rel="stylesheet" href="style.css">
 <style>
+/* MATA O QUADRADO AZUL DO STYLE.CSS ANTIGO */
+.brand::before,.brand::after,.topbar::before,.topbar-content::before,.brand-title::before{display:none!important; content:none!important;}
+
+/* LOGO REAL NO TOPO */
+.topbar-content{display:flex; align-items:center}
+.brand{display:flex; align-items:center; gap:14px}
+.header-logo-real{
+  width:46px; height:46px;
+  border-radius:12px;
+  object-fit:contain;
+  background:#fff;
+  padding:4px;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+  display:block!important;
+}
+
+/* FIX BOTÃO WHATSAPP */
 .result-header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap}
 .result-header h2{margin:2px 0 0; font-size:20px}
 #copyButton{
@@ -13,21 +31,17 @@
   min-height:46px; padding:0 18px; border-radius:12px;
   background:linear-gradient(135deg,#25D366,#128C7E);
   border:1px solid rgba(255,255,255,.15);
-  color:#fff; font-weight:900; font-size:11px; letter-spacing:.5px;
-  box-shadow:0 8px 24px rgba(37,211,102,.25);
-  transition:.2s; cursor:pointer;
+  color:#fff; font-weight:900; font-size:11px;
+  box-shadow:0 8px 24px rgba(37,211,102,.25); cursor:pointer;
 }
-#copyButton:hover{transform:translateY(-2px)}
 #copyButton.copiado{background:linear-gradient(135deg,#69d66a,#3cb85d)}
-.brand{display:flex; align-items:center; gap:12px}
-.header-logo-small{width:42px; height:42px; border-radius:10px; object-fit:contain; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); padding:3px; display:block!important}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="topbar-content">
     <div class="brand">
-      <img src="./logo.png" alt="TEREOS" class="header-logo-small" onerror="this.src='/logo.png'; this.onerror=null">
+      <img src="/logo.png" alt="TEREOS" class="header-logo-real">
       <div>
         <div class="brand-title">PLANO DE VÔO</div>
         <div class="brand-subtitle">COA • OPERAÇÕES AGROINDUSTRIAIS</div>
@@ -67,13 +81,11 @@
       </div>
       <div class="card-badge">OBRIGATÓRIO</div>
     </div>
-
     <label style="font-size:10px; font-weight:800; color:#ff8a8a">MOAGEM ATUAL | Se 0 = PARADA</label>
     <div class="stock-grid" style="margin-top:8px">
       <div class="stock-field highlight"><label>Moagem Formalizada</label><div class="stock-input-wrapper"><input id="moagemAtual" type="number" placeholder="710"><span>t/h</span></div><small>Se parada coloque 0</small></div>
       <div class="stock-field"><label>Saldo Futuro</label><div id="saldoFuturoPreview" style="height:42px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border-radius:10px; font-weight:800">—</div><small>Em relação a moagem formalizada</small></div>
     </div>
-
     <label style="font-size:10px; font-weight:800; margin-top:14px; display:block">ESTOQUE PÁTIO (Conjuntos)</label>
     <div class="stock-grid" style="margin-top:8px">
       <div class="stock-field"><label id="stockLabel1">H-3</label><div class="stock-input-wrapper"><input id="stock1" type="number" placeholder="0"><span>QTD</span></div></div>
@@ -81,7 +93,6 @@
       <div class="stock-field"><label id="stockLabel3">H-1</label><div class="stock-input-wrapper"><input id="stock3" type="number" placeholder="0"><span>QTD</span></div></div>
       <div class="stock-field current"><label id="stockLabel4">ATUAL</label><div class="stock-input-wrapper"><input id="stockCurrent" type="number" placeholder="0"><span>QTD</span></div><small>Agora</small></div>
     </div>
-
     <label style="font-size:10px; font-weight:800; color:#9ae889; margin-top:14px; display:block">POTENCIAL ESTIMADO DAS FRENTES NAS PRÓXIMAS 03 HORAS (T/H)</label>
     <div class="stock-grid" style="margin-top:8px">
       <div class="stock-field highlight"><label id="potFutLabel1">+1h</label><div class="stock-input-wrapper"><input id="potFut1" type="number" placeholder="750"><span>t/h</span></div></div>
@@ -109,10 +120,7 @@
     <button id="generateButton" class="generate-button">✦ GERAR PLANO DE VOO</button>
   </div>
 
-  <div id="loadingArea" class="hidden loading-area">
-    <div class="loading-spinner"></div>
-    <div><strong>Gerando Análise...</strong><p>Analisando ENTRADA/MOAGEM | ESTOQUES | POTENCIAL DAS FRENTES</p></div>
-  </div>
+  <div id="loadingArea" class="hidden loading-area"><div class="loading-spinner"></div><div><strong>Gerando Análise...</strong><p>Analisando ENTRADA/MOAGEM | ESTOQUES | POTENCIAL DAS FRENTES</p></div></div>
 
   <div id="resultArea" class="hidden result-area">
     <div class="result-header">
