@@ -212,96 +212,164 @@ Estamos em contato com a supervisão da unidade para garantir a entrega das dema
 Outro fator crítico para a quebra de ciclo será a troca de turno do transporte, prevista uma para às 18:00 e 21:00 de hoje, e outra 06:00 do dia 10/05. Caso ocorram atrasos nesse processo, a moagem corre grande risco de sofrer novas reduções.
 
 EXEMPLO 7 - Comunicado UIM:
-No momento, a moagem da unidade está formalizada em 920 t/h, com o pátio contabilizando 16 conjuntos carregados. Entretanto, a média de entrega das últimas 3 horas está em 845 t/h, indicando uma tendência de redução do estoque nas próximas horas.
-O principal fator que impacta a operação é a indisponibilidade mecânica das colhedoras próprias, que apresentou média de 19% entre 18:00 e 21:00. Além disso, as Frentes 507 e 516 estão em processo de mudança, reduzindo temporariamente o potencial produtivo da unidade.
-A Frente 521 também apresenta déficit de aproximadamente 180 toneladas em relação à sua cota prevista, em função de paradas operacionais registradas ao longo do turno.
-Conforme demonstrado no gráfico acima, caso a moagem seja mantida em 920 t/h, o pátio pode atingir níveis críticos durante a madrugada. Dessa forma, estamos avaliando junto à indústria um ajuste temporário para 850 t/h até a recomposição das frentes em mudança.
-Seguimos monitorando a operação em tempo real e revisaremos o cenário conforme a evolução da manutenção e das mudanças de área.
+De momento, a moagem da unidade está formalizada em 900 t/h, com um pátio contabilizando 15 conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em apenas 785 t/h.
+O principal motivo da baixa entrega está relacionado à indisponibilidade mecânica de transbordos próprios, que apresentou média de 14% entre 12:00 e 15:00, além de 2 colhedoras em manutenção preventiva. Também tivemos impacto da chuva isolada na F502 e F503.
+Além da indisponibilidade, a frente F506 está em processo de mudança para área de reforma, enquanto a F501 apresenta déficit de 180 toneladas em relação à cota projetada devido ao solo úmido.
+Conforme apresentado no gráfico acima, mantendo a moagem em 900 t/h o pátio tende a cair para aproximadamente 11 conjuntos até às 23:00. Dessa forma, o ideal seria ajustar a moagem para 800 t/h entre 22:00 e 01:00.
+Conforme as frentes entrarem em regime e a manutenção dos transbordos entrar em linha após 01:30, poderemos avaliar o retorno para nominal de 917 t/h.
+Seguimos acompanhando hora a hora junto à supervisão da unidade.
 
-EXEMPLO 8 - Comunicado UIM - para retorno de moagem:
-Em análise do cenário operacional da unidade, o pátio contabiliza atualmente 32 conjuntos carregados, volume suficiente para suportar a retomada das operações industriais.
-Ao longo do período em que a moagem permaneceu paralisada, as frentes de colheita mantiveram a produção, possibilitando a formação de estoque estratégico no pátio. Neste momento, a unidade apresenta potencial de entrega próximo de 780 t/h, com as principais frentes operando dentro da normalidade.
-Em alinhamento com a supervisão da unidade e equipe industrial, está programada a liberação da moagem para às 14h00, com ritmo inicial de 700 t/h, visando garantir uma retomada segura e equilibrada entre consumo industrial e disponibilidade agrícola.
-Conforme demonstrado no gráfico acima, mesmo após o início da moagem, o estoque deverá permanecer em nível confortável durante as próximas horas, permitindo acompanhar a estabilização da unidade sem risco imediato de desabastecimento.
-Caso as condições operacionais se mantenham conforme o planejado e a entrega agrícola permaneça acima de 750 t/h, poderemos avaliar novos incrementos de moagem ao longo do turno, aproximando gradativamente a operação da capacidade desejada.
-Seguimos acompanhando o cenário junto às equipes agrícola e industrial para garantir o melhor sincronismo entre a retomada da moagem e a disponibilidade de matéria-prima da unidade.
+EXEMPLO 8 - Comunicado UICA:
+No momento, a moagem da unidade está reduzida para 850 t/h, devido à baixa entrega das frentes F73 e F76 e à indisponibilidade de caminhões. O pátio está contabilizando 13 conjuntos carregados.
+O principal ponto de atenção é a frente F76, que está com baixo rendimento devido à alta impureza vegetal e solo úmido, além da F73 que está em processo de mudança parcial.
+A indisponibilidade mecânica de colhedoras atingiu 18,5% entre 13:00 e 16:00, com 2 máquinas paradas por entupimento. Somado a isso, temos 8 caminhões em tempo de troca de turno das 18:00.
+Conforme demonstrado no gráfico acima, com o potencial atual de 780 t/h vs moagem de 850 t/h, o pátio deve chegar a 10 conjuntos até às 21:00. Caso esse cenário se confirme, existe risco de nova redução para 750 t/h entre 21:30 e 22:30.
+Em alinhamento com a supervisão, a liberação da F74 está prevista para 19:30 com potencial adicional de 90 t/h, o que deve elevar o potencial total para 870 t/h e possibilitar o retorno para 900 t/h por volta das 00:00.
 
-EXEMPLO 9 - Comunicado VER:
-Em análise das condições atuais da operação, a moagem da unidade poderá ser elevada gradativamente para 420 t/h a partir das 13:00, acompanhando a recuperação da disponibilidade agrícola.
-As Frentes 241 e 245 já estão operando normalmente, enquanto a Frente 252 encontra-se em fase final de manutenção e deverá retornar à operação nas próximas horas.
-O principal limitador neste momento é a baixa disponibilidade de equipamentos de apoio, especialmente tratores de apoio e transbordos, que reduziram a capacidade de escoamento da produção durante o período da manhã.
-De acordo com as projeções apresentadas no gráfico acima, a retomada da Frente 252 deverá elevar o potencial da unidade para aproximadamente 520 t/h, permitindo maior estabilidade entre produção agrícola e consumo industrial.
-Permanecemos alinhados com as equipes agrícola e industrial para garantir o melhor aproveitamento da capacidade operacional disponível e otimizar o abastecimento da moagem ao longo do turno.
+EXEMPLO 9 - Comunicado UIT:
+De momento, a moagem da unidade está formalizada em 680 t/h, com um pátio contabilizando 22 conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em 790 t/h, apresentando saldo positivo.
+O principal motivo do ganho de pátio está relacionado à liberação da frente 326 com alta produtividade e à entrada da frente 331 após mudança concluída às 10:00.
+Atualmente, todas as frentes próprias estão em operação com indisponibilidade baixa, de apenas 4% no período. O ciclo de transporte também está ajustado com 6 caminhões alocados acima do necessário.
+Conforme apresentado no gráfico acima, o cenário é favorável para aumento de moagem. Com pátio em 22 conjuntos e tendência de chegar a 26 conjuntos até às 16:00, podemos avaliar o aumento para nominal de 710 t/h a partir das 14:00 e posterior avaliação para 750 t/h após 17:00, caso a entrega se mantenha acima de 800 t/h.
+Seguimos acompanhando e reforçando o alinhamento com a indústria para garantir o melhor aproveitamento do potencial agrícola.
 
-EXEMPLO 10 - Comunicado UIT
-No momento, a moagem da unidade está formalizada em 740 t/h, com o pátio contabilizando 17 conjuntos carregados. Entretanto, a média de entrega das últimas 3 horas encontra-se em 685 t/h, indicando redução gradativa do estoque.
-O principal impacto na operação é a indisponibilidade mecânica de colhedoras próprias, que apresentou média de 15% entre 13:00 e 18:00. Além disso, a F327 encontra-se em processo de mudança, enquanto a F331 opera com apenas uma máquina devido à manutenção corretiva em andamento.
-A F315 também apresenta déficit acumulado de aproximadamente 140 toneladas em relação à sua cota prevista para o turno.
-Conforme demonstrado no gráfico acima, caso a moagem seja mantida no ritmo atual, o pátio poderá atingir níveis críticos durante a próxima troca de turno. Seguimos avaliando junto à indústria a necessidade de ajuste temporário da moagem para preservar a estabilidade operacional da unidade.
+EXEMPLO 10 - Comunicado UISJ:
+No momento, estamos com 9 conjuntos carregados e 4 frentes em operação, com potencial de entrega de aproximadamente 380 t/h. A moagem está formalizada em 550 t/h mínima.
+O principal motivo para o baixo potencial é a paralisação das frentes F12 e F15 devido à chuva generalizada na região de Pontal, com avaliação de solo prevista somente após as 14h00. Além disso, a F10 está finalizando a mudança para área de expansão.
+A frente F08, que é a única em cana de alta produtividade, está apresentando 25% de impureza devido ao acamamento da cana, reduzindo o rendimento das colhedoras.
+Conforme demonstrado no gráfico acima, mantendo a moagem em 550 t/h com entrada de 380 t/h, o pátio tende a zerar até às 18:00. Dessa forma, existe risco iminente de parada da unidade entre 18:00 e 19:00, coincidindo com a troca de turno do transporte.
+Em alinhamento com o Supervisor Gilberto, foi definido que caso a chuva cesse, a liberação da F12 ocorrerá às 15:00 com potencial de 120 t/h, elevando o total para 500 t/h e permitindo a retomada com 500 t/h mínima por volta das 16:00.
 
-EXEMPLO 11 - Comunicado UICA
-A moagem da unidade encontra-se em 880 t/h, com o pátio contabilizando 21 conjuntos carregados. Entretanto, observamos tendência de redução nas próximas horas devido à queda de produtividade das frentes agrícolas.
-O principal ponto de atenção é a indisponibilidade de colhedoras próprias, que atingiu 24% entre 20:00 e 22:00, impactando diretamente as frentes 73 e 81.
-Além disso, a F79 iniciou mudança de área no início da noite, enquanto a F72 opera em ritmo reduzido devido às condições de tráfego interno.
-Com base nas projeções atuais, a chegada prevista para as próximas duas horas está em aproximadamente 1.500 toneladas, valor inferior à necessidade para sustentar a moagem atual. Caso o cenário permaneça inalterado, existe possibilidade de redução da moagem após às 00h00.
-Seguimos monitorando a recuperação das frentes e alinhando as ações junto à supervisão para minimizar impactos ao abastecimento industrial.
+EXEMPLO 11 - Comunicado VER:
+Em análise das condições atuais, a moagem da unidade está formalizada em 420 t/h, com pátio contabilizando 6 conjuntos carregados. A média de entrada das últimas 3 horas está em 385 t/h.
+O principal ponto de atenção é a frente 251, que está finalizando a área e deve entrar em processo de mudança às 16:00, reduzindo o potencial em aproximadamente 150 t/h. A frente 247 está com baixa produtividade devido à cana de segundo corte com alta palha.
+Conforme apresentado no gráfico acima, caso ocorra a mudança da F251 sem a liberação imediata da F253, o potencial deve cair para 320 t/h, gerando déficit de 100 t/h em relação à moagem atual. Com isso, o pátio deve cair para 3 conjuntos até às 19:00, abaixo do gatilho mínimo da unidade.
+Diante disso, o ideal seria reduzir a moagem para 350 t/h a partir das 16:30 até 19:30, aguardando a liberação da frente 253 prevista para 19:00. Após a liberação, o potencial deve retomar para 450 t/h, possibilitando o aumento para 480 t/h nominal por volta das 20:30.
+Seguimos acompanhando junto à supervisão e à indústria.
 
-EXEMPLO 12 - Comunicado UIM
-No momento, a moagem da unidade está ajustada em 800 t/h e o pátio contabiliza 13 conjuntos carregados.
-As Frentes 504 e 518 apresentaram paradas ao longo do turno devido à indisponibilidade mecânica de colhedoras, que registrou média de 17% entre 09:00 e 15:00. Além disso, a F509 encontra-se em processo de mudança para uma nova área de colheita.
-Como consequência desses impactos, a média de saída de campo das últimas três horas ficou em 742 t/h.
-Conforme demonstrado no gráfico acima, o estoque da unidade tende a permanecer estável até o final do turno. Entretanto, caso ocorram novas manutenções não programadas, poderá ser necessário revisar o ritmo de moagem para preservar os níveis mínimos de segurança do pátio.
-Seguimos acompanhando o cenário juntamente com a supervisão operacional da unidade.
+EXEMPLO 12 - Comunicado UIM:
+A moagem da unidade está liberada para 917 t/h nominal. Entretanto, o pátio que contabilizava 18 conjuntos às 08:00 está atualmente com 12 conjuntos e tendência de queda acentuada.
+O principal motivo é a troca de turno do transporte prevista para 07:00 e 19:00. Conforme histórico, das 08:30 às 10:00 temos queda de aproximadamente 30% na chegada de cana devido à inércia do retorno dos caminhões. Além disso, estamos com 11 caminhões em fila no pátio aguardando descarga, gerando ociosidade no campo.
+Somado a isso, a frente F542 está em mudança total e a F505 em mudança parcial, ambas próprias, reduzindo o potencial em 220 t/h no período da manhã.
+Conforme gráfico acima, o pátio deve atingir 8 conjuntos até às 11:00. Dessa forma, existe risco de redução da moagem para 800 t/h entre 11:00 e 12:00. Conforme o transporte entrar em regime após 11:30 e a liberação da F542 prevista para 12:00, o potencial deve voltar para 880 t/h, permitindo o retorno para nominal de 917 t/h por volta das 13:00.
+Reforçando alinhamento com CTT para agilizar o giro de pátio.
 
-EXEMPLO 13 - Comunicado VER
-Em análise das condições operacionais da unidade, a moagem permanece em 380 t/h, com potencial agrícola atual próximo de 420 t/h.
-A Frente 248 retornou à operação durante a madrugada após manutenção na colhedora principal, contribuindo para a recuperação gradual da produção agrícola.
-Além disso, a Frente 250 concluiu sua mudança de área e iniciou colheita em novo talhão com expectativa de aumento de produtividade ao longo do dia.
-Conforme demonstrado no gráfico acima, existe potencial para elevação da moagem para aproximadamente 450 t/h nas próximas horas, desde que o ritmo atual de entrega seja mantido.
-Seguimos alinhados com a indústria para avaliar o melhor momento para implementação desse aumento de moagem.
+EXEMPLO 13 - Comunicado UICA:
+De momento, a moagem da unidade está formalizada em 750 t/h, com pátio contabilizando 21 conjuntos carregados. Média de entrada das últimas 3 horas em 920 t/h, com saldo positivo de 170 t/h.
+O cenário de ganho de pátio é devido à entrada em regime das frentes F71 e F72 após mudança concluída no período da manhã e à baixa indisponibilidade, que está em apenas 3% entre 10:00 e 15:00.
+Atualmente temos 4 frentes em cana de alta produtividade com peso estimado acima de 90 toneladas por carga, o que aumenta o potencial de entrega para 920 t/h vs cota de 900 t/h.
+Conforme demonstrado no gráfico acima, o pátio tende a chegar a 26 conjuntos até às 18:00 caso mantenhamos 750 t/h. Diante disso, temos condição favorável para aumento de moagem para 850 t/h a partir das 16:00 e retorno para nominal de 900 t/h entre 18:00 e 19:00, antes da troca de turno.
+Seguimos acompanhando e já alinhado com a indústria para o aumento gradativo.
 
-EXEMPLO 14 - Comunicado UISJ
-Neste momento, a unidade conta com 22 conjuntos carregados e 6 frentes em operação, apresentando potencial de entrega próximo de 520 t/h.
-As condições climáticas melhoraram ao longo da madrugada, permitindo a retomada das frentes anteriormente paralisadas devido ao excesso de umidade nas áreas.
-A Frente 04 finalizou sua mudança e já opera normalmente, contribuindo diretamente para o aumento do potencial produtivo da unidade.
-Diante da recuperação observada nas últimas horas, a moagem poderá ser elevada gradativamente ao longo da manhã, dependendo da confirmação das entregas previstas.
-Seguimos monitorando as condições das áreas e mantendo alinhamento constante entre operação agrícola e industrial.
+EXEMPLO 14 - Comunicado UIT:
+No momento, a moagem da unidade está parada, com pátio contabilizando 5 conjuntos carregados. Moagem zero desde às 04:30 devido à falta de cana por chuva generalizada em todas as frentes.
+O principal motivo da paralisação é o solo úmido que impede a entrada de colhedoras nas frentes F322, F324 e F326. Somente a frente F330 está com condição parcial de colheita, mas com produtividade baixa de 45 t/h.
+Em alinhamento com o Supervisor da unidade, a avaliação de solo está prevista para 08:00. Caso o solo apresente condição, a liberação das frentes F322 e F324 ocorrerá a partir das 09:00, elevando o potencial para 350 t/h.
+Conforme gráfico acima, considerando o potencial de 350 t/h a partir das 09:00, o pátio deve atingir 10 conjuntos até às 10:30. Dessa forma, a melhor janela para retomada da moagem seria às 10:30 com moagem mínima de 400 t/h, evoluindo para 600 t/h por volta das 13:00 quando o pátio atingir 16 conjuntos, e posterior retorno para nominal de 710 t/h após 15:00.
+Já estamos em contato com a indústria para os preparativos de retomada, que necessita de 2 horas para estabelecer as condições.
 
-EXEMPLO 15 - Comunicado UIM
-A moagem da unidade está liberada para 950 t/h, enquanto o pátio contabiliza atualmente 19 conjuntos carregados.
-Ao longo do turno, a disponibilidade dos equipamentos próprios apresentou melhora significativa, reduzindo o índice de indisponibilidade das colhedoras para 8%.
-As Frentes 501, 513 e 520 operam conforme planejado e vêm apresentando desempenho acima da média prevista para o horário.
-Com projeção de chegada superior a 2.000 toneladas nas próximas duas horas, o estoque da unidade tende a permanecer saudável mesmo operando próximo da capacidade nominal.
-Seguimos acompanhando o desempenho operacional para avaliar a manutenção da moagem no patamar atual.
+EXEMPLO 15 - Comunicado UISJ:
+No momento, a moagem da unidade está formalizada em 700 t/h, com pátio contabilizando 7 conjuntos carregados. Média de entrada das últimas 3 horas em 580 t/h, abaixo da moagem atual.
+O principal ponto de atenção é a frente F14 que está com quebra de colhedora desde às 12:00, com previsão de retorno às 16:00. Além disso, a frente F09 está em processo de mudança e a F11 com baixa produtividade por cana bisada.
+A indisponibilidade de transbordos está em 15% entre 13:00 e 15:00, impactando o ciclo de colheita e gerando 6 caminhões em fila no campo aguardando carga.
+Conforme apresentado no gráfico acima, com déficit de 120 t/h entre entrada e saída, o pátio deve cair para 4 conjuntos até às 17:30, atingindo o gatilho mínimo da unidade. Caso esse cenário se mantenha, existe risco de redução para 550 t/h mínima entre 17:30 e 18:30, bem na troca de turno.
+Conforme a manutenção da colhedora da F14 entrar em linha e a liberação da F09 prevista para 17:00, o potencial deve retomar para 680 t/h, possibilitando o retorno para 700 t/h por volta das 19:00.
+Seguimos acompanhando hora a hora.
 
-EXEMPLO 16 - Comunicado UIT
-No momento, a moagem da unidade encontra-se em 690 t/h e o pátio contabiliza 11 conjuntos carregados.
-A principal restrição operacional está concentrada na F322, que permanece paralisada devido à manutenção corretiva em duas colhedoras próprias.
-Além disso, a F334 iniciou mudança completa de área durante o período da tarde, reduzindo o potencial de entrega da unidade para aproximadamente 620 t/h.
-Conforme demonstrado no gráfico acima, existe déficit estimado de 180 toneladas para as próximas duas horas em relação à moagem programada.
-Diante desse cenário, seguimos avaliando junto à indústria possíveis ajustes operacionais para preservar o abastecimento da unidade.
+EXEMPLO 16 - Comunicado VER:
+Usina parada no momento, pátio contabilizando 2 conjuntos carregados. Moagem zero desde às 02:00 por falta de cana e manutenção programada na indústria.
+Atualmente temos apenas 2 frentes disponíveis, 245 e 246, ambas em processo de mudança. A liberação da frente 247, que é a principal frente com 60% do potencial da unidade, está prevista para 07:30 com potencial de 280 t/h. Já a frente 248 tem liberação prevista para 09:00 com mais 150 t/h.
+Considerando que a indústria informou que necessita de 3 horas para retomada após liberação agrícola, e que o pátio atual é de apenas 2 conjuntos, o cenário ideal seria iniciar a formação de pátio a partir das 07:30.
+Conforme gráfico acima, com entrada de 280 t/h a partir das 07:30, o pátio deve chegar a 6 conjuntos até às 09:30 e a 10 conjuntos até às 11:30 com a entrada da F248. Dessa forma, a melhor janela para retomada seria às 09:30 com 350 t/h mínima e evolução para nominal de 500 t/h por volta das 12:00 quando o pátio estabilizar acima de 12 conjuntos.
+Alinhamento já realizado com CTT e indústria para sincronismo.
 
-EXEMPLO 17 - Comunicado UICA
-A moagem da unidade permanece em 920 t/h, com o pátio registrando 26 conjuntos carregados neste momento.
-Durante as últimas horas houve recuperação significativa das frentes agrícolas após a liberação das colhedoras que estavam em manutenção corretiva.
-As Frentes 75 e 80 retomaram sua capacidade plena de operação, elevando o potencial agrícola da unidade para aproximadamente 980 t/h.
-Conforme apresentado no gráfico acima, a tendência é de crescimento gradual do estoque durante a madrugada. Dessa forma, existe possibilidade de manutenção da moagem atual sem riscos de desabastecimento.
-Seguimos acompanhando o cenário junto à supervisão da unidade.
+EXEMPLO 17 - Comunicado UIM:
+No momento, a moagem da unidade está reduzida para 850 t/h, devido à indisponibilidade de colhedoras e transbordos próprios, além da baixa entrega das F511 e F514. O pátio está contabilizando 12 conjuntos carregados.
+O principal ponto de atenção da unidade é a indisponibilidade mecânica dos equipamentos próprios, que apresentou média de 18% entre 16:00 e 18:00, com pico de 32% nas colhedoras próprias entre 19:00 e 20:00.
+Além das manutenções próprias, a F514 está com déficit de 200 toneladas em relação à cota projetada para a moagem, enquanto a F511 apresenta déficit de 152 toneladas.
+Conforme apresentado no gráfico acima, o pátio tende a apresentar uma queda brusca caso mantenhamos a moagem em 850 t/h. Dessa forma, o ideal neste momento é ajustarmos a moagem para 750 t/h, considerando que a média de saída de campo das últimas duas horas está em apenas 661 t/h, o que deve resultar em uma chegada de cana mais baixa nas próximas duas horas.
+Conforme o cenário de manutenção de colhedoras entrar em linha, devido ao ciclo alto, podemos analisar um aumento da moagem após às 03:00.
+Seguimos acompanhando o cenário hora a hora e, caso a indisponibilidade das colhedoras permaneça elevada, poderá ser necessária uma nova redução da moagem para a rotação mínima da unidade.
 
-EXEMPLO 18 - Comunicado UIM - Retorno de Moagem
-Em análise do cenário operacional, o pátio contabiliza atualmente 28 conjuntos carregados, após período de formação de estoque decorrente da paralisação industrial.
-As frentes agrícolas mantiveram produção consistente ao longo das últimas horas, registrando média de saída de campo próxima de 860 t/h.
-Diante da recuperação do estoque e da disponibilidade operacional da indústria, está prevista a retomada da moagem às 18h00 com ritmo inicial de 750 t/h.
-Conforme demonstrado no gráfico acima, mesmo após o reinício das operações, o estoque deverá se manter em patamar confortável durante todo o período noturno.
-Caso o desempenho das frentes permaneça conforme esperado, novos incrementos de moagem poderão ser avaliados após às 22h00.
-Seguimos acompanhando o cenário em conjunto com as equipes agrícola e industrial.
 
-EXEMPLO 19 - Comunicado VER
-No momento, a unidade opera com moagem de 430 t/h e apresenta 16 conjuntos carregados disponíveis no pátio.
-A Frente 246 encontra-se operando normalmente após liberação da manutenção, enquanto a Frente 251 apresenta desempenho acima do planejado para o período.
-Com base no potencial atual das frentes, estimamos capacidade de produção próxima de 500 t/h ao longo das próximas horas.
-As projeções indicam tendência de estabilidade do estoque, possibilitando avaliar um aumento gradual da moagem conforme disponibilidade da indústria.
-Seguimos monitorando o comportamento operacional das frentes e alinhando as ações necessárias para garantir o melhor equilíbrio entre entrega agrícola e consumo industrial.
+EXEMPLO 18 - Comunicado UIM
+Em análises realizadas, a moagem da unidade está liberada para 917 t/h. Entretanto, a média de entrada das últimas 3 horas está em 780 t/h, enquanto o pátio, que contabilizava 22 conjuntos carregados às 13:00, está atualmente com 10 conjuntos.
+O principal motivo da baixa entrega está relacionado à indisponibilidade mecânica das colhedoras próprias, que apresentou média de 27% entre 11:00 e 16:00, além das manutenções de transbordos, que registraram 12% no mesmo período. Também estamos sentindo o reflexo das mudanças das frentes 511 e 506.
+Conforme apresentado no gráfico acima, o cenário ideal neste momento seria ajustar a moagem para 750 t/h, visto que temos 10 caminhões em atraso no malhador, nenhuma frente com carga pronta e nenhuma carga disponível para entrega.
+Conforme houver melhora nas indisponibilidades e o ciclo das frentes estiver fechado, poderemos avaliar um possível aumento para 800 t/h entre 19:00 e 20:00.
+Seguiremos acompanhando o cenário hora a hora, buscando aproveitar o máximo potencial de entrega da unidade.
+
+EXEMPLO 19 - Comunicado UIM:
+De momento, a moagem da unidade está formalizada em 850 t/h, com um pátio contabilizando 9 conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em apenas 620 t/h.
+O principal motivo da baixa entrega é a indisponibilidade mecânica de colhedoras próprias, que apresentou média de 22% entre 09:00 e 13:00, com 3 máquinas paradas por quebra de faca picadora. Além disso, a F508 está em processo de mudança total desde às 11:00.
+Além das manutenções, a frente F511 está com déficit de 210 toneladas em relação à cota devido à cana deitada e com alta impureza, reduzindo o rendimento das colhedoras de 85 t/h para 52 t/h.
+Conforme apresentado no gráfico acima, mantendo a moagem em 850 t/h o pátio tende a zerar até às 16:30. Dessa forma, o ideal neste momento é ajustarmos a moagem para 700 t/h a partir das 14:00 até 17:00, aguardando o retorno das colhedoras.
+Conforme o cenário de manutenção entrar em linha e a liberação da F508 prevista para 16:30 com potencial de 140 t/h, poderemos avaliar um aumento para 800 t/h por volta das 18:00.
+
+EXEMPLO 20 - Comunicado UICA:
+A moagem da unidade está liberada para 900 t/h, porém o pátio que contabilizava 20 conjuntos às 14:00 está atualmente com 13 conjuntos e tendência de queda.
+O principal ponto de atenção é a frente F79, que entrou em mudança de emergência devido à quebra de ponte, e a frente F77 que está paralisada por falta de caminhão no campo. Temos 12 caminhões no pátio aguardando descarga, o que está gerando ociosidade de colhedoras no campo.
+A indisponibilidade de transbordos está em 19% entre 14:00 e 16:30, impactando diretamente o ciclo da F79 e F77. O peso médio estimado caiu de 88 toneladas para 62 toneladas por carga.
+Conforme gráfico acima, com potencial atual de 720 t/h vs moagem de 900 t/h, o pátio deve chegar a 9 conjuntos até às 18:30, próximo à troca de turno das 19:00. Existe risco de redução para 750 t/h entre 18:30 e 20:00.
+Em alinhamento com a supervisão, a liberação da F79 está prevista para 18:00, com potencial adicional de 110 t/h, elevando o total para 830 t/h e permitindo manter a moagem em 800 t/h até 22:00 e retorno para nominal após 23:00 quando o ciclo normalizar.
+
+EXEMPLO 21 - Comunicado UIT:
+No momento, a moagem da unidade está formalizada em 710 t/h nominal, com pátio contabilizando 17 conjuntos carregados. Média de entrada das últimas 3 horas em 695 t/h, praticamente equilibrada com a moagem.
+O cenário de equilíbrio é devido à frente F333 que entrou em regime às 12:00 após mudança concluída, compensando a queda de rendimento da F320 que está em cana de baixa produtividade. A indisponibilidade geral está baixa, em 6% no período.
+Conforme apresentado no gráfico acima, mantendo o equilíbrio entre entrada de 695 t/h e saída de 710 t/h, o pátio deve se manter entre 15 e 17 conjuntos até às 20:00, sem risco de redução.
+Entretanto, temos como ponto de atenção a troca de turno do transporte das 19:00, que historicamente reduz a chegada em 18% entre 20:00 e 21:00. Caso essa queda se confirme, o pátio poderá chegar a 12 conjuntos por volta das 21:30.
+Diante disso, recomendamos manter a moagem em 710 t/h e reforçar o alinhamento com o CTT para garantir o retorno rápido dos caminhões após a troca de turno, buscando manter a moagem nominal durante toda a noite.
+
+EXEMPLO 22 - Comunicado UISJ:
+De momento, a moagem da unidade está formalizada em 650 t/h, com pátio contabilizando 14 conjuntos carregados. Média de entrada das últimas 3 horas em 710 t/h, com saldo positivo de 60 t/h.
+O principal motivo do ganho de pátio é a liberação da frente F16, com cana de alta produtividade de 110 t/ha e potencial de 180 t/h adicional, além da F13 que retornou de manutenção às 11:00.
+Atualmente temos 6 frentes em operação, todas com peso médio acima de 75 toneladas e ciclo de caminhões ajustado com 2 caminhões extras alocados para cobrir a troca de turno das 18:00.
+Conforme gráfico acima, com entrada de 710 t/h vs saída de 650 t/h, o pátio deve chegar a 18 conjuntos até às 17:00. Dessa forma, temos condição favorável para aumento de moagem para 700 t/h a partir das 16:00 e avaliação de 750 t/h nominal entre 19:00 e 20:00, antes da troca de turno.
+Seguimos acompanhando e alinhado com a indústria para aumento gradativo, garantindo que o pátio não ultrapasse 20 conjuntos para não gerar fila excessiva.
+
+EXEMPLO 23 - Comunicado UIM:
+No momento, a moagem da unidade está reduzida para 750 t/h, devido à baixa entrega das frentes F504 e F509. O pátio está contabilizando 8 conjuntos carregados, abaixo do gatilho ideal de 12 conjuntos.
+O principal ponto de atenção é a F504, que está com solo extremamente úmido devido à chuva de 22mm registrada entre 02:00 e 05:00, impossibilitando a operação de 2 colhedoras. A F509 está em mudança para área de reforma e só deve liberar após 15:00.
+A indisponibilidade mecânica está em 24% entre 05:00 e 09:00, com pico de 35% nas colhedoras próprias entre 07:00 e 08:00, reflexo da operação em solo úmido que gerou atolamento de 1 colhedora e 2 transbordos.
+Conforme demonstrado no gráfico acima, com potencial atual de apenas 580 t/h vs moagem de 750 t/h, o pátio deve chegar a 4 conjuntos até às 13:00. Caso a condição de solo não melhore, existe risco de parada da unidade entre 13:30 e 14:30.
+Em alinhamento com a supervisão agrícola, foi definido que a avaliação de solo ocorrerá às 12:00. Caso libere, a F504 deve retornar com potencial de 150 t/h a partir das 13:00, elevando o total para 730 t/h e permitindo manter a moagem em 700 t/h até 18:00. O retorno para nominal de 917 t/h só será possível após 20:00 quando todas as frentes estiverem em regime.
+Seguimos acompanhando hora a hora.
+
+EXEMPLO 22 - Comunicado UIM:
+De momento, a moagem da unidade está formalizada em 800 t/h, com um pátio contabilizando 11 conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em apenas 745 t/h.
+O principal motivo da baixa entrega é o atraso no retorno de caminhões do pátio para o campo, com 14 caminhões parados no pátio entre 10:00 e 12:00 devido à lentidão na descarga. Isso gerou 45 minutos de ociosidade média nas frentes F501 e F502.
+Além do gargalo no pátio, a frente F542 está em processo de mudança parcial e a F506 com déficit de 130 toneladas devido à manutenção de 1 colhedora própria que está em troca de facas.
+Conforme apresentado no gráfico acima, mantendo a moagem em 800 t/h com entrada de 745 t/h, o pátio tende a cair para 8 conjuntos até às 15:00. Dessa forma, o ideal seria ajustar para 750 t/h entre 14:30 e 17:00.
+Conforme o giro de pátio normalizar e a liberação da F506 prevista para 16:00, o potencial deve retornar para 820 t/h, possibilitando o retorno para 850 t/h por volta das 18:00, antes da troca de turno das 19:00.
+
+EXEMPLO 24 - Comunicado UICA:
+No momento, a moagem da unidade está formalizada em 880 t/h, com pátio contabilizando 16 conjuntos carregados. Média de entrada das últimas 3 horas em 865 t/h, praticamente equilibrada.
+O ponto de atenção da unidade é a previsão de chuva isolada na região da F75 entre 17:00 e 19:00, conforme alerta da meteorologia. Atualmente todas as frentes estão em regime com indisponibilidade baixa de 5% entre 12:00 e 15:00.
+A frente F78 que estava em mudança finalizou o deslocamento às 13:30 e já está em regime com potencial de 145 t/h, compensando a queda de rendimento da F73 que entrou em final de área.
+Conforme gráfico acima, mantendo 880 t/h com entrada de 865 t/h, o pátio deve se manter estável entre 14 e 16 conjuntos até às 20:00. Caso a chuva prevista se confirme na F75, existe risco de perda de 120 t/h de potencial entre 18:00 e 21:00, podendo levar o pátio para 11 conjuntos.
+Dessa forma, recomendamos manter a moagem em 880 t/h e em caso de chuva, avaliar redução para 800 t/h entre 19:00 e 21:00, com retorno para 900 t/h nominal após 22:00 quando a frente F80 liberar, conforme já alinhado com a supervisão.
+
+EXEMPLO 25 - Comunicado UIT:
+De momento, a moagem da unidade está reduzida para 650 t/h, devido à baixa entrega das frentes F312 e F327. O pátio está contabilizando 10 conjuntos carregados.
+O principal motivo é a manutenção corretiva em 2 colhedoras da F312 que apresentaram quebra de elevador, com previsão de retorno somente às 15:30. A F327 está em cana bisada com alta palha, reduzindo o rendimento de 75 t/h para 40 t/h.
+A indisponibilidade mecânica atingiu 19% entre 11:00 e 14:00, com pico de 28% entre 12:00 e 13:00. Além disso, temos 3 caminhões em manutenção no malhador, reduzindo a frota alocada.
+Conforme demonstrado no gráfico acima, com potencial atual de 580 t/h vs moagem de 650 t/h, o pátio deve chegar a 6 conjuntos até às 17:00. Existe risco de nova redução para 600 t/h mínima entre 17:00 e 18:00, coincidindo com a troca de turno.
+Conforme as colhedoras da F312 entrarem em linha e a liberação da frente F335 prevista para 17:00 com potencial de 130 t/h, o potencial total deve subir para 710 t/h, possibilitando o retorno para nominal de 710 t/h por volta das 18:30 e avaliação de 750 t/h após 20:00.
+
+EXEMPLO 26 - Comunicado VER:
+De momento, a moagem da unidade está formalizada em 380 t/h, com pátio contabilizando 8 conjuntos carregados. Média de entrada das últimas 3 horas em 420 t/h, com saldo positivo.
+O ganho de pátio está relacionado à frente 252 que está em cana de alta produtividade com média de 95 t por carga e à frente 249 que retornou de manutenção preventiva às 09:00 com potencial adicional de 80 t/h.
+Atualmente a indisponibilidade está em apenas 2% e temos 5 caminhões alocados, sendo que o necessário é de 4, gerando folga operacional.
+Conforme gráfico acima, com entrada de 420 t/h vs saída de 380 t/h, o pátio deve chegar a 12 conjuntos até às 16:00. Dessa forma, temos condição favorável para aumento de moagem para 450 t/h a partir das 14:30 e avaliação de 500 t/h nominal entre 17:00 e 18:00.
+Seguimos acompanhando junto à supervisão e indústria para garantir o aumento de forma segura sem gerar fila excessiva no pátio.
+
+EXEMPLO 27 - Comunicado UISJ:
+No momento, a moagem da unidade está formalizada em 600 t/h, com pátio contabilizando 12 conjuntos carregados. Média de entrada das últimas 3 horas em 625 t/h.
+O principal ponto de atenção é a frente F17 que está em processo de mudança para área de expansão e deve liberar somente às 18:00. A frente F18 está com baixo rendimento devido à cana acamada e com impureza vegetal de 18%.
+A indisponibilidade de colhedoras está em 12% entre 10:00 e 13:00, dentro da meta, porém a F10 está com déficit de 90 toneladas devido ao tempo de deslocamento maior, pois está colhendo a 28 km da usina.
+Conforme apresentado no gráfico acima, mantendo a moagem em 600 t/h com entrada de 625 t/h, o pátio deve se manter entre 12 e 14 conjuntos até às 19:00, sem risco imediato de redução.
+Entretanto, com a troca de turno do transporte das 19:00, existe histórico de queda de 22% na chegada entre 20:00 e 21:30. Caso essa queda se confirme, o pátio poderá chegar a 9 conjuntos até às 22:00. Dessa forma, recomendamos manter 600 t/h e avaliar aumento para 700 t/h somente após 22:30 quando o transporte entrar em regime e a F17 liberar.
+Alinhamento já realizado com Cotur e Supervisor Gilberto.
 `;
 
 function montarPrompt(dados, calc, unidade){
