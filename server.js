@@ -394,7 +394,7 @@ OBSERVAÇÃO CAMPO:
 ${comentarios}
 
 REGRAS PARA ESCREVER IGUAL AOS EXEMPLOS - OBRIGATÓRIO:
-- Comece: *Comunicado ${unidade.sigla} - ${horaFmt(calc.horaAtual)}*
+- Comece: *Comunicado ${unidade.sigla}*
 - 1º parágrafo: De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos. Entretanto, média de entrada das últimas 3h está em ${calc.medias.historicoPotencial.toFixed(0)} t/h. Se parada: Usina parada no momento, pátio contabilizando ${calc.estoque.atual} conjuntos.
 - 2º: Motivo técnico (indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção)
 - 3º: Projeção futura usando potencial futuro informado (${calc.potencialFuturo.media.toFixed(0)} t/h) - se ganha ou perde pátio
