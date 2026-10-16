@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Plano de Voo | CTT Agroindustrial</title>
+<title>Plano de Voo | COA</title>
 <link rel="icon" href="/logo.ico">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -13,7 +13,7 @@
       <img src="/logo.png" alt="" class="header-logo-small" onerror="this.style.display='none'">
       <div>
         <div class="brand-title">PLANO DE VOO</div>
-        <div class="brand-subtitle">CTT AGROINDUSTRIAL • COA</div>
+        <div class="brand-subtitle">COA • OPERAÇÕES AGROINDUSTRIAIS</div>
       </div>
     </div>
   </div>
@@ -21,9 +21,9 @@
 
 <main class="container">
   <section class="intro">
-    <span class="eyebrow">Inteligência Operacional ENTRADA vs SAÍDA</span>
-    <h1>Análise que decide a moagem.</h1>
-    <p>Cole a <strong>Análise de Potencial</strong>, informe <strong>moagem atual</strong> e <strong>pátio</strong>, e projeção futura de <strong>3h</strong>. A IA gera comunicado formal técnico nível gerência.</p>
+    <span class="eyebrow">PAINEL ANALÍTICO | ENTRADA / MOAGEM</span>
+    <h1>Análise do Potencial de Produção.</h1>
+    <p>Cole a tela do Logtrac <strong>Análise do Potencial de Produção</strong>, informe <strong>moagem atual</strong> e <strong>pátio</strong>, e projeção futura de <strong>3h</strong>. O painel gera o comunicado da unidade automaticamente.</p>
   </section>
 
   <!-- 01 -->
@@ -31,13 +31,13 @@
     <div class="card-header">
       <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
         <div class="card-number">01</div>
-        <div><div class="card-title">Potencial de Produção</div><div class="card-description">Cole a tela Hora a Hora Transporte</div></div>
+        <div><div class="card-title">Potencial de Produção</div><div class="card-description">Cole a tela Hora a Hora da Logtrac</div></div>
       </div>
       <div class="card-badge">OBRIGATÓRIO</div>
     </div>
-    <textarea id="potentialInput" class="main-textarea" placeholder="Cole aqui a tabela Hora a Hora Transporte (Hora - Máquinas - Entrada - Saída)..."></textarea>
+    <textarea id="potentialInput" class="main-textarea" placeholder="Cole aqui a tela da Logtrac Análise de Potencial de Produção no modo Hora a Hora (Hora - Máquinas - Entrada - Saída)..."></textarea>
     <div id="previewArea" class="hidden preview-area">
-      <span class="preview-title" id="previewTitle">✅ Tabela identificada</span>
+      <span class="preview-title" id="previewTitle">✅ Tela identificada</span>
       <div id="previewContent" style="margin-top:8px; font-size:10px; color:#9ae889"></div>
       <div id="previewDetails" style="margin-top:6px; font-size:9px; color:#87988e"></div>
     </div>
@@ -48,26 +48,26 @@
     <div class="card-header">
       <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
         <div class="card-number">02</div>
-        <div><div class="card-title">Operação Atual + Futuro 3h</div><div class="card-description">Moagem zero = usina parada</div></div>
+        <div><div class="card-title">Operação Atual + Potencial das Frentes</div><div class="card-description">Moagem Zero = Unidade Parada</div></div>
       </div>
       <div class="card-badge">OBRIGATÓRIO</div>
     </div>
 
-    <label style="font-size:10px; font-weight:800; color:#ff8a8a">MOAGEM ATUAL ALINHADA (t/h) - 0 = PARADA</label>
+    <label style="font-size:10px; font-weight:800; color:#ff8a8a">MOAGEM ATUAL | Se 0 = PARADA</label>
     <div class="stock-grid" style="margin-top:8px">
-      <div class="stock-field highlight"><label>Moagem agora</label><div class="stock-input-wrapper"><input id="moagemAtual" type="number" placeholder="710"><span>t/h</span></div><small>Se parada coloque 0</small></div>
-      <div class="stock-field"><label>Saldo futuro</label><div id="saldoFuturoPreview" style="height:42px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border-radius:10px; font-weight:800">—</div><small>vs moagem atual</small></div>
+      <div class="stock-field highlight"><label>Moagem Formalizada</label><div class="stock-input-wrapper"><input id="moagemAtual" type="number" placeholder="710"><span>t/h</span></div><small>Se parada coloque 0</small></div>
+      <div class="stock-field"><label>Saldo Futuro</label><div id="saldoFuturoPreview" style="height:42px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border-radius:10px; font-weight:800">—</div><small>Em relação a moagem formalizada</small></div>
     </div>
 
-    <label style="font-size:10px; font-weight:800; margin-top:14px; display:block">ESTOQUE PÁTIO (conjuntos)</label>
+    <label style="font-size:10px; font-weight:800; margin-top:14px; display:block">ESTOQUE PÁTIO (Conjuntos)</label>
     <div class="stock-grid" style="margin-top:8px">
-      <div class="stock-field"><label id="stockLabel1">H-3</label><div class="stock-input-wrapper"><input id="stock1" type="number" placeholder="0"><span>conj</span></div></div>
-      <div class="stock-field"><label id="stockLabel2">H-2</label><div class="stock-input-wrapper"><input id="stock2" type="number" placeholder="0"><span>conj</span></div></div>
-      <div class="stock-field"><label id="stockLabel3">H-1</label><div class="stock-input-wrapper"><input id="stock3" type="number" placeholder="0"><span>conj</span></div></div>
-      <div class="stock-field current"><label id="stockLabel4">ATUAL</label><div class="stock-input-wrapper"><input id="stockCurrent" type="number" placeholder="0"><span>conj</span></div><small>Agora</small></div>
+      <div class="stock-field"><label id="stockLabel1">H-3</label><div class="stock-input-wrapper"><input id="stock1" type="number" placeholder="0"><span>QTD</span></div></div>
+      <div class="stock-field"><label id="stockLabel2">H-2</label><div class="stock-input-wrapper"><input id="stock2" type="number" placeholder="0"><span>QTD</span></div></div>
+      <div class="stock-field"><label id="stockLabel3">H-1</label><div class="stock-input-wrapper"><input id="stock3" type="number" placeholder="0"><span>QTD</span></div></div>
+      <div class="stock-field current"><label id="stockLabel4">ATUAL</label><div class="stock-input-wrapper"><input id="stockCurrent" type="number" placeholder="0"><span>QTD</span></div><small>Agora</small></div>
     </div>
 
-    <label style="font-size:10px; font-weight:800; color:#9ae889; margin-top:14px; display:block">POTENCIAL FUTURO 3H (ENTRADA) - Quanto imagina que vai entrar</label>
+    <label style="font-size:10px; font-weight:800; color:#9ae889; margin-top:14px; display:block">POTENCIAL ESTIMADO DAS FRENTES NAS PRÓXIMAS 03 HORAS (T/H)</label>
     <div class="stock-grid" style="margin-top:8px">
       <div class="stock-field highlight"><label id="potFutLabel1">+1h</label><div class="stock-input-wrapper"><input id="potFut1" type="number" placeholder="750"><span>t/h</span></div></div>
       <div class="stock-field highlight"><label id="potFutLabel2">+2h</label><div class="stock-input-wrapper"><input id="potFut2" type="number" placeholder="780"><span>t/h</span></div></div>
@@ -80,24 +80,24 @@
     <div class="card-header">
       <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
         <div class="card-number">03</div>
-        <div><div class="card-title">Observação de Campo</div><div class="card-description">Motivo + como melhora</div></div>
+        <div><div class="card-title">Observações das Frentes</div><div class="card-description">Motivos + Pontos de Atenção</div></div>
       </div>
-      <div class="card-badge optional">OPCIONAL MAS IMPORTANTE</div>
+      <div class="card-badge optional">OPCIONAL</div>
     </div>
     <div class="comments-area">
-      <textarea id="comments" class="comments-textarea" placeholder="Ex: F329 em mudança, F74 finalizando área, indisponibilidade 16% entre 10h e 16h, chuva solo úmido, liberação Frente 247 às 09h00 450t/h, troca turno 07h e 19h..."></textarea>
+      <textarea id="comments" class="comments-textarea" placeholder="Ex: F329 em mudança, F74 finalizando área, indisponibilidade mec. de colhedoras em 16% das 10:00 às 16:00, chuva/solo úmido, liberação da Frente 247 às 09:00, troca turno..."></textarea>
       <button id="micButton" class="mic-button">🎤</button>
     </div>
   </section>
 
   <div class="action-area">
     <button id="clearButton" class="clear-button">Limpar</button>
-    <button id="generateButton" class="generate-button">✦ GERAR PLANO DE VOO FORMAL</button>
+    <button id="generateButton" class="generate-button">✦ GERAR PLANO DE VOO</button>
   </div>
 
   <div id="loadingArea" class="hidden loading-area">
     <div class="loading-spinner"></div>
-    <div><strong>Gerando análise formal técnica...</strong><p>Analisando ENTRADA vs SAÍDA + pátio + troca turno</p></div>
+    <div><strong>Gerando Análise...</strong><p>Analisando ENTRADA/MOAGEM | ESTOQUES | POTENCIAL DAS FRENTES</p></div>
   </div>
 
   <div id="resultArea" class="hidden result-area">
@@ -106,23 +106,18 @@
       <button id="copyButton" class="copy-button">📋 Copiar p/ WhatsApp</button>
     </div>
     <div class="kpi-grid">
-      <div class="kpi-card"><span class="kpi-label">Pátio Atual</span><span class="kpi-value" id="kpiStock">—</span></div>
-      <div class="kpi-card"><span class="kpi-label">Moagem Atual</span><span class="kpi-value" id="kpiMoagemAtual">—</span></div>
-      <div class="kpi-card"><span class="kpi-label">Média Futuro 3h</span><span class="kpi-value" id="kpiFuturo">—</span></div>
-      <div class="kpi-card"><span class="kpi-label">Risco / Volta</span><span class="kpi-value" id="kpiRiskHour">—</span></div>
+      <div class="kpi-card"><span class="kpi-label">Estoque Atual</span><span class="kpi-value" id="kpiStock">—</span></div>
+      <div class="kpi-card"><span class="kpi-label">Moagem Formalizada</span><span class="kpi-value" id="kpiMoagemAtual">—</span></div>
+      <div class="kpi-card"><span class="kpi-label">Potencial nas Próximas 3H</span><span class="kpi-value" id="kpiFuturo">—</span></div>
+      <div class="kpi-card"><span class="kpi-label">Risco | Volta | Parada</span><span class="kpi-value" id="kpiRiskHour">—</span></div>
     </div>
-    <div class="result-status" id="resultStatus">—</div>
-    <div class="analysis-card"><div class="analysis-text" id="analysisText"></div></div>
-    <div class="calculation-area"><div class="calculation-header">Cálculo ENTRADA vs SAÍDA</div><div class="calculation-content" id="calculationContent"></div></div>
-  </div>
 
   <div id="errorArea" class="hidden error-area"><div class="error-icon">!</div><div><strong>Atenção</strong><p id="errorMessage"></p></div></div>
 </main>
 
-<footer class="footer"><div>COA • CTT AGROINDUSTRIAL</div><span>Plano de Voo Formal Técnico</span></footer>
+<footer class="footer"><div>COA • OPERAÇÕES AGROINDUSTRIAIS</div><span>Plano de Voo Automático - By Dionnes</span></footer>
 
 <script>
-// PARSER TANABI CORRIGIDO - VOLTOU A LER TABELA HORA A HORA TRANSPORTE
 function parsePotencial(text){
   if(!text||text.length<15) return null;
   let dados=[];
