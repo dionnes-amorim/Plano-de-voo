@@ -6,7 +6,7 @@ const app = express();
 const PORT = Number(process.env.PORT || 10000);
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const TON_POR_CONJ = 70;
-const GEMINI_MODELS = ['gemini-2.5-flash','gemini-flash-latest','gemini-2.0-flash'];
+const GEMINI_MODELS = ['gemini-3.8-flash','gemini-flash-latest','gemini-3.0-flash'];
 
 const CONFIG_UNIDADES = {
   'MANDU': { nome: 'Mandu', sigla: 'UIM', nominal: 917, tipo: 'MOENDA', min: 650, gatilho: 12 },
