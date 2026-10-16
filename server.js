@@ -371,24 +371,24 @@ Você deve escrever um texto de 1200 a 1800 caracteres, com raciocínio completo
 
 ESTRUTURA DE 4 PARÁGRAFOS OBRIGATÓRIA:
 
-P1 - LINHA 1: "*Comunicado ${unidade.sigla}*"
+TÍTULO - LINHA 1: "*Comunicado ${unidade.sigla}*"
 P1 - TEXTO: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em (Aqui você analisa a média de entrada das últimas 3 horas e saída das últimas 03 horas, a saída represente a moagem em t/h e mostra escrito)" Explique se está ganhando ou perdendo pátio comparando entrada vs moagem. Se parada, use "No momento, a moagem da unidade está parada..."
 
 P2 - Comece com "O principal motivo da baixa entrega é" ou "O principal ponto de atenção da unidade é". Faça análise profunda: cite % de indisponibilidade, quantas máquinas, qual frente (use FXXX), se é colhedora ou transbordo, se é chuva, solo úmido, manutenção. NÃO USE "frentes de cortes" ou "escoamento, encharcado, histórica, regime, generalizadas", USE "frentes" igual nos exemplos: "frente F511", "frente F329 em processo de mudança"
 continue abaixo com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Segunda causa com números: déficit de X toneladas em relação à cota, troca de turno do transporte às HH:00, falta de caminhão, peso médio, impureza.
 
-P3 - Comece com "Conforme apresentado no gráfico acima," - AQUI VEM A ANÁLISE COMPLEXA. Diga: "com potencial de X t/h vs moagem de Y t/h, mas sempre como média e tendência futura, sem precisar ficar colocando h1, h2 e h3 não, o pátio tende a chegar a Z conjuntos até às HH:00". Dê cálculo de déficit. Dê horário exato de risco de redução. Ex: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00"
-continue dando a solução com raciocínio: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00, aguardando..." e "Conforme as frentes entrarem em ciclo conforme o seu potencial de produção e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Reforçando algo aqui, se tiver queastão de solo úmido não precisa nem falar de nominal, apenas aumentar moagem conforme condição de estoque e potencial melhorarem.
+P3 - Comece com "Conforme apresentado no gráfico acima," - AQUI VEM A ANÁLISE COMPLEXA. Diga: "com potencial de X t/h vs moagem de Y t/h, mas sempre como média e tendência futura, sem precisar ficar colocando h1, h2 e h3 nunca, o pátio tende a chegar a Z conjuntos até às HH:00". Dê horário exato de risco de redução. Ex: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00"
+continue dando a solução com raciocínio: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00, aguardando..." e "Conforme as frentes entrarem em ciclo conforme o seu potencial de produção e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Reforçando algo aqui, se tiver questão de solo úmido não precisa nem falar de nominal, apenas aumentar moagem conforme condição de estoque e potencial melhorarem.
 
 P4 - "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
 
-REGRAS DE VOCABULÁRIO - MANTENHA PADRÃO:
+REGRAS DE VOCABULÁRIO - MANTENHA PADRÃO DOS EXEMPLOS, SEM INVENTAR TERMOS, APENAS SEGUINDO OS EXEMPLOS:
 
 USE: frente, frentes, pátio, conjuntos carregados, moagem, entrada, saída, potencial, mudança, indisponibilidade mecânica, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima, supervisão, indústria, CTT, Cotur.
 
 NUNCA USE: cessamento, h1, h2, h3, precipitação pluviométrica, regime, escoamento, escoar, volumetria, cessamento, matéria-prima, residual, throughput, lastro, otimização, sinergia, premissa, mitigar, performance, suprimento de cana. Se usar, o texto está errado.
 
-TAMANHO OBRIGATÓRIO: 1500 a 2000 caracteres. Se fizer menor que 1400, refaça mais detalhado e complexo. Texto precisa ser pensado, com números, horários, e análise de causa-efeito.
+TAMANHO OBRIGATÓRIO: 1200 a 1800 caracteres. Se fizer menor que 1100, refaça mais detalhado e complexo. Texto precisa ser pensado, com números, horários, e análise de causa-efeito mas sem inventar números e palavras ou encher linguiça.
 
 EXEMPLOS PARA COPIAR ESTILO COMPLEXO:
 ${EXEMPLOS_TODOS}
