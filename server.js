@@ -6,7 +6,24 @@ const app = express();
 const PORT = Number(process.env.PORT || 10000);
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const TON_POR_CONJ = 70;
-const GEMINI_MODELS = ['gemini-3.8-flash','gemini-flash-latest','gemini-3.0-flash'];
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',           // melhor custo/benefício - USE ESSE COMO PRINCIPAL
+  'gemini-2.5-flash-lite',      // mais rápido e barato
+  'gemini-2.0-flash',            // estável, fallback clássico
+  'gemini-2.0-flash-lite',       // ultra rápido
+  'gemini-flash-latest',        // alias que sempre aponta pro Flash mais novo
+  'gemini-flash-lite-latest',   // alias pro Lite mais novo
+  'gemini-2.5-pro'              // mais inteligente, free com limite menor
+];
+
+// Se você já está na API nova (3.x naming - preview)
+const GEMINI_MODELS_V3 = [
+  'gemini-3.5-flash',
+  'gemini-3.1-flash-lite',
+  'gemini-3.1-pro-preview',
+  'gemini-flash-latest',
+  'gemini-flash-lite-latest'
+];
 
 const CONFIG_UNIDADES = {
   'MANDU': { nome: 'Mandu', sigla: 'UIM', nominal: 917, tipo: 'MOENDA', min: 650, gatilho: 12 },
