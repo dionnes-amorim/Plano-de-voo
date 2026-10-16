@@ -5,6 +5,24 @@
 <title>Plano de Vôo | COA</title>
 <link rel="icon" href="/logo.ico">
 <link rel="stylesheet" href="style.css">
+<style>
+/* FIX BOTÃO WHATSAPP - NÃO SOME MAIS */
+.result-header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap}
+.result-header h2{margin:2px 0 0; font-size:20px}
+#copyButton{
+  display:inline-flex; align-items:center; gap:8px;
+  min-height:46px; padding:0 18px; border-radius:12px;
+  background:linear-gradient(135deg,#25D366,#128C7E);
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff; font-weight:900; font-size:11px; letter-spacing:.5px;
+  box-shadow:0 8px 24px rgba(37,211,102,.25);
+  transition:.2s; cursor:pointer;
+}
+#copyButton:hover{transform:translateY(-2px); box-shadow:0 12px 32px rgba(37,211,102,.35)}
+#copyButton:active{transform:scale(.98)}
+#copyButton.copiado{background:linear-gradient(135deg,#69d66a,#3cb85d)}
+.analysis-card{position:relative}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -103,7 +121,7 @@
   <div id="resultArea" class="hidden result-area">
     <div class="result-header">
       <div><span class="eyebrow">Comunicado gerado</span><h2>Plano de Voo</h2></div>
-      <button id="copyButton" class="copy-button">📋 Copiar p/ WhatsApp</button>
+      <button id="copyButton">📋 COPIAR P/ WHATSAPP</button>
     </div>
     <div class="kpi-grid">
       <div class="kpi-card"><span class="kpi-label">Estoque Atual</span><span class="kpi-value" id="kpiStock">—</span></div>
@@ -111,8 +129,6 @@
       <div class="kpi-card"><span class="kpi-label">Potencial nas Próximas 3H</span><span class="kpi-value" id="kpiFuturo">—</span></div>
       <div class="kpi-card"><span class="kpi-label">Risco | Volta | Parada</span><span class="kpi-value" id="kpiRiskHour">—</span></div>
     </div>
-
-     </div>
     <div class="result-status" id="resultStatus">—</div>
     <div class="analysis-card"><div class="analysis-text" id="analysisText"></div></div>
   </div>
@@ -178,10 +194,57 @@ function atualizarSaldo(){const moagem=numeroBR($('moagemAtual').value); const f
 
 function montarDados(){const tabela=$('potentialInput').value.trim(); if(!tabela) throw new Error('Cole a Análise de Potencial'); const res=interpretarTabela(tabela); if(res.error) throw new Error(res.error); const eAtual=$('stockCurrent').value; if(!eAtual) throw new Error('Informe estoque atual'); const moagemAtual=$('moagemAtual').value; if(moagemAtual===''||moagemAtual==null) throw new Error('Informe moagem atual (0 se parada)'); return {tabelaOriginal:tabela, potencial:res.rows, estoque:{h3:Number($('stock1').value||0),h2:Number($('stock2').value||0),h1:Number($('stock3').value||0),atual:Number(eAtual)}, moagemAtual:Number(moagemAtual), potencialFuturo:{h1:$('potFut1').value, h2:$('potFut2').value, h3:$('potFut3').value}, comentarios:$('comments').value.trim(), horaAtual:new Date().getHours()};}
 
-async function gerar(){const btn=$('generateButton'); try{const dados=montarDados(); btn.disabled=true; btn.textContent='GERANDO...'; $('loadingArea').classList.remove('hidden'); $('resultArea').classList.add('hidden'); $('errorArea').classList.add('hidden'); const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dados)}); const data=await resp.json(); if(!resp.ok) throw new Error(data.error); lastText=data.texto; $('analysisText').textContent=lastText; $('kpiStock').textContent=data.calculos.estoque.atual+' conj'; $('kpiMoagemAtual').textContent=data.calculos.moagemAtual+' t/h'+(data.usinaParada?' PARADA':''); $('kpiFuturo').textContent=data.calculos.potencialFuturo.media.toFixed(0)+' t/h'; $('kpiRiskHour').textContent=data.usinaParada?(data.calculos.retorno.horaVoltaIdeal!=null?String(data.calculos.retorno.horaVoltaIdeal).padStart(2,'0')+':00 VOLTA':'AGUARDAR'):(data.calculos.risco.primeiraHoraRisco!=null?String(data.calculos.risco.primeiraHoraRisco).padStart(2,'0')+':00 RISCO':'OK 12h'); $('resultStatus').textContent=`${data.unidade.sigla} • Moagem ${data.calculos.moagemAtual} t/h • Pátio ${data.calculos.estoque.atual} conj • Futuro ${data.calculos.potencialFuturo.media.toFixed(0)} t/h • Saldo ${data.calculos.potencialFuturo.saldoFuturo>=0?'+':''}${data.calculos.potencialFuturo.saldoFuturo.toFixed(0)}t/h`; $('calculationContent').innerHTML=data.calculos.projecaoEstoque.map(p=>`<div>${p.horaFormatada}: Ent ${p.potencial.toFixed(0)} / Sai ${p.moagem.toFixed(0)} → ${p.estoqueProjetado.toFixed(1)} conj</div>`).join(''); $('resultArea').classList.remove('hidden'); window.scrollTo({top:$('resultArea').offsetTop-20,behavior:'smooth'});}catch(e){$('errorMessage').textContent=e.message; $('errorArea').classList.remove('hidden');}finally{btn.disabled=false; btn.textContent='✦ GERAR PLANO DE VOO FORMAL'; $('loadingArea').classList.add('hidden');}}
+async function gerar(){
+  const btn=$('generateButton');
+  try{
+    const dados=montarDados();
+    btn.disabled=true; btn.textContent='GERANDO...';
+    $('loadingArea').classList.remove('hidden');
+    $('resultArea').classList.add('hidden');
+    $('errorArea').classList.add('hidden');
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dados)});
+    const data=await resp.json();
+    if(!resp.ok) throw new Error(data.error);
+    lastText=data.texto;
+    $('analysisText').textContent=lastText;
+    $('kpiStock').textContent=data.calculos.estoque.atual+' conj';
+    $('kpiMoagemAtual').textContent=data.calculos.moagemAtual+' t/h'+(data.usinaParada?' PARADA':'');
+    $('kpiFuturo').textContent=data.calculos.potencialFuturo.media.toFixed(0)+' t/h';
+    $('kpiRiskHour').textContent=data.usinaParada?(data.calculos.retorno.horaVoltaIdeal!=null?String(data.calculos.retorno.horaVoltaIdeal).padStart(2,'0')+':00 VOLTA':'AGUARDAR'):(data.calculos.risco.primeiraHoraRisco!=null?String(data.calculos.risco.primeiraHoraRisco).padStart(2,'0')+':00 RISCO':'OK 12h');
+    $('resultStatus').textContent=`${data.unidade.sigla} • Moagem ${data.calculos.moagemAtual} t/h • Pátio ${data.calculos.estoque.atual} conj • Futuro ${data.calculos.potencialFuturo.media.toFixed(0)} t/h • Saldo ${data.calculos.potencialFuturo.saldoFuturo>=0?'+':''}${data.calculos.potencialFuturo.saldoFuturo.toFixed(0)}t/h`;
+    $('resultArea').classList.remove('hidden');
+    window.scrollTo({top:$('resultArea').offsetTop-20,behavior:'smooth'});
+  }catch(e){
+    $('errorMessage').textContent=e.message;
+    $('errorArea').classList.remove('hidden');
+  }finally{
+    btn.disabled=false; btn.textContent='✦ GERAR PLANO DE VOO FORMAL';
+    $('loadingArea').classList.add('hidden');
+  }
+}
 $('generateButton').addEventListener('click', gerar);
-$('copyButton').addEventListener('click', async()=>{if(!lastText) return; await navigator.clipboard.writeText(lastText); $('copyButton').textContent='✓ Copiado!'; setTimeout(()=>$('copyButton').textContent='📋 Copiar p/ WhatsApp',2000);});
-$('clearButton').addEventListener('click',()=>{['potentialInput','stock1','stock2','stock3','stockCurrent','moagemAtual','potFut1','potFut2','potFut3','comments'].forEach(id=>$(id).value=''); $('resultArea').classList.add('hidden'); $('previewArea').classList.add('hidden'); atualizarSaldo();});
+
+$('copyButton').addEventListener('click', async()=>{
+  if(!lastText) return;
+  try{
+    await navigator.clipboard.writeText(lastText);
+    const b=$('copyButton');
+    b.textContent='✓ COPIADO!';
+    b.classList.add('copiado');
+    setTimeout(()=>{b.textContent='📋 COPIAR P/ WHATSAPP'; b.classList.remove('copiado');},2000);
+  }catch{
+    // fallback whatsapp
+    const wpp=`https://wa.me/?text=${encodeURIComponent(lastText)}`;
+    window.open(wpp,'_blank');
+  }
+});
+
+$('clearButton').addEventListener('click',()=>{
+  ['potentialInput','stock1','stock2','stock3','stockCurrent','moagemAtual','potFut1','potFut2','potFut3','comments'].forEach(id=>$(id).value='');
+  $('resultArea').classList.add('hidden');
+  $('previewArea').classList.add('hidden');
+  atualizarSaldo();
+});
 
 // MIC
 (function(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return; const rec=new SR(); rec.lang='pt-BR'; rec.continuous=true; rec.interimResults=true; let listening=false; const btn=$('micButton'); btn.addEventListener('click',()=>{if(listening) rec.stop(); else try{rec.start()}catch{}}); rec.onstart=()=>{listening=true; btn.classList.add('recording'); btn.textContent='●';}; rec.onend=()=>{listening=false; btn.classList.remove('recording'); btn.textContent='🎤';}; rec.onresult=(e)=>{let fin=''; for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) fin+=e.results[i][0].transcript+' '; if(fin) $('comments').value=($('comments').value.trim()+' '+fin.trim()).trim();};})();
