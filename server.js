@@ -378,7 +378,7 @@ function montarPrompt(dados, calc, unidade){
   const situacao = calc.usinaParada? `USINA PARADA - MOAGEM ZERO - Pátio ${calc.estoque.atual} conj - Potencial futuro ${calc.potencialFuturo.media.toFixed(0)} t/h - Melhor volta ${calc.retorno.horaVoltaIdeal!=null?horaFmt(calc.retorno.horaVoltaIdeal):'a calcular'} com ${calc.retorno.estoqueNaVolta.toFixed(1)} conj` : `Moagem atual ${calc.moagemAtual} t/h - Pátio ${calc.estoque.atual} conj - Entrada média histórica ${calc.medias.historicoPotencial.toFixed(0)} t/h - Potencial futuro ${calc.potencialFuturo.media.toFixed(0)} t/h - Saldo futuro ${calc.potencialFuturo.saldoFuturo>=0?'+':''}${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h - Menor pátio proj ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)} - Risco gatilho ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}`;
 
   return `
-Você é analista sênior COA CTT Plano de Voo. Escreva comunicado detalhado, GRANDE, IGUAL AOS EXEMPLOS REAIS, o mais próximo mesmo, mantendo padrão de escrita dos exemplos para não fugir da nossa escrita analítica.
+Você é analista sênior COA CTT Plano de Voo. Escreva comunicado detalhado, GRANDE, IGUAL AOS EXEMPLOS REAIS, o mais próximo mesmo, mantendo padrão de escrita dos exemplos para não fugir da nossa escrita analítica, sem inventar moda na escrita tipo cessamento, matéria prima e volumes residuais.
 
 UNIDADE: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h / Mín ${unidade.min} t/h / Gatilho <${unidade.gatilho} conj
 HORA: ${horaFmt(calc.horaAtual)}
@@ -393,14 +393,14 @@ ${calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} /
 OBSERVAÇÃO CAMPO:
 ${comentarios}
 
-REGRAS PARA ESCREVER IGUAL AOS EXEMPLOS - OBRIGATÓRIO:
+REGRAS PARA ESCREVER IGUAL AOS EXEMPLOS E SEM INVENTAR PALAVRAS QUE NÃO ESTEJAM NESSES EXEMPLOS - OBRIGATÓRIO:
 - Comece: *Comunicado ${unidade.sigla}*
 - 1º parágrafo: De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos. Entretanto, média de entrada das últimas 3h está em ${calc.medias.historicoPotencial.toFixed(0)} t/h. Se parada: Usina parada no momento, pátio contabilizando ${calc.estoque.atual} conjuntos.
 - 2º: Motivo técnico (indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção)
 - 3º: Projeção futura usando potencial futuro informado (${calc.potencialFuturo.media.toFixed(0)} t/h) - se ganha ou perde pátio
 - 4º: Risco com horário exato para reduzir/aumentar/voltar, usando gatilho, mas sem usar a palavra gatilho ${unidade.gatilho} conj
 - 5º: Como melhora e alinhamento CTT/indústria/transporte
-- 6º: Seguimos acompanhando hora a hora - COA CTT
+- 6º: Seguimos acompanhando hora a hora
 - Texto formal, técnico, 5-7 parágrafos, grande e detalhado
 - Dê horários exatos: reduzir para X t/h às HH:00, aumentar para nominal às HH:00, voltar às HH:00
 
