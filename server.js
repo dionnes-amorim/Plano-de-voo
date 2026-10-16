@@ -7,11 +7,11 @@ const PORT = Number(process.env.PORT || 10000);
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const TON_POR_CONJ = 70;
 const GEMINI_MODELS = [
+  'gemini-2.5-pro', // AGORA PRINCIPAL - ÚNICO QUE FAZ ANÁLISE COMPLEXA
   'gemini-2.5-flash',
-  'gemini-2.0-flash',
   'gemini-flash-latest',
-  'gemini-flash-lite-latest',
-  'gemini-2.5-pro'
+  'gemini-2.0-flash',
+  'gemini-flash-lite-latest'
 ];
 
 const CONFIG_UNIDADES = {
@@ -42,46 +42,6 @@ function identificarUnidade(texto){
   if(n.includes('UIV')||n.includes('VERTENTE')) return {chave:'VERTENTE',...CONFIG_UNIDADES['VERTENTE']};
   if(n.includes('UIT')||n.includes('TANABI')) return {chave:'TANABI',...CONFIG_UNIDADES['TANABI']};
   return {chave:'TANABI',...CONFIG_UNIDADES['TANABI']};
-}
-
-function parseTabelaTransporte(texto){
-  if(!texto||texto.length<20) return null;
-  const linhas=texto.split('\n');
-  let dados=[];
-  for(let line of linhas){
-    let t=line.trim(); if(!t) continue;
-    let lower=t.toLowerCase();
-    if(lower.includes('hora')&&lower.includes('máquinas')) continue;
-    if(lower.startsWith('total')) continue;
-    if(lower.includes('safra')||lower.includes('filial')||lower.includes('tipo')||lower.includes('data')||lower.includes('controlada')) continue;
-    const hm=t.match(/(\d{1,2})\s*-\s*(\d{1,2})/);
-    if(!hm) continue;
-    const horaIni=Number(hm[1]);
-    if(horaIni<0||horaIni>23) continue;
-    const rawNums = t.match(/[\d.,]+/g);
-    if(!rawNums||rawNums.length<3) continue;
-    const nums=rawNums.map(s=>{
-      let v=s.trim();
-      if(v.includes(',')&&v.includes('.')){ return Number(v.replace(/\./g,'').replace(',','.')); }
-      else if(v.includes(',')){ return Number(v.replace(',','.')); }
-      else { return Number(v); }
-    }).filter(n=>Number.isFinite(n));
-    if(nums.length<2) continue;
-    const entrada=nums[nums.length-2];
-    const saida=nums[nums.length-1];
-    if(entrada>=0&&entrada<10000&&saida>=0&&saida<10000){
-      dados.push({
-        hora: `${String(horaIni).padStart(2,'0')} - ${String((horaIni+1)%24).padStart(2,'0')}`,
-        horaNumero: horaIni,
-        entrada: entrada,
-        saida: saida,
-        potencial: entrada,
-        moagem: saida
-      });
-    }
-  }
-  if(dados.length<3) return null;
-  return {dados};
 }
 
 function normalizarPotencial(lista, nominal){
@@ -148,19 +108,19 @@ async function chamarIA(prompt){
         body:JSON.stringify({
           contents:[{parts:[{text:prompt}]}],
           generationConfig:{
-            temperature: 0.15,
-            topP: 0.8,
-            topK: 20,
-            maxOutputTokens: 2500
+            temperature: 0.28,
+            topP: 0.9,
+            topK: 40,
+            maxOutputTokens: 3500
           }
         }),
-        signal:AbortSignal.timeout(50000)
+        signal:AbortSignal.timeout(60000)
       });
       const raw=await resp.text();
       const data=JSON.parse(raw);
-      if(!resp.ok){ ultimoErro=data?.error?.message||raw.slice(0,500); continue; }
+      if(!resp.ok){ ultimoErro=data?.error?.message||raw.slice(0,800); continue; }
       const texto=extrairTextoGemini(data);
-      if(!texto || texto.length < 650){ ultimoErro='Texto muito curto, tentando próximo modelo'; continue; }
+      if(!texto || texto.length < 900){ ultimoErro='Texto muito simples/curto, tentando próximo modelo'; continue; }
       return {texto:texto.replace(/```/g,'').trim(), modelo};
     }catch(e){ ultimoErro=e.message; continue; }
   }
@@ -379,51 +339,63 @@ function montarPrompt(dados, calc, unidade){
   const histTxt=calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} / Saída ${r.moagem.toFixed(0)}`).join('\n');
 
   return `
-VOCÊ É UM ANALISTA SENIOR DO COA E COPIADOR DE PADRÃO. NÃO É CRIADOR. COPIE O JEITO DOS 27 EXEMPLOS.
+VOCÊ É ANALISTA SÊNIOR COA CTT - PLANO DE VOO. FAÇA ANÁLISE COMPLEXA, RACIOCINADA, PROFUNDA, IGUAL AOS EXEMPLOS REAIS MAIS DETALHADOS.
 
-UNIDADE: ${unidade.nome} (${unidade.sigla}) - Nominal ${unidade.nominal} t/h / Mín ${unidade.min} t/h / Gatilho ${unidade.gatilho} conj
-HORA: ${horaFmt(calc.horaAtual)}
-MOAGEM ATUAL: ${calc.moagemAtual} t/h
-PÁTIO ATUAL: ${calc.estoque.atual} conj
-MÉDIA 3H: ${calc.medias.historicoPotencial.toFixed(0)} t/h
-POTENCIAL FUTURO: ${calc.potencialFuturo.media.toFixed(0)} t/h
-MENOR PÁTIO: ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)}
-RISCO: ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}
-VOLTA IDEAL SE PARADA: ${calc.retorno.horaVoltaIdeal!=null?horaFmt(calc.retorno.horaVoltaIdeal):'-'} com ${calc.retorno.estoqueNaVolta.toFixed(1)} conj
+ANTES DE ESCREVER, PENSE:
+1 - Calcule: entrada média histórica ${calc.medias.historicoPotencial.toFixed(0)} vs moagem ${calc.moagemAtual} = déficit de ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
+2 - Calcule: potencial futuro ${calc.potencialFuturo.media.toFixed(0)} vs moagem ${calc.moagemAtual} = saldo futuro ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
+3 - Identifique menor pátio ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)} e hora de risco ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}
+4 - Defina moagem ideal para não quebrar ciclo
 
-PROJEÇÃO HORA A HORA - USE ESSES NÚMEROS NO TEXTO:
+UNIDADE: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h / Gatilho ${unidade.gatilho} conj
+HORA ATUAL: ${horaFmt(calc.horaAtual)}
+DADOS REAIS:
+- Moagem: ${calc.moagemAtual} t/h
+- Pátio: ${calc.estoque.atual} conj (variação ${calc.estoque.variacao} conj vs H3)
+- Média 3h: ${calc.medias.historicoPotencial.toFixed(0)} t/h
+- Potencial futuro médio próximas 3h: ${calc.potencialFuturo.media.toFixed(0)} t/h (H1:${calc.potencialFuturo.h1??'-'} H2:${calc.potencialFuturo.h2??'-'} H3:${calc.potencialFuturo.h3??'-'})
+- Menor pátio projetado: ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)}
+
+PROJEÇÃO HORA A HORA QUE VOCÊ DEVE USAR NO TEXTO COM HORÁRIOS EXATOS:
 ${projTxt}
 
-HISTÓRICO:
+HISTÓRICO RECENTE:
 ${histTxt}
 
-OBSERVAÇÃO CAMPO:
+OBSERVAÇÃO DE CAMPO (USE COMO BASE DO MOTIVO):
 ${comentarios}
 
-### ESTRUTURA FIXA - 6 PARÁGRAFOS GRANDES - MÍNIMO 1000 CARACTERES:
+### INSTRUÇÃO DE ESCRITA COMPLEXA - TEXTO GRANDE E ANALÍTICO:
 
-1 - Comece com "*Comunicado ${unidade.sigla}*" em linha isolada. Depois: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h." Se parada use: "No momento, a moagem da unidade está parada, com pátio contabilizando ${calc.estoque.atual} conjuntos."
-Logo abaixo, com "O principal motivo" ou "O principal ponto de atenção". Explique indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção. Use dados da OBS.
+Você deve escrever um texto de 1200 a 1800 caracteres, com raciocínio completo, igual aos exemplos 2, 7, 18, 23 que são os mais complexos.
 
-2 - Comece com "Além da" ou "Além das manutenções". Segunda causa, déficit de frente, troca de turno.
+ESTRUTURA DE 6 PARÁGRAFOS OBRIGATÓRIA:
 
-3 - Comece OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima," e use os números da projeção. Ex: "mantendo moagem em ${calc.moagemAtual} t/h o pátio tende a cair para ${calc.risco.menorEstoque.toFixed(0)} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}. Dessa forma, o ideal seria ajustar para X t/h entre HH:00 e HH:00"
-Continue dando a solução com horários exatos: "Conforme as frentes entrarem em regime e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h às HH:00"
+P1 - LINHA 1: "Comunicado ${unidade.sigla}"
+P1 - TEXTO: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h." Explique se está ganhando ou perdendo pátio comparando entrada vs moagem. Se parada, use "No momento, a moagem da unidade está parada..."
 
-4 - Finalize SEMPRE com: "Seguimos acompanhando o cenário hora a hora junto à supervisão agrícola da unidade e reforçando o alinhamento com a indústria."
+P2 - Comece com "O principal motivo da baixa entrega é" ou "O principal ponto de atenção da unidade é". Faça análise profunda: cite % de indisponibilidade, quantas máquinas, qual frente (use FXXX), se é colhedora ou transbordo, se é chuva, solo úmido, manutenção. NÃO USE "frentes de colheita" ou "cortes", USE "frentes" igual nos exemplos: "frente F511", "frente F329 em processo de mudança"
 
-### VOCABULÁRIO:
+P3 - Comece com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Segunda causa com números: déficit de X toneladas em relação à cota, troca de turno do transporte às HH:00, falta de caminhão, peso médio, impureza.
 
-PROIBIDO: escoamento, escoar, volumetria, volumétrico, cessamento, cessar, matéria-prima, insumo, residual, otimização, sinergia, mitigar, premissa, lastro, throughput, estoque de passagem, performance, gargalo produtivo.
+P4 - Comece com "Conforme apresentado no gráfico acima," - AQUI VEM A ANÁLISE COMPLEXA: use os números da projeção que te dei. Diga: "com potencial de X t/h vs moagem de Y t/h, o pátio tende a chegar a Z conjuntos até às HH:00". Dê cálculo de déficit. Dê horário exato de risco de redução. Ex: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00"
 
-OBRIGATÓRIO USAR: pátio, conjuntos carregados, moagem, entrada, saída, potencial, frente, mudança, indisponibilidade mecânica, manutenção, chuva, solo úmido, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima.
+P5 - Dê a solução com raciocínio: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00, aguardando..." e "Conforme as frentes entrarem em regime e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Use futuro H1 H2 H3 que te passei.
 
-TAMANHO: MÍNIMO 1000 caracteres, SEM MÁXIMO PARA MANDAR SEMPRE A MELHOR ANÁLISE. 5 a 7 parágrafos. Se ficar menor que 1000, ESTÁ ERRADO.
+P6 - "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria/CTT/Cotur, buscando manter a moagem o mais próximo possível da nominal de ${unidade.nominal} t/h."
 
-EXEMPLOS REAIS PARA COPIAR O ESTILO:
+REGRAS DE VOCABULÁRIO - MANTENHA PADRÃO:
+
+USE: frente, frentes, pátio, conjuntos carregados, moagem, entrada, saída, potencial, mudança, indisponibilidade mecânica, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima, supervisão, indústria, CTT, Cotur.
+
+NUNCA USE: escoamento, escoar, volumetria, cessamento, matéria-prima, residual, throughput, lastro, otimização, sinergia, premissa, mitigar, performance, suprimento de cana. Se usar, o texto está errado.
+
+TAMANHO OBRIGATÓRIO: 1200 a 1800 caracteres. Se fizer menor que 1100, refaça mais detalhado e complexo. Texto precisa ser pensado, com números, horários, e análise de causa-efeito.
+
+EXEMPLOS PARA COPIAR ESTILO COMPLEXO:
 ${EXEMPLOS_TODOS}
 
-Retorne APENAS o comunicado final.
+Retorne APENAS o comunicado final, sem explicar raciocínio.
 `.trim();
 }
 
@@ -438,9 +410,9 @@ app.post('/api/plano-voo', async (req,res)=>{
     const unidade=identificarUnidade(dados.tabelaOriginal||'');
     const calculos=calcularCenario(dados, unidade);
     const prompt=montarPrompt(dados, calculos, unidade);
-    console.log(`[PLANO-VOO] ${unidade.sigla} Moagem:${calculos.moagemAtual} Pátio:${dados.estoque.atual} Hist ${calculos.historico.length}h Fut:${calculos.potencialFuturo.media.toFixed(0)}`);
+    console.log(`[PLANO-VOO COMPLEXO] ${unidade.sigla} Moagem:${calculos.moagemAtual} Pátio:${dados.estoque.atual} Fut:${calculos.potencialFuturo.media.toFixed(0)} Deficit:${(calculos.medias.historicoPotencial - calculos.moagemAtual).toFixed(0)}`);
     const resultado=await chamarIA(prompt);
     return res.json({ok:true, texto:resultado.texto, comunicado:resultado.texto, unidade, calculos, modelo:resultado.modelo, usinaParada:calculos.usinaParada});
   }catch(e){ console.error('[ERRO]', e.message); return res.status(500).json({error:e.message}); }
 });
-app.listen(PORT,'0.0.0.0',()=>{ console.log(`PLANO DE VOO CTT - PROMPT TRAVADO - PORTA ${PORT}`); });
+app.listen(PORT,'0.0.0.0',()=>{ console.log(`PLANO DE VOO CTT - ANALISE COMPLEXA ATIVA - PORTA ${PORT}`); });
