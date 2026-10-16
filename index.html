@@ -19,15 +19,15 @@
 }
 #copyButton:hover{transform:translateY(-2px)}
 #copyButton.copiado{background:linear-gradient(135deg,#69d66a,#3cb85d)}
-.card-logo{width:32px; height:32px; border-radius:9px; object-fit:contain; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); padding:4px}
-.header-logo-small{width:38px; height:38px; border-radius:10px; object-fit:contain}
+.brand{display:flex; align-items:center; gap:12px}
+.header-logo-small{width:42px; height:42px; border-radius:10px; object-fit:contain; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); padding:3px; display:block!important}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="topbar-content">
     <div class="brand">
-      <img src="/logo.png" alt="" class="header-logo-small" onerror="this.style.display='none'">
+      <img src="./logo.png" alt="TEREOS" class="header-logo-small" onerror="this.src='/logo.png'; this.onerror=null">
       <div>
         <div class="brand-title">PLANO DE VÔO</div>
         <div class="brand-subtitle">COA • OPERAÇÕES AGROINDUSTRIAIS</div>
@@ -46,7 +46,7 @@
   <section class="card">
     <div class="card-header">
       <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
-        <img src="/logo.png" alt="LOGO" class="card-logo" onerror="this.style.display='none'">
+        <div class="card-number">01</div>
         <div><div class="card-title">Potencial de Produção</div><div class="card-description">Cole a tela Hora a Hora da Logtrac</div></div>
       </div>
       <div class="card-badge">OBRIGATÓRIO</div>
@@ -185,7 +185,6 @@ $('potentialInput').addEventListener('input', function(){
 function atualizarSaldo(){const moagem=numeroBR($('moagemAtual').value); const f1=numeroBR($('potFut1').value); const f2=numeroBR($('potFut2').value); const f3=numeroBR($('potFut3').value); const medias=[f1,f2,f3].filter(v=>v!=null); const el=$('saldoFuturoPreview'); if(!el) return; if(moagem==null||medias.length===0){el.textContent='—'; el.style.color=''; return;} const media=medias.reduce((a,b)=>a+b,0)/medias.length; const saldo=moagem===0?media:media-moagem; if(moagem===0){el.textContent=`Vai formar +${media.toFixed(0)}t/h`; el.style.color='#69d66a';} else if(saldo>0){el.textContent=`+${saldo.toFixed(0)} GANHA`; el.style.color='#69d66a';} else {el.textContent=`${saldo.toFixed(0)} PERDE`; el.style.color='#ff6f73';}}
 ['moagemAtual','potFut1','potFut2','potFut3'].forEach(id=>{const el=$(id); if(el) el.addEventListener('input', atualizarSaldo);});
 function montarDados(){const tabela=$('potentialInput').value.trim(); if(!tabela) throw new Error('Cole a Análise de Potencial'); const res=interpretarTabela(tabela); if(res.error) throw new Error(res.error); const eAtual=$('stockCurrent').value; if(!eAtual) throw new Error('Informe estoque atual'); const moagemAtual=$('moagemAtual').value; if(moagemAtual===''||moagemAtual==null) throw new Error('Informe moagem atual (0 se parada)'); return {tabelaOriginal:tabela, potencial:res.rows, estoque:{h3:Number($('stock1').value||0),h2:Number($('stock2').value||0),h1:Number($('stock3').value||0),atual:Number(eAtual)}, moagemAtual:Number(moagemAtual), potencialFuturo:{h1:$('potFut1').value, h2:$('potFut2').value, h3:$('potFut3').value}, comentarios:$('comments').value.trim(), horaAtual:new Date().getHours()};}
-
 async function gerar(){
   const btn=$('generateButton');
   try{
