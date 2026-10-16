@@ -166,7 +166,7 @@ async function chamarIA(prompt){
 }
 
 const EXEMPLOS_TODOS = `
-COLEÇÃO COMPLETA DE COMUNICADOS REAIS PARA COPIAR O PADRÃO EXATAMENTE - FORMAL TÉCNICO:
+COLEÇÃO COMPLETA DE COMUNICADOS REAIS PARA COPIAR O PADRÃO EXATAMENTE - MESMO PADRÃO DE ESCRITA:
 
 EXEMPLO 1 - Comunicado UIT:
 De momento, a moagem da unidade está formalizada em 710 t/h, com um pátio contabilizando 14 conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em apenas 664 t/h.
@@ -378,7 +378,7 @@ function montarPrompt(dados, calc, unidade){
   const situacao = calc.usinaParada? `USINA PARADA - MOAGEM ZERO - Pátio ${calc.estoque.atual} conj - Potencial futuro ${calc.potencialFuturo.media.toFixed(0)} t/h - Melhor volta ${calc.retorno.horaVoltaIdeal!=null?horaFmt(calc.retorno.horaVoltaIdeal):'a calcular'} com ${calc.retorno.estoqueNaVolta.toFixed(1)} conj` : `Moagem atual ${calc.moagemAtual} t/h - Pátio ${calc.estoque.atual} conj - Entrada média histórica ${calc.medias.historicoPotencial.toFixed(0)} t/h - Potencial futuro ${calc.potencialFuturo.media.toFixed(0)} t/h - Saldo futuro ${calc.potencialFuturo.saldoFuturo>=0?'+':''}${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h - Menor pátio proj ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)} - Risco gatilho ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}`;
 
   return `
-Você é analista sênior COA CTT Plano de Voo. Escreva comunicado FORMAL, TÉCNICO, GRANDE, IGUAL AOS EXEMPLOS REAIS.
+Você é analista sênior COA CTT Plano de Voo. Escreva comunicado detalhado, GRANDE, IGUAL AOS EXEMPLOS REAIS, o mais próximo mesmo, mantendo padrão de escrita dos exemplos para não fugir da nossa escrita analítica.
 
 UNIDADE: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h / Mín ${unidade.min} t/h / Gatilho <${unidade.gatilho} conj
 HORA: ${horaFmt(calc.horaAtual)}
