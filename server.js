@@ -7,22 +7,11 @@ const PORT = Number(process.env.PORT || 10000);
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const TON_POR_CONJ = 70;
 const GEMINI_MODELS = [
-  'gemini-2.5-flash',           // melhor custo/benefício - USE ESSE COMO PRINCIPAL
-  'gemini-2.5-flash-lite',      // mais rápido e barato
-  'gemini-2.0-flash',            // estável, fallback clássico
-  'gemini-2.0-flash-lite',       // ultra rápido
-  'gemini-flash-latest',        // alias que sempre aponta pro Flash mais novo
-  'gemini-flash-lite-latest',   // alias pro Lite mais novo
-  'gemini-2.5-pro'              // mais inteligente, free com limite menor
-];
-
-// Se você já está na API nova (3.x naming - preview)
-const GEMINI_MODELS_V3 = [
-  'gemini-3.5-flash',
-  'gemini-3.1-flash-lite',
-  'gemini-3.1-pro-preview',
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
   'gemini-flash-latest',
-  'gemini-flash-lite-latest'
+  'gemini-flash-lite-latest',
+  'gemini-2.5-pro'
 ];
 
 const CONFIG_UNIDADES = {
@@ -55,7 +44,6 @@ function identificarUnidade(texto){
   return {chave:'TANABI',...CONFIG_UNIDADES['TANABI']};
 }
 
-// PARSER NOVO QUE VOLTOU A FUNCIONAR - LÊ TABELA TANABI HORA A HORA TRANSPORTE
 function parseTabelaTransporte(texto){
   if(!texto||texto.length<20) return null;
   const linhas=texto.split('\n');
@@ -66,40 +54,21 @@ function parseTabelaTransporte(texto){
     if(lower.includes('hora')&&lower.includes('máquinas')) continue;
     if(lower.startsWith('total')) continue;
     if(lower.includes('safra')||lower.includes('filial')||lower.includes('tipo')||lower.includes('data')||lower.includes('controlada')) continue;
-
-    // Pega hora formato 00 - 01, 08 - 09, 15 - 16
     const hm=t.match(/(\d{1,2})\s*-\s*(\d{1,2})/);
     if(!hm) continue;
     const horaIni=Number(hm[1]);
     if(horaIni<0||horaIni>23) continue;
-
-    // Extrai todos números, tratando vírgula BR
-    // O formato é: Máquinas Tratores Restrição Cota Despacho Cam.Nec Cam.Aloc Saída Cam Peso Estim Entrada Cam Entrada(t) Saída(t)
-    // Os 2 últimos são ENTRADA e SAÍDA que importam
     const rawNums = t.match(/[\d.,]+/g);
     if(!rawNums||rawNums.length<3) continue;
-
-    // Converte BR
     const nums=rawNums.map(s=>{
       let v=s.trim();
-      if(v.includes(',')&&v.includes('.')){
-        // 1.234,56 -> 1234.56
-        return Number(v.replace(/\./g,'').replace(',','.'));
-      } else if(v.includes(',')){
-        // 0,1 -> 0.1
-        return Number(v.replace(',','.'));
-      } else {
-        return Number(v);
-      }
+      if(v.includes(',')&&v.includes('.')){ return Number(v.replace(/\./g,'').replace(',','.')); }
+      else if(v.includes(',')){ return Number(v.replace(',','.')); }
+      else { return Number(v); }
     }).filter(n=>Number.isFinite(n));
-
     if(nums.length<2) continue;
-
-    // Últimos 2 números são Entrada(t) e Saída(t) conforme print
     const entrada=nums[nums.length-2];
     const saida=nums[nums.length-1];
-
-    // Valida - até se for 0 é válido, mas filtra lixo muito alto
     if(entrada>=0&&entrada<10000&&saida>=0&&saida<10000){
       dados.push({
         hora: `${String(horaIni).padStart(2,'0')} - ${String((horaIni+1)%24).padStart(2,'0')}`,
@@ -166,16 +135,32 @@ function calcularCenario(dados, unidade){
 }
 
 function extrairTextoGemini(data){ const partes=data?.candidates?.[0]?.content?.parts||[]; return partes.filter(p=>p&&typeof p.text==='string'&&p.thought!==true).map(p=>p.text).join('\n').trim(); }
+
 async function chamarIA(prompt){
   if(!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY não configurada');
   let ultimoErro='';
   for(const modelo of GEMINI_MODELS){
     try{
       const url=`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${GEMINI_API_KEY}`;
-      const resp=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.28, maxOutputTokens:10000}}), signal:AbortSignal.timeout(50000)});
-      const raw=await resp.text(); const data=JSON.parse(raw);
+      const resp=await fetch(url,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          contents:[{parts:[{text:prompt}]}],
+          generationConfig:{
+            temperature: 0.15,
+            topP: 0.8,
+            topK: 20,
+            maxOutputTokens: 2500
+          }
+        }),
+        signal:AbortSignal.timeout(50000)
+      });
+      const raw=await resp.text();
+      const data=JSON.parse(raw);
       if(!resp.ok){ ultimoErro=data?.error?.message||raw.slice(0,500); continue; }
-      const texto=extrairTextoGemini(data); if(!texto) continue;
+      const texto=extrairTextoGemini(data);
+      if(!texto || texto.length < 650){ ultimoErro='Texto muito curto, tentando próximo modelo'; continue; }
       return {texto:texto.replace(/```/g,'').trim(), modelo};
     }catch(e){ ultimoErro=e.message; continue; }
   }
@@ -308,7 +293,6 @@ Conforme apresentado no gráfico acima, o pátio tende a apresentar uma queda br
 Conforme o cenário de manutenção de colhedoras entrar em linha, devido ao ciclo alto, podemos analisar um aumento da moagem após às 03:00.
 Seguimos acompanhando o cenário hora a hora e, caso a indisponibilidade das colhedoras permaneça elevada, poderá ser necessária uma nova redução da moagem para a rotação mínima da unidade.
 
-
 EXEMPLO 18 - Comunicado UIM
 Em análises realizadas, a moagem da unidade está liberada para 917 t/h. Entretanto, a média de entrada das últimas 3 horas está em 780 t/h, enquanto o pátio, que contabilizava 22 conjuntos carregados às 13:00, está atualmente com 10 conjuntos.
 O principal motivo da baixa entrega está relacionado à indisponibilidade mecânica das colhedoras próprias, que apresentou média de 27% entre 11:00 e 16:00, além das manutenções de transbordos, que registraram 12% no mesmo período. Também estamos sentindo o reflexo das mudanças das frentes 511 e 506.
@@ -392,39 +376,56 @@ Alinhamento já realizado com Cotur e Supervisor Gilberto.
 function montarPrompt(dados, calc, unidade){
   const comentarios=textoSeguro(dados.comentarios,8000)||'Sem observações adicionais de campo.';
   const projTxt=calc.projecaoEstoque.map(r=>`${r.horaFormatada}: ENTRADA ${r.potencial.toFixed(0)} t/h / SAÍDA ${r.moagem.toFixed(0)} t/h | Saldo ${r.saldoToneladas>=0?'+':''}${r.saldoToneladas.toFixed(0)}t | Pátio ${r.estoqueProjetado.toFixed(1)} conj`).join('\n');
-  const situacao = calc.usinaParada? `USINA PARADA - MOAGEM ZERO - Pátio ${calc.estoque.atual} conj - Potencial futuro ${calc.potencialFuturo.media.toFixed(0)} t/h - Melhor volta ${calc.retorno.horaVoltaIdeal!=null?horaFmt(calc.retorno.horaVoltaIdeal):'a calcular'} com ${calc.retorno.estoqueNaVolta.toFixed(1)} conj` : `Moagem atual ${calc.moagemAtual} t/h - Pátio ${calc.estoque.atual} conj - Entrada média histórica ${calc.medias.historicoPotencial.toFixed(0)} t/h - Potencial futuro ${calc.potencialFuturo.media.toFixed(0)} t/h - Saldo futuro ${calc.potencialFuturo.saldoFuturo>=0?'+':''}${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h - Menor pátio proj ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)} - Risco gatilho ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}`;
+  const histTxt=calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} / Saída ${r.moagem.toFixed(0)}`).join('\n');
 
   return `
-Você é analista sênior COA CTT Plano de Voo. Escreva comunicado detalhado, GRANDE, IGUAL AOS EXEMPLOS REAIS, o mais próximo mesmo, mantendo padrão de escrita dos exemplos para não fugir da nossa escrita analítica, sem inventar moda na escrita tipo cessamento, matéria prima e volumes residuais.
+VOCÊ É UM COPIADOR DE PADRÃO. NÃO É CRIADOR. COPIE O JEITO DOS 27 EXEMPLOS.
 
-UNIDADE: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h / Mín ${unidade.min} t/h / Gatilho <${unidade.gatilho} conj
+UNIDADE: ${unidade.nome} (${unidade.sigla}) - Nominal ${unidade.nominal} t/h / Mín ${unidade.min} t/h / Gatilho ${unidade.gatilho} conj
 HORA: ${horaFmt(calc.horaAtual)}
-SITUAÇÃO: ${situacao}
+MOAGEM ATUAL: ${calc.moagemAtual} t/h
+PÁTIO ATUAL: ${calc.estoque.atual} conj
+MÉDIA 3H: ${calc.medias.historicoPotencial.toFixed(0)} t/h
+POTENCIAL FUTURO: ${calc.potencialFuturo.media.toFixed(0)} t/h
+MENOR PÁTIO: ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)}
+RISCO: ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}
+VOLTA IDEAL SE PARADA: ${calc.retorno.horaVoltaIdeal!=null?horaFmt(calc.retorno.horaVoltaIdeal):'-'} com ${calc.retorno.estoqueNaVolta.toFixed(1)} conj
 
-PROJEÇÃO HORA A HORA (use esses números exatos):
+PROJEÇÃO HORA A HORA - USE ESSES NÚMEROS NO TEXTO:
 ${projTxt}
 
 HISTÓRICO:
-${calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} / Saída ${r.moagem.toFixed(0)}`).join('\n')}
+${histTxt}
 
 OBSERVAÇÃO CAMPO:
 ${comentarios}
 
-REGRAS PARA ESCREVER IGUAL AOS EXEMPLOS E SEM INVENTAR PALAVRAS QUE NÃO ESTEJAM NESSES EXEMPLOS - OBRIGATÓRIO:
-- Comece: *Comunicado ${unidade.sigla}*
-- 1º parágrafo: De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos. Entretanto, média de entrada das últimas 3h está em ${calc.medias.historicoPotencial.toFixed(0)} t/h. Se parada: Usina parada no momento, pátio contabilizando ${calc.estoque.atual} conjuntos.
-- 2º: Motivo técnico (indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção)
-- 3º: Projeção futura usando potencial futuro informado (${calc.potencialFuturo.media.toFixed(0)} t/h) - se ganha ou perde pátio
-- 4º: Risco com horário exato para reduzir/aumentar/voltar, usando gatilho, mas sem usar a palavra gatilho ${unidade.gatilho} conj
-- 5º: Como melhora e alinhamento CTT/indústria/transporte
-- 6º: Seguimos acompanhando hora a hora
-- Texto formal, técnico, 5-7 parágrafos, grande e detalhado
-- Dê horários exatos: reduzir para X t/h às HH:00, aumentar para nominal às HH:00, voltar às HH:00
+### ESTRUTURA FIXA - 6 PARÁGRAFOS GRANDES - MÍNIMO 1000 CARACTERES:
 
-EXEMPLOS PARA COPIAR:
+1 - Comece com "Comunicado ${unidade.sigla}" em linha isolada. Depois: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h." Se parada use: "No momento, a moagem da unidade está parada, com pátio contabilizando ${calc.estoque.atual} conjuntos."
+
+2 - Comece com "O principal motivo" ou "O principal ponto de atenção". Explique indisponibilidade %, frentes em mudança, chuva, solo úmido, manutenção. Use dados da OBS.
+
+3 - Comece com "Além da" ou "Além das manutenções". Segunda causa, déficit de frente, troca de turno.
+
+4 - Comece OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima," e use os números da projeção. Ex: "mantendo moagem em ${calc.moagemAtual} t/h o pátio tende a cair para ${calc.risco.menorEstoque.toFixed(0)} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}. Dessa forma, o ideal seria ajustar para X t/h entre HH:00 e HH:00"
+
+5 - Dê solução com horários exatos: "Conforme as frentes entrarem em regime e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h às HH:00"
+
+6 - Finalize SEMPRE com: "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
+
+### VOCABULÁRIO:
+
+PROIBIDO: escoamento, escoar, volumetria, volumétrico, cessamento, cessar, matéria-prima, insumo, residual, otimização, sinergia, mitigar, premissa, lastro, throughput, estoque de passagem, performance, gargalo produtivo.
+
+OBRIGATÓRIO USAR: pátio, conjuntos carregados, moagem, entrada, saída, potencial, frente, mudança, indisponibilidade mecânica, manutenção, chuva, solo úmido, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima.
+
+TAMANHO: MÍNIMO 1000 caracteres, MÁXIMO 1600. 5 a 7 parágrafos. Se ficar menor que 1000, ESTÁ ERRADO.
+
+EXEMPLOS REAIS PARA COPIAR O ESTILO:
 ${EXEMPLOS_TODOS}
 
-Retorne APENAS comunicado final.
+Retorne APENAS o comunicado final.
 `.trim();
 }
 
@@ -444,4 +445,4 @@ app.post('/api/plano-voo', async (req,res)=>{
     return res.json({ok:true, texto:resultado.texto, comunicado:resultado.texto, unidade, calculos, modelo:resultado.modelo, usinaParada:calculos.usinaParada});
   }catch(e){ console.error('[ERRO]', e.message); return res.status(500).json({error:e.message}); }
 });
-app.listen(PORT,'0.0.0.0',()=>{ console.log(`PLANO DE VOO CTT FORMAL - PARSER TANABI CORRIGIDO - PORTA ${PORT}`); });
+app.listen(PORT,'0.0.0.0',()=>{ console.log(`PLANO DE VOO CTT - PROMPT TRAVADO - PORTA ${PORT}`); });
