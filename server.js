@@ -369,20 +369,18 @@ ${comentarios}
 
 Você deve escrever um texto de 1200 a 1800 caracteres, com raciocínio completo, igual aos exemplos 2, 7, 18, 23 que são os mais complexos.
 
-ESTRUTURA DE 6 PARÁGRAFOS OBRIGATÓRIA:
+ESTRUTURA DE 4 PARÁGRAFOS OBRIGATÓRIA:
 
-P1 - LINHA 1: "Comunicado ${unidade.sigla}"
+P1 - LINHA 1: "*Comunicado ${unidade.sigla}*"
 P1 - TEXTO: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h." Explique se está ganhando ou perdendo pátio comparando entrada vs moagem. Se parada, use "No momento, a moagem da unidade está parada..."
 
-P2 - Comece com "O principal motivo da baixa entrega é" ou "O principal ponto de atenção da unidade é". Faça análise profunda: cite % de indisponibilidade, quantas máquinas, qual frente (use FXXX), se é colhedora ou transbordo, se é chuva, solo úmido, manutenção. NÃO USE "frentes de colheita" ou "cortes", USE "frentes" igual nos exemplos: "frente F511", "frente F329 em processo de mudança"
+P2 - Comece com "O principal motivo da baixa entrega é" ou "O principal ponto de atenção da unidade é". Faça análise profunda: cite % de indisponibilidade, quantas máquinas, qual frente (use FXXX), se é colhedora ou transbordo, se é chuva, solo úmido, manutenção. NÃO USE "frentes de cortes" ou "escoamento, encharcado, histórica, generalizadas", USE "frentes" igual nos exemplos: "frente F511", "frente F329 em processo de mudança"
+continue abaixo com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Segunda causa com números: déficit de X toneladas em relação à cota, troca de turno do transporte às HH:00, falta de caminhão, peso médio, impureza.
 
-P3 - Comece com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Segunda causa com números: déficit de X toneladas em relação à cota, troca de turno do transporte às HH:00, falta de caminhão, peso médio, impureza.
+P3 - Comece com "Conforme apresentado no gráfico acima," - AQUI VEM A ANÁLISE COMPLEXA. Diga: "com potencial de X t/h vs moagem de Y t/h, o pátio tende a chegar a Z conjuntos até às HH:00". Dê cálculo de déficit. Dê horário exato de risco de redução. Ex: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00"
+continue dando a solução com raciocínio: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00, aguardando..." e "Conforme as frentes entrarem em regime e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Use futuro H1 H2 H3 que te passei.
 
-P4 - Comece com "Conforme apresentado no gráfico acima," - AQUI VEM A ANÁLISE COMPLEXA: use os números da projeção que te dei. Diga: "com potencial de X t/h vs moagem de Y t/h, o pátio tende a chegar a Z conjuntos até às HH:00". Dê cálculo de déficit. Dê horário exato de risco de redução. Ex: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00"
-
-P5 - Dê a solução com raciocínio: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00, aguardando..." e "Conforme as frentes entrarem em regime e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Use futuro H1 H2 H3 que te passei.
-
-P6 - "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria/CTT/Cotur, buscando manter a moagem o mais próximo possível da nominal de ${unidade.nominal} t/h."
+P4 - "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
 
 REGRAS DE VOCABULÁRIO - MANTENHA PADRÃO:
 
