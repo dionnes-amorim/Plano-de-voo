@@ -342,7 +342,7 @@ function montarPrompt(dados, calc, unidade){
 VOCÊ É ANALISTA SÊNIOR COA CTT - PLANO DE VOO. FAÇA ANÁLISE COMPLEXA, RACIOCINADA, PROFUNDA, IGUAL AOS EXEMPLOS REAIS MAIS DETALHADOS.
 
 ANTES DE ESCREVER, PENSE:
-1 - Calcule: entrada média histórica ${calc.medias.historicoPotencial.toFixed(0)} vs moagem ${calc.moagemAtual} = déficit de ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
+1 - Calcule: entrada média ${calc.medias.historicoPotencial.toFixed(0)} vs moagem ${calc.moagemAtual} = déficit de ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
 2 - Calcule: potencial futuro ${calc.potencialFuturo.media.toFixed(0)} vs moagem ${calc.moagemAtual} = saldo futuro ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
 3 - Identifique menor pátio ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)} e hora de risco ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}
 4 - Defina moagem ideal para não quebrar ciclo
@@ -372,7 +372,7 @@ Você deve escrever um texto de 1200 a 1800 caracteres, com raciocínio completo
 ESTRUTURA DE 4 PARÁGRAFOS OBRIGATÓRIA:
 
 P1 - LINHA 1: "*Comunicado ${unidade.sigla}*"
-P1 - TEXTO: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h." Explique se está ganhando ou perdendo pátio comparando entrada vs moagem. Se parada, use "No momento, a moagem da unidade está parada..."
+P1 - TEXTO: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em (Aqui você analisa a média de entrada das últimas 3 horas e mostra escrito)" Explique se está ganhando ou perdendo pátio comparando entrada vs moagem. Se parada, use "No momento, a moagem da unidade está parada..."
 
 P2 - Comece com "O principal motivo da baixa entrega é" ou "O principal ponto de atenção da unidade é". Faça análise profunda: cite % de indisponibilidade, quantas máquinas, qual frente (use FXXX), se é colhedora ou transbordo, se é chuva, solo úmido, manutenção. NÃO USE "frentes de cortes" ou "escoamento, encharcado, histórica, generalizadas", USE "frentes" igual nos exemplos: "frente F511", "frente F329 em processo de mudança"
 continue abaixo com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Segunda causa com números: déficit de X toneladas em relação à cota, troca de turno do transporte às HH:00, falta de caminhão, peso médio, impureza.
@@ -386,7 +386,7 @@ REGRAS DE VOCABULÁRIO - MANTENHA PADRÃO:
 
 USE: frente, frentes, pátio, conjuntos carregados, moagem, entrada, saída, potencial, mudança, indisponibilidade mecânica, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima, supervisão, indústria, CTT, Cotur.
 
-NUNCA USE: escoamento, escoar, volumetria, cessamento, matéria-prima, residual, throughput, lastro, otimização, sinergia, premissa, mitigar, performance, suprimento de cana. Se usar, o texto está errado.
+NUNCA USE: cessamento, h1, h2, h3, precipitação pluviométrica, escoamento, escoar, volumetria, cessamento, matéria-prima, residual, throughput, lastro, otimização, sinergia, premissa, mitigar, performance, suprimento de cana. Se usar, o texto está errado.
 
 TAMANHO OBRIGATÓRIO: 1200 a 1800 caracteres. Se fizer menor que 1100, refaça mais detalhado e complexo. Texto precisa ser pensado, com números, horários, e análise de causa-efeito.
 
