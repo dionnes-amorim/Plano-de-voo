@@ -394,8 +394,10 @@ EXEMPLOS OURO PARA COPIAR ESTILO:
 ${EXEMPLOS_TODOS}
 
 INSTRUÇÃO FINAL: Pense nos números (deficit, saldo futuro, menor pátio) mas escreva 100% no padrão sagrado acima. Retorne APENAS o comunicado final. Sem explicação, sem markdown, sem ```.
-`.trim();
+    
+  return prompt;
 }
+
 
 app.get('/', (req,res)=> res.sendFile(path.join(__dirname,'index.html')));
 app.get('/api/health', (req,res)=> res.json({ok:true, gemini:!!GEMINI_API_KEY}));
