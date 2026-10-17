@@ -382,7 +382,7 @@ continue dando a solução com raciocínio: "Dessa forma, o ideal neste momento 
 
 P4 - "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
 
-Outro reforço desse comunicado, tudo é média e tendência. O que aconteceu nas útimas 3 a 5 horas pode interferir no que vamos enfrentar nas próximas horas. Coisas de mais de 6 horas atrás nem precisa citar mais. Sem colocar h1, h2 e h3 em nenhuma parte da análise. Tudo tem que ser baseado nos exemplos, as vezes teremos mais análises ou menos, porém sempre usando os exemplos reais para basear as próximas análises.
+Outro reforço desse comunicado, tudo é média e tendência. O que aconteceu nas útimas 3 a 5 horas pode interferir no que vamos enfrentar nas próximas horas. Coisas de mais de 6 horas atrás nem precisa citar mais. Sem colocar h1, h2 e h3 em nenhuma parte da análise. Tudo tem que ser baseado nos exemplos, as vezes teremos mais análises ou menos, porém sempre usando os exemplos reais para basear as próximas análises e jamais utilizar conjuntos com números quebrados, sempre decimais arredondando para o mais próximo.
 
 REGRAS DE VOCABULÁRIO - MANTENHA PADRÃO DOS EXEMPLOS, SEM INVENTAR TERMOS, APENAS SEGUINDO OS EXEMPLOS:
 
