@@ -334,70 +334,66 @@ Alinhamento já realizado com Cotur e Supervisor Gilberto.
 `;
 
 function montarPrompt(dados, calc, unidade){
-  const comentarios=textoSeguro(dados.comentarios,8000)||'Sem observações adicionais de campo.';
-  const projTxt=calc.projecaoEstoque.map(r=>`${r.horaFormatada}: ENTRADA ${r.potencial.toFixed(0)} t/h / SAÍDA ${r.moagem.toFixed(0)} t/h | Saldo ${r.saldoToneladas>=0?'+':''}${r.saldoToneladas.toFixed(0)}t | Pátio ${r.estoqueProjetado.toFixed(1)} conj`).join('\n');
+  const comentarios=textoSeguro(dados.comentarios,8000)||'Frentes em operação normal, sem observações adicionais.';
+  const projTxt=calc.projecaoEstoque.map(r=>`${r.horaFormatada}: ENTRADA ${r.potencial.toFixed(0)} t/h / SAÍDA ${r.moagem.toFixed(0)} t/h | Saldo ${r.saldoToneladas>=0?'+':''}${r.saldoToneladas.toFixed(0)}t | Pátio ${Math.round(r.estoqueProjetado)} conj`).join('\n');
   const histTxt=calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} / Saída ${r.moagem.toFixed(0)}`).join('\n');
 
+  const pAtioMenorInt = Math.round(calc.risco.menorEstoque);
+  const pAtioAtualInt = Math.round(calc.estoque.atual);
+
   return `
-VOCÊ É ANALISTA SÊNIOR COA CTT - PLANO DE VOO. FAÇA ANÁLISE COMPLEXA, RACIOCINADA, PROFUNDA, IGUAL AOS EXEMPLOS REAIS MAIS DETALHADOS.
+VOCÊ É ANALISTA SÊNIOR COA CTT - TEREOS. SUA RESPOSTA SERÁ VALIDADA AUTOMATICAMENTE. SE QUEBRAR QUALQUER REGRA, SERÁ DESCARTADA.
 
-ANTES DE ESCREVER, PENSE:
-1 - Calcule: entrada média ${calc.medias.historicoPotencial.toFixed(0)} vs moagem ${calc.moagemAtual} = déficit de ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
-2 - Calcule: potencial futuro ${calc.potencialFuturo.media.toFixed(0)} vs moagem ${calc.moagemAtual} = saldo futuro ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
-3 - Identifique menor pátio ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)} e hora de risco ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco'}
-4 - Defina moagem ideal para não quebrar ciclo
+OBJETIVO: Gerar comunicado igual aos exemplos reais, com RACIOCÍNIO nos números mas ESCRITA SAGRADA.
 
-UNIDADE: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h / Gatilho ${unidade.gatilho} conj
-HORA ATUAL: ${horaFmt(calc.horaAtual)}
-DADOS REAIS:
-- Moagem: ${calc.moagemAtual} t/h
-- Pátio: ${calc.estoque.atual} conj (variação ${calc.estoque.variacao} conj vs H3)
-- Média 3h: ${calc.medias.historicoPotencial.toFixed(0)} t/h
-- Potencial futuro médio próximas 3h: ${calc.potencialFuturo.media.toFixed(0)} t/h (H1:${calc.potencialFuturo.h1??'-'} H2:${calc.potencialFuturo.h2??'-'} H3:${calc.potencialFuturo.h3??'-'})
-- Menor pátio projetado: ${calc.risco.menorEstoque.toFixed(1)} conj às ${horaFmt(calc.risco.horaMenorEstoque)}
+DADOS REAIS PARA RACIOCÍNIO (USE PARA CALCULAR, NÃO COPIE LITERAL):
+Unidade: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h
+Hora Atual: ${horaFmt(calc.horaAtual)}
+Moagem: ${calc.moagemAtual} t/h
+Pátio: ${pAtioAtualInt} conj (variação ${Math.round(calc.estoque.variacao)} conj)
+Média 3h entrada: ${calc.medias.historicoPotencial.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = deficit ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
+Futuro médio 3h: ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = saldo ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
+Menor pátio: ${pAtioMenorInt} conj às ${horaFmt(calc.risco.horaMenorEstoque)} - Risco: ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco imediato'}
+Zona de risco da unidade: ${unidade.gatilho} conj
 
-PROJEÇÃO HORA A HORA QUE VOCÊ DEVE USAR NO TEXTO COM HORÁRIOS EXATOS:
+PROJEÇÃO HORA A HORA (USE HORÁRIOS EXATOS NO TEXTO):
 ${projTxt}
 
-HISTÓRICO RECENTE:
+HISTÓRICO:
 ${histTxt}
 
-OBSERVAÇÃO DE CAMPO (USE COMO BASE DO MOTIVO):
+OBS CAMPO:
 ${comentarios}
 
-### INSTRUÇÃO DE ESCRITA COMPLEXA - TEXTO GRANDE E ANALÍTICO:
+=== REGRAS SAGRADAS DE ESCRITA - QUEBRA = ERRO ===
 
-Você deve escrever um texto de 1200 a 1800 caracteres, com raciocínio completo, igual aos exemplos 2, 7, 18, 23 que são os mais complexos.
+1. TAMANHO: 1200 a 1800 caracteres. Conte. Se <1100, REPROVADO.
+2. ESTRUTURA FIXA 4 PARÁGRAFOS + TÍTULO:
 
-ESTRUTURA DE 4 PARÁGRAFOS OBRIGATÓRIA:
+LINHA 1 EXATA: *Comunicado ${unidade.sigla}*
 
-TÍTULO - LINHA 1: "*Comunicado ${unidade.sigla}*"
-P1 - TEXTO: "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${calc.estoque.atual} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em (Aqui você analisa a média de entrada das últimas 3 horas e saída das últimas 03 horas, a saída represente a moagem em t/h e mostra escrito)" Explique se está ganhando ou perdendo pátio comparando entrada vs moagem. Se parada, use "No momento, a moagem da unidade está parada..."
+PARÁGRAFO 1: Começar OBRIGATORIAMENTE com "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Depois explique se está ganhando/perdendo pátio. Se moagem 0, usar "No momento, a moagem da unidade está parada, com pátio contabilizando ${pAtioAtualInt} conjuntos carregados."
 
-P2 - Comece com "O principal motivo da baixa entrega é" ou "O principal ponto de atenção da unidade é". Faça análise profunda: cite % de indisponibilidade, quantas máquinas, qual frente (use FXXX), se é colhedora ou transbordo, se é chuva, solo úmido, manutenção. NÃO USE "frentes de cortes" ou "escoamento, encharcado, histórica, regime, generalizadas", USE "frentes" igual nos exemplos: "frente F511", "frente F329 em processo de mudança".
-continue abaixo com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Segunda causa com números: déficit de X toneladas em relação à cota, troca de turno do transporte às HH:00, falta de caminhão, peso médio, impureza.
+PARÁGRAFO 2: Começar OBRIGATORIAMENTE com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". Citar % indisponibilidade, qtd máquinas, frente FXXX caso houver. Use "frente F329 em processo de mudança" NUNCA "frentes de cortes". Segunda frase começar com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Citar déficit de X toneladas vs cota, troca de turno às HH:00, falta de caminhão, caso houver.
 
-P3 - Comece com "Conforme apresentado no gráfico acima," - AQUI VEM A ANÁLISE COMPLEXA. Diga: "com potencial de X t/h vs moagem de Y t/h, mas sempre como média e tendência futura, nunca use h1, h2 e h3 nunca, mostre apenas média, o pátio tende a chegar a Z conjuntos até às HH:00". Dê horário exato de risco de redução. Ex: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00".
-continue dando a solução com raciocínio: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00, aguardando..." e "Conforme as frentes entrarem em ciclo conforme o seu potencial de produção e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Reforçando algo aqui, se tiver questão de solo úmido não precisa nem falar de nominal, apenas aumentar moagem conforme condição de estoque e potencial melhorarem. e nunca coloque número quebra de estoque, exemplo de 12,5 conjuntos, seomente número decimal.
+PARÁGRAFO 3: Começar OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima,". Proibido citar h1,h2,h3. Use apenas MÉDIA: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". Dê horário de risco: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00". Depois solução: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo conforme o seu potencial de produção e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo úmido/chuva, NÃO falar de nominal.
 
-P4 - "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
+PARÁGRAFO 4: Exato: "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
 
-Outro reforço desse comunicado, tudo é média e tendência. O que aconteceu nas útimas 3 a 5 horas pode interferir no que vamos enfrentar nas próximas horas. Coisas de mais de 6 horas atrás nem precisa citar mais. Sem colocar h1, h2 e h3 em nenhuma parte da análise.
-Tudo tem que ser baseado nos exemplos, as vezes teremos mais análises ou menos, porém sempre usando os exemplos reais para basear as próximas análises e jamais utilizar conjuntos com números quebrados, sempre decimais arredondando para o mais próximo. E sempre ao invés de falar gatilho, use zona de risco do estoque da unidade.
+3. NUMEROS: PÁTIO SEMPRE INTEIRO ARREDONDADO. NUNCA 12,5 conjuntos. Use ${pAtioMenorInt} conj. Moagem e entrada podem ter t/h com inteiro.
 
+4. VOCABULÁRIO PERMITIDO APENAS: frente, frentes, frentes de colheita, estoque, pátio, conjuntos carregados, moagem, entrada, saída, potencial, mudança, indisponibilidade mecânica, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima, supervisão, indústria, CTT, Cotur.
 
-REGRAS DE VOCABULÁRIO - MANTENHA PADRÃO DOS EXEMPLOS, SEM INVENTAR TERMOS, APENAS SEGUINDO OS EXEMPLOS:
+5. VOCABULÁRIO PROIBIDO = REPROVAÇÃO AUTOMÁTICA, NUNCA ESCREVA: gatilho, frentes de corte, cessamento, h1, h2, h3, precipitação pluviométrica, regime, escoamento, escoar, volumetria, matéria-prima, residual, throughput, lastro, otimização, sinergia, premissa, mitigar, performance, suprimento de cana, encharcado, histórica, generalizadas.
 
-USE: frente, frentes, frentes de colheita, estoque, pátio, conjuntos carregados, moagem, entrada, saída, potencial, mudança, indisponibilidade mecânica, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima, supervisão, indústria, CTT, Cotur.
+6. TROQUE "gatilho" POR "zona de risco do estoque da unidade"
 
-NUNCA USE: gatilho, frentes de corte cessamento, h1, h2, h3, precipitação pluviométrica, regime, escoamento, escoar, volumetria, cessamento, matéria-prima, residual, throughput, lastro, otimização, sinergia, premissa, mitigar, performance, suprimento de cana. Se usar, o texto está errado.
+7. TROQUE "regime" POR "conforme for alinhando o ciclo de caminhões para as frentes"
 
-TAMANHO OBRIGATÓRIO: 1200 a 1800 caracteres. Se fizer menor que 1100, refaça mais detalhado e complexo. Texto precisa ser pensado, com números, horários, e análise de causa-efeito mas sem inventar números e palavras ou encher linguiça.
-
-EXEMPLOS PARA COPIAR ESTILO COMPLEXO:
+EXEMPLOS OURO PARA COPIAR ESTILO:
 ${EXEMPLOS_TODOS}
 
-Retorne APENAS o comunicado final, sem explicar raciocínio.
+INSTRUÇÃO FINAL: Pense nos números (deficit, saldo futuro, menor pátio) mas escreva 100% no padrão sagrado acima. Retorne APENAS o comunicado final. Sem explicação, sem markdown, sem ```.
 `.trim();
 }
 
