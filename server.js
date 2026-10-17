@@ -375,7 +375,7 @@ PARÁGRAFO 1: Começar OBRIGATORIAMENTE com "De momento, a moagem da unidade est
 
 PARÁGRAFO 2: Começar OBRIGATORIAMENTE com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". Citar % indisponibilidade, qtd máquinas, frente FXXX caso houver. Use "frente F329 em processo de mudança" NUNCA "frentes de cortes". Segunda frase começar com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Citar déficit de X toneladas vs cota, troca de turno às HH:00, falta de caminhão, caso houver.
 
-PARÁGRAFO 3: Começar OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima,". Proibido citar h1,h2,h3. Use apenas MÉDIA: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". Dê horário de risco: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00". Depois solução: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo conforme o seu potencial de produção e a manutenção entrar em linha após HH:00, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo úmido/chuva, NÃO falar de nominal.
+PARÁGRAFO 3: Começar OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima,". Proibido citar h1,h2,h3. Use apenas MÉDIA: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". Dê horário de risco: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00". Depois solução: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo conforme o seu potencial de produção e a manutenção entrar em linha após HH:00 (caso houver a manutenção), poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo úmido/chuva, NÃO falar de nominal.
 
 PARÁGRAFO 4: Exato: "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
 
@@ -388,6 +388,10 @@ PARÁGRAFO 4: Exato: "Seguimos acompanhando o cenário hora a hora junto à supe
 6. TROQUE "gatilho" POR "zona de risco do estoque da unidade"
 
 7. TROQUE "regime" POR "conforme for alinhando o ciclo de caminhões para as frentes"
+
+8. NÃO PRECISO CITAR NO TEXTO FINAL O QUANTO É A ZONA DE RISCO DO ESTOQUE EM CONJUNTOS, SOMENTE ALERTAR SE CHEGAR NESSE BAIXO ESTOQUE NA PROJEÇÃO DE ESTOQUE.
+
+9. A ANÁLISE DEVE LEVAR EM CONTA AS ÚLTIMAS 3 A 5 HORAS DO QUE ACONTECEU + ESTOQUE + POTENCIAL ESTIMADO. DE 6 HORAS PARA TRÁS NÃO LEVA MAIS EM CONTA PARA O FUTURO PORQUE FOI UMA JANELA MUITO GRANDE DO QUE JÁ PASSOU.
 
 EXEMPLOS OURO PARA COPIAR ESTILO:
 ${EXEMPLOS_TODOS}
