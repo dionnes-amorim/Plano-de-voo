@@ -7,7 +7,7 @@ const PORT = Number(process.env.PORT || 10000);
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const TON_POR_CONJ = 70;
 const GEMINI_MODELS = [
-  'gemini-2.5-pro', // AGORA PRINCIPAL - ÚNICO QUE FAZ ANÁLISE COMPLEXA
+  'gemini-2.5-pro',
   'gemini-2.5-flash',
   'gemini-flash-latest',
   'gemini-2.0-flash',
@@ -337,7 +337,6 @@ function montarPrompt(dados, calc, unidade){
   const comentarios=textoSeguro(dados.comentarios,8000)||'Frentes em operação normal, sem observações adicionais.';
   const projTxt=calc.projecaoEstoque.map(r=>`${r.horaFormatada}: ENTRADA ${r.potencial.toFixed(0)} t/h / SAÍDA ${r.moagem.toFixed(0)} t/h | Saldo ${r.saldoToneladas>=0?'+':''}${r.saldoToneladas.toFixed(0)}t | Pátio ${Math.round(r.estoqueProjetado)} conj`).join('\n');
   const histTxt=calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} / Saída ${r.moagem.toFixed(0)}`).join('\n');
-
   const pAtioMenorInt = Math.round(calc.risco.menorEstoque);
   const pAtioAtualInt = Math.round(calc.estoque.atual);
 
@@ -393,9 +392,9 @@ PARÁGRAFO 4: Exato: "Seguimos acompanhando o cenário hora a hora junto à supe
 EXEMPLOS OURO PARA COPIAR ESTILO:
 ${EXEMPLOS_TODOS}
 
-INSTRUÇÃO FINAL: Pense nos números (deficit, saldo futuro, menor pátio) mas escreva 100% no padrão sagrado acima. Retorne APENAS o comunicado final. Sem explicação, sem markdown, sem ```.
+INSTRUÇÃO FINAL: Pense nos números mas escreva 100% no padrão sagrado acima. Retorne APENAS o comunicado final. Sem explicação.
+`;
 }
-
 
 app.get('/', (req,res)=> res.sendFile(path.join(__dirname,'index.html')));
 app.get('/api/health', (req,res)=> res.json({ok:true, gemini:!!GEMINI_API_KEY}));
