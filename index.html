@@ -5,96 +5,303 @@
 <title>Plano de Vôo | COA - Tereos</title>
 <link rel="icon" href="/logo.ico">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-.grafico-box{ background:#0d1b34; border:1px solid #1e3a5f; border-radius:16px; padding:16px; margin:16px 0; display:block!important; }
-.grafico-box canvas{ width:100%!important; height:340px!important; display:block!important; background:#0d1b34; }
-#chartTitle{ color:#9ae889; font-size:11px; font-weight:800; text-align:center; margin-bottom:10px; }
 .brand::before,.brand::after,.topbar::before,.topbar-content::before,.brand-title::before{display:none!important; content:none!important;}
-.header-logo-real{width:100px;height:100px;border-radius:12px;object-fit:contain;display:block!important;}
-.result-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-#copyButton{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 18px;border-radius:12px;background:linear-gradient(135deg,#25D366,#128C7E);border:1px solid rgba(255,255,255,.15);color:#fff;font-weight:900;font-size:11px;cursor:pointer;}
+.topbar-content{display:flex; align-items:center}
+.brand{display:flex; align-items:center; gap:14px}
+.header-logo-real{ width:100px; height:100px; border-radius:12px; object-fit:contain; display:block!important;}
+.result-header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap}
+.result-header h2{margin:2px 0 0; font-size:20px}
+#copyButton{ display:inline-flex; align-items:center; gap:8px; min-height:46px; padding:0 18px; border-radius:12px; background:linear-gradient(135deg,#25D366,#128C7E); border:1px solid rgba(255,255,255,.15); color:#fff; font-weight:900; font-size:11px; box-shadow:0 8px 24px rgba(37,211,102,.25); cursor:pointer;}
+#copyButton.copiado{background:linear-gradient(135deg,#69d66a,#3cb85d)}
+
+/* GRAFICO - CORRIGIDO TEMA ESCURO */
+.chart-wrap{
+  background: #0d1b34;
+  border-radius:16px; 
+  padding:16px; 
+  margin:18px 0;
+  border:1px solid rgba(0,180,255,.25);
+  display:block!important;
+  min-height:320px;
+}
+.chart-title{
+  font-size:11px; 
+  font-weight:800; 
+  color:#9ae889; 
+  text-align:center; 
+  margin-bottom:12px;
+  line-height:1.4;
+}
+#graficoPlanoVoo{
+  background: #0d1b34;
+  width:100%!important;
+  display:block!important;
+}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="topbar-content"><div class="brand"><img src="/logo.ico" class="header-logo-real"><div><div class="brand-title">PLANO DE VÔO</div><div class="brand-subtitle">COA • OPERAÇÕES AGROINDUSTRIAIS</div></div></div></div></header>
+<!-- ... SEU HEADER IGUAL ... -->
+<header class="topbar">
+  <div class="topbar-content">
+    <div class="brand">
+      <img src="/logo.ico" alt="TEREOS" class="header-logo-real">
+      <div>
+        <div class="brand-title">PLANO DE VÔO</div>
+        <div class="brand-subtitle">COA • OPERAÇÕES AGROINDUSTRIAIS</div>
+      </div>
+    </div>
+  </div>
+</header>
+
 <main class="container">
-<section class="intro"><span class="eyebrow">PAINEL ANALÍTICO | ENTRADA / MOAGEM</span><h1>Análise do Potencial de Produção</h1></section>
-<section class="card"><div class="card-header"><div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center"><div class="card-number">01</div><div><div class="card-title">Potencial de Produção</div><div class="card-description">Cole a tela Hora a Hora da Logtrac</div></div></div><div class="card-badge">OBRIGATÓRIO</div></div><textarea id="potentialInput" class="main-textarea" placeholder="Cole aqui a tela da Logtrac..."></textarea><div id="previewArea" class="hidden preview-area"><span class="preview-title" id="previewTitle">✅ Tela identificada</span><div id="previewContent" style="margin-top:8px; font-size:10px; color:#9ae889"></div><div id="previewDetails" style="margin-top:6px; font-size:9px; color:#87988e"></div></div></section>
-<section class="card"><div class="card-header"><div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center"><div class="card-number">02</div><div><div class="card-title">Operação Atual + Potencial das Frentes</div><div class="card-description">Moagem Zero = Unidade Parada</div></div></div><div class="card-badge">OBRIGATÓRIO</div></div><label style="font-size:10px; font-weight:800; color:#ff8a8a">MOAGEM ATUAL | Se 0 = PARADA</label><div class="stock-grid" style="margin-top:8px"><div class="stock-field highlight"><label>Moagem Formalizada</label><div class="stock-input-wrapper"><input id="moagemAtual" type="number" placeholder="710"><span>t/h</span></div></div><div class="stock-field"><label>Saldo Futuro</label><div id="saldoFuturoPreview" style="height:42px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border-radius:10px; font-weight:800">—</div></div></div><label style="font-size:10px; font-weight:800; margin-top:14px; display:block">ESTOQUE PÁTIO (Conjuntos)</label><div class="stock-grid" style="margin-top:8px"><div class="stock-field"><label id="stockLabel1">H-3</label><div class="stock-input-wrapper"><input id="stock1" type="number" placeholder="0"><span>QTD</span></div></div><div class="stock-field"><label id="stockLabel2">H-2</label><div class="stock-input-wrapper"><input id="stock2" type="number" placeholder="0"><span>QTD</span></div></div><div class="stock-field"><label id="stockLabel3">H-1</label><div class="stock-input-wrapper"><input id="stock3" type="number" placeholder="0"><span>QTD</span></div></div><div class="stock-field current"><label id="stockLabel4">ATUAL</label><div class="stock-input-wrapper"><input id="stockCurrent" type="number" placeholder="0"><span>QTD</span></div></div></div><label style="font-size:10px; font-weight:800; color:#9ae889; margin-top:14px; display:block">POTENCIAL ESTIMADO DAS FRENTES NAS PRÓXIMAS 03 HORAS (T/H)</label><div class="stock-grid" style="margin-top:8px"><div class="stock-field highlight"><label id="potFutLabel1">+1h</label><div class="stock-input-wrapper"><input id="potFut1" type="number" placeholder="750"><span>t/h</span></div></div><div class="stock-field highlight"><label id="potFutLabel2">+2h</label><div class="stock-input-wrapper"><input id="potFut2" type="number" placeholder="780"><span>t/h</span></div></div><div class="stock-field highlight"><label id="potFutLabel3">+3h</label><div class="stock-input-wrapper"><input id="potFut3" type="number" placeholder="800"><span>t/h</span></div></div></div></section>
-<section class="card"><div class="card-header"><div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center"><div class="card-number">03</div><div><div class="card-title">Observações das Frentes</div><div class="card-description">Motivos + Pontos de Atenção</div></div></div><div class="card-badge optional">OPCIONAL</div></div><div class="comments-area"><textarea id="comments" class="comments-textarea" placeholder="Ex: F329 em mudança..."></textarea><button id="micButton" class="mic-button">🎤</button></div></section>
-<div class="action-area"><button id="clearButton" class="clear-button">Limpar</button><button id="generateButton" class="generate-button">✦ GERAR PLANO DE VOO</button></div>
-<div id="loadingArea" class="hidden loading-area"><div class="loading-spinner"></div><div><strong>Gerando Análise...</strong></div></div>
-<div id="resultArea" class="hidden result-area">
-<div class="result-header"><div><span class="eyebrow">Comunicado gerado</span><h2>Plano de Voo</h2></div><button id="copyButton">📋 COPIAR P/ WHATSAPP</button></div>
-<div class="kpi-grid"><div class="kpi-card"><span class="kpi-label">Estoque Atual</span><span class="kpi-value" id="kpiStock">—</span></div><div class="kpi-card"><span class="kpi-label">Moagem Formalizada</span><span class="kpi-value" id="kpiMoagemAtual">—</span></div><div class="kpi-card"><span class="kpi-label">Potencial nas Próximas 3H</span><span class="kpi-value" id="kpiFuturo">—</span></div><div class="kpi-card"><span class="kpi-label">Risco | Volta | Parada</span><span class="kpi-value" id="kpiRiskHour">—</span></div></div>
-<div class="grafico-box" id="graficoBox"><div id="chartTitle">Gráfico Plano de Voo</div><canvas id="graficoPlanoVoo" width="1000" height="400"></canvas></div>
-<div class="result-status" id="resultStatus">—</div>
-<div class="analysis-card"><div class="analysis-text" id="analysisText"></div></div>
-</div>
-<div id="errorArea" class="hidden error-area"><div class="error-icon">!</div><div><strong>Atenção</strong><p id="errorMessage"></p></div></div>
+  <section class="intro">
+    <span class="eyebrow">PAINEL ANALÍTICO | ENTRADA / MOAGEM</span>
+    <h1>Análise do Potencial de Produção</h1>
+    <p>Cole a tela do Logtrac <strong>Análise do Potencial de Produção</strong>, informe <strong>moagem atual</strong> e <strong>pátio</strong>, e potencial futuro de <strong>3h</strong>. O painel gera o comunicado da unidade automaticamente.</p>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
+        <div class="card-number">01</div>
+        <div><div class="card-title">Potencial de Produção</div><div class="card-description">Cole a tela Hora a Hora da Logtrac</div></div>
+      </div>
+      <div class="card-badge">OBRIGATÓRIO</div>
+    </div>
+    <textarea id="potentialInput" class="main-textarea" placeholder="Cole aqui a tela da Logtrac Análise de Potencial de Produção no modo Hora a Hora (Hora - Máquinas - Entrada - Saída)..."></textarea>
+    <div id="previewArea" class="hidden preview-area">
+      <span class="preview-title" id="previewTitle">✅ Tela identificada</span>
+      <div id="previewContent" style="margin-top:8px; font-size:10px; color:#9ae889"></div>
+      <div id="previewDetails" style="margin-top:6px; font-size:9px; color:#87988e"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
+        <div class="card-number">02</div>
+        <div><div class="card-title">Operação Atual + Potencial das Frentes</div><div class="card-description">Moagem Zero = Unidade Parada</div></div>
+      </div>
+      <div class="card-badge">OBRIGATÓRIO</div>
+    </div>
+    <label style="font-size:10px; font-weight:800; color:#ff8a8a">MOAGEM ATUAL | Se 0 = PARADA</label>
+    <div class="stock-grid" style="margin-top:8px">
+      <div class="stock-field highlight"><label>Moagem Formalizada</label><div class="stock-input-wrapper"><input id="moagemAtual" type="number" placeholder="710"><span>t/h</span></div><small>Se parada coloque 0</small></div>
+      <div class="stock-field"><label>Saldo Futuro</label><div id="saldoFuturoPreview" style="height:42px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border-radius:10px; font-weight:800">—</div><small>Em relação a moagem formalizada</small></div>
+    </div>
+    <label style="font-size:10px; font-weight:800; margin-top:14px; display:block">ESTOQUE PÁTIO (Conjuntos)</label>
+    <div class="stock-grid" style="margin-top:8px">
+      <div class="stock-field"><label id="stockLabel1">H-3</label><div class="stock-input-wrapper"><input id="stock1" type="number" placeholder="0"><span>QTD</span></div></div>
+      <div class="stock-field"><label id="stockLabel2">H-2</label><div class="stock-input-wrapper"><input id="stock2" type="number" placeholder="0"><span>QTD</span></div></div>
+      <div class="stock-field"><label id="stockLabel3">H-1</label><div class="stock-input-wrapper"><input id="stock3" type="number" placeholder="0"><span>QTD</span></div></div>
+      <div class="stock-field current"><label id="stockLabel4">ATUAL</label><div class="stock-input-wrapper"><input id="stockCurrent" type="number" placeholder="0"><span>QTD</span></div><small>Agora</small></div>
+    </div>
+    <label style="font-size:10px; font-weight:800; color:#9ae889; margin-top:14px; display:block">POTENCIAL ESTIMADO DAS FRENTES NAS PRÓXIMAS 03 HORAS (T/H)</label>
+    <div class="stock-grid" style="margin-top:8px">
+      <div class="stock-field highlight"><label id="potFutLabel1">+1h</label><div class="stock-input-wrapper"><input id="potFut1" type="number" placeholder="750"><span>t/h</span></div></div>
+      <div class="stock-field highlight"><label id="potFutLabel2">+2h</label><div class="stock-input-wrapper"><input id="potFut2" type="number" placeholder="780"><span>t/h</span></div></div>
+      <div class="stock-field highlight"><label id="potFutLabel3">+3h</label><div class="stock-input-wrapper"><input id="potFut3" type="number" placeholder="800"><span>t/h</span></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
+        <div class="card-number">03</div>
+        <div><div class="card-title">Observações das Frentes</div><div class="card-description">Motivos + Pontos de Atenção</div></div>
+      </div>
+      <div class="card-badge optional">OPCIONAL</div>
+    </div>
+    <div class="comments-area">
+      <textarea id="comments" class="comments-textarea" placeholder="Ex: F329 em mudança, F74 finalizando área, indisponibilidade mec. de colhedoras em 16% das 10:00 às 16:00, chuva/solo úmido, liberação da Frente 247 às 09:00, troca turno..."></textarea>
+      <button id="micButton" class="mic-button">🎤</button>
+    </div>
+  </section>
+
+  <div class="action-area">
+    <button id="clearButton" class="clear-button">Limpar</button>
+    <button id="generateButton" class="generate-button">✦ GERAR PLANO DE VOO</button>
+  </div>
+
+  <div id="loadingArea" class="hidden loading-area"><div class="loading-spinner"></div><div><strong>Gerando Análise...</strong><p>Analisando ENTRADA/MOAGEM | ESTOQUES | POTENCIAL DAS FRENTES</p></div></div>
+
+  <div id="resultArea" class="hidden result-area">
+    <div class="result-header">
+      <div><span class="eyebrow">Comunicado gerado</span><h2>Plano de Voo</h2></div>
+      <button id="copyButton">📋 COPIAR P/ WHATSAPP</button>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><span class="kpi-label">Estoque Atual</span><span class="kpi-value" id="kpiStock">—</span></div>
+      <div class="kpi-card"><span class="kpi-label">Moagem Formalizada</span><span class="kpi-value" id="kpiMoagemAtual">—</span></div>
+      <div class="kpi-card"><span class="kpi-label">Potencial nas Próximas 3H</span><span class="kpi-value" id="kpiFuturo">—</span></div>
+      <div class="kpi-card"><span class="kpi-label">Risco | Volta | Parada</span><span class="kpi-value" id="kpiRiskHour">—</span></div>
+    </div>
+
+    <div class="chart-wrap" id="chartWrap">
+      <div class="chart-title" id="chartTitle">VER | Estoque: 900t 1:48 min | Ritmo atual: Industrial 500t/h - 100% / Agrícola 500t/h - 100%</div>
+      <canvas id="graficoPlanoVoo" height="280"></canvas>
+    </div>
+
+    <div class="result-status" id="resultStatus">—</div>
+    <div class="analysis-card"><div class="analysis-text" id="analysisText"></div></div>
+  </div>
+
+  <div id="errorArea" class="hidden error-area"><div class="error-icon">!</div><div><strong>Atenção</strong><p id="errorMessage"></p></div></div>
 </main>
+
 <footer class="footer"><div>COA • OPERAÇÕES AGROINDUSTRIAIS</div><span>Plano de Voo Automático - By Dionnes</span></footer>
+
 <script>
-function parsePotencial(text){if(!text||text.length<15)return null;let dados=[];text.split('\n').forEach(line=>{const t=line.trim();if(!t)return;const low=t.toLowerCase();if(low.includes('hora')&&low.includes('máquinas'))return;if(low.startsWith('total')||low.includes('safra')||low.includes('filial'))return;const hm=t.match(/(\d{1,2})\s*-\s*(\d{1,2})/);if(!hm)return;const horaIni=Number(hm[1]);if(horaIni<0||horaIni>23)return;const rawNums=t.match(/[\d.,]+/g);if(!rawNums||rawNums.length<3)return;const nums=rawNums.map(s=>{if(s.includes(',')&&s.includes('.'))return Number(s.replace(/\./g,'').replace(',','.'));if(s.includes(','))return Number(s.replace(',','.'));return Number(s);}).filter(v=>isFinite(v));if(nums.length<2)return;const entrada=nums[nums.length-2];const saida=nums[nums.length-1];if(entrada>=0&&entrada<10000&&saida>=0&&saida<10000){dados.push({hora:`${String(horaIni).padStart(2,'0')} - ${String((horaIni+1)%24).padStart(2,'0')}`, horaNumero:horaIni, entrada, saida, potencial:entrada, moagem:saida});}});if(dados.length<3)return null;return {dados};}window.__parsePotential=parsePotencial;
+function parsePotencial(text){
+  if(!text||text.length<15) return null;
+  let dados=[];
+  text.split('\n').forEach(line=>{
+    const t=line.trim(); if(!t) return;
+    const low=t.toLowerCase();
+    if(low.includes('hora')&&low.includes('máquinas')) return;
+    if(low.startsWith('total')||low.includes('safra')||low.includes('filial')) return;
+    const hm=t.match(/(\d{1,2})\s*-\s*(\d{1,2})/); if(!hm) return;
+    const horaIni=Number(hm[1]); if(horaIni<0||horaIni>23) return;
+    const rawNums=t.match(/[\d.,]+/g); if(!rawNums||rawNums.length<3) return;
+    const nums=rawNums.map(s=>{
+      if(s.includes(',')&&s.includes('.')) return Number(s.replace(/\./g,'').replace(',','.'));
+      if(s.includes(',')) return Number(s.replace(',','.'));
+      return Number(s);
+    }).filter(v=>isFinite(v));
+    if(nums.length<2) return;
+    const entrada=nums[nums.length-2]; const saida=nums[nums.length-1];
+    if(entrada>=0&&entrada<10000&&saida>=0&&saida<10000){
+      dados.push({hora:`${String(horaIni).padStart(2,'0')} - ${String((horaIni+1)%24).padStart(2,'0')}`, horaNumero:horaIni, entrada, saida, potencial:entrada, moagem:saida});
+    }
+  });
+  if(dados.length<3) return null;
+  return {dados};
+}
+window.__parsePotential=parsePotencial;
 </script>
+
 <script>
 const CONFIG={'MANDU':{nome:'Mandu',sigla:'UIM',nominal:917,min:650,gatilho:12},'CRUZ ALTA':{nome:'Cruz Alta',sigla:'UICA',nominal:900,min:600,gatilho:12},'SAO JOSE':{nome:'São José',sigla:'UISJ',nominal:750,min:550,gatilho:12},'VERTENTE':{nome:'Vertente',sigla:'UIV',nominal:500,min:400,gatilho:4},'TANABI':{nome:'Tanabi',sigla:'UIT',nominal:710,min:300,gatilho:12}};
-const API_URL='/api/plano-voo'; const $=id=>document.getElementById(id); let lastText='';
+const API_URL='/api/plano-voo'; const $=id=>document.getElementById(id); let lastText=''; let chartInstance=null;
 function normalizarTexto(t){return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();}
 function identificarUnidade(texto){const n=normalizarTexto(texto); for(const k of Object.keys(CONFIG)){if(n.includes(k)) return {chave:k,...CONFIG[k]};} if(n.includes('UIM')) return {chave:'MANDU',...CONFIG['MANDU']}; if(n.includes('UICA')) return {chave:'CRUZ ALTA',...CONFIG['CRUZ ALTA']}; if(n.includes('UISJ')) return {chave:'SAO JOSE',...CONFIG['SAO JOSE']}; if(n.includes('UIV')) return {chave:'VERTENTE',...CONFIG['VERTENTE']}; if(n.includes('UIT')) return {chave:'TANABI',...CONFIG['TANABI']}; return {chave:'TANABI',...CONFIG['TANABI']};}
 function numeroBR(v){if(v==null||v==='') return null; let t=String(v).trim().replace(/[^\d.,-]/g,''); if(!t) return null; if(t.includes('.')&&t.includes(',')) t=t.replace(/\./g,'').replace(',','.'); else if(t.includes(',')) t=t.replace(',','.'); const n=Number(t); return Number.isFinite(n)?n:null;}
 function interpretarTabela(texto){if(!texto||!texto.trim()) return {rows:[],error:'Cole a tabela'}; if(window.__parsePotential){try{const p=window.__parsePotential(texto); if(p&&p.dados&&p.dados.length){const u=identificarUnidade(texto); const rows=p.dados.map(d=>{return {hora:`${String(d.horaNumero).padStart(2,'0')}:00`,horaNumero:d.horaNumero,potencial:d.entrada,moagem:d.saida,entrada:d.entrada,saida:d.saida}}); return {rows,unidade:u,error:null};}}catch(e){}} return {rows:[],error:'Não identifiquei a tabela'};}
 function atualizarLabels(){const h=new Date().getHours(); const f=v=>String((v+24)%24).padStart(2,'0')+'h'; if($('stockLabel1'))$('stockLabel1').textContent=f(h-3)+' -3h'; if($('stockLabel2'))$('stockLabel2').textContent=f(h-2)+' -2h'; if($('stockLabel3'))$('stockLabel3').textContent=f(h-1)+' -1h'; if($('stockLabel4'))$('stockLabel4').textContent=f(h)+' ATUAL'; if($('potFutLabel1'))$('potFutLabel1').textContent=f(h+1)+' +1h'; if($('potFutLabel2'))$('potFutLabel2').textContent=f(h+2)+' +2h'; if($('potFutLabel3'))$('potFutLabel3').textContent=f(h+3)+' +3h';}
-atualizarLabels();
-$('potentialInput').addEventListener('input', function(){const res=interpretarTabela(this.value);if(res.error||!res.rows.length){$('previewArea').classList.add('hidden');return;}const u=res.unidade||identificarUnidade(this.value);$('previewArea').classList.remove('hidden');$('previewTitle').textContent=`✅ ${u.nome} (${u.sigla}) - ${res.rows.length}h lidos - Nominal ${u.nominal} t/h`;$('previewContent').innerHTML=`ENTRADA média: ${(res.rows.reduce((a,b)=>a+b.potencial,0)/res.rows.length).toFixed(0)} t/h | SAÍDA média: ${(res.rows.reduce((a,b)=>a+b.moagem,0)/res.rows.length).toFixed(0)} t/h`;$('previewDetails').innerHTML=res.rows.slice(-4).map(r=>`${r.hora}: Ent ${r.potencial.toFixed(0)} / Sai ${r.moagem.toFixed(0)}`).join(' • ');atualizarSaldo();});
-function atualizarSaldo(){const moagem=numeroBR($('moagemAtual').value);const f1=numeroBR($('potFut1').value);const f2=numeroBR($('potFut2').value);const f3=numeroBR($('potFut3').value);const medias=[f1,f2,f3].filter(v=>v!=null);const el=$('saldoFuturoPreview');if(!el)return;if(moagem==null||medias.length===0){el.textContent='—';return;}const media=medias.reduce((a,b)=>a+b,0)/medias.length;const saldo=moagem===0?media:media-moagem;el.textContent=moagem===0?`+${media.toFixed(0)}t/h`:saldo>0?`+${saldo.toFixed(0)} GANHA`:`${saldo.toFixed(0)} PERDE`;}
+atualizarLabels(); setInterval(atualizarLabels,60000);
+$('potentialInput').addEventListener('input', function(){
+  const res=interpretarTabela(this.value);
+  if(res.error||!res.rows.length){ $('previewArea').classList.add('hidden'); return;}
+  const u=res.unidade||identificarUnidade(this.value);
+  $('previewArea').classList.remove('hidden');
+  $('previewTitle').textContent=`✅ ${u.nome} (${u.sigla}) - ${res.rows.length}h lidos - Nominal ${u.nominal} t/h`;
+  $('previewContent').innerHTML=`ENTRADA média: ${(res.rows.reduce((a,b)=>a+b.potencial,0)/res.rows.length).toFixed(0)} t/h | SAÍDA média: ${(res.rows.reduce((a,b)=>a+b.moagem,0)/res.rows.length).toFixed(0)} t/h`;
+  $('previewDetails').innerHTML=res.rows.slice(-4).map(r=>`${r.hora}: Ent ${r.potencial.toFixed(0)} / Sai ${r.moagem.toFixed(0)}`).join(' • ');
+  atualizarSaldo();
+});
+function atualizarSaldo(){const moagem=numeroBR($('moagemAtual').value); const f1=numeroBR($('potFut1').value); const f2=numeroBR($('potFut2').value); const f3=numeroBR($('potFut3').value); const medias=[f1,f2,f3].filter(v=>v!=null); const el=$('saldoFuturoPreview'); if(!el) return; if(moagem==null||medias.length===0){el.textContent='—'; el.style.color=''; return;} const media=medias.reduce((a,b)=>a+b,0)/medias.length; const saldo=moagem===0?media:media-moagem; if(moagem===0){el.textContent=`Vai formar +${media.toFixed(0)}t/h`; el.style.color='#69d66a';} else if(saldo>0){el.textContent=`+${saldo.toFixed(0)} GANHA`; el.style.color='#69d66a';} else {el.textContent=`${saldo.toFixed(0)} PERDE`; el.style.color='#ff6f73';}}
 ['moagemAtual','potFut1','potFut2','potFut3'].forEach(id=>{const el=$(id); if(el) el.addEventListener('input', atualizarSaldo);});
 function montarDados(){const tabela=$('potentialInput').value.trim(); if(!tabela) throw new Error('Cole a Análise de Potencial'); const res=interpretarTabela(tabela); if(res.error) throw new Error(res.error); const eAtual=$('stockCurrent').value; if(!eAtual) throw new Error('Informe estoque atual'); const moagemAtual=$('moagemAtual').value; if(moagemAtual===''||moagemAtual==null) throw new Error('Informe moagem atual (0 se parada)'); return {tabelaOriginal:tabela, potencial:res.rows, estoque:{h3:Number($('stock1').value||0),h2:Number($('stock2').value||0),h1:Number($('stock3').value||0),atual:Number(eAtual)}, moagemAtual:Number(moagemAtual), potencialFuturo:{h1:$('potFut1').value, h2:$('potFut2').value, h3:$('potFut3').value}, comentarios:$('comments').value.trim(), horaAtual:new Date().getHours()};}
 
-function desenharGraficoNativo(calculos, unidade){
-  const canvas = document.getElementById('graficoPlanoVoo');
+function desenharGraficoPlanoVoo(calculos, unidade){
+  const canvas = $('graficoPlanoVoo');
+  if(!canvas) return;
   const ctx = canvas.getContext('2d');
-  const proj = calculos.projecaoEstoque||[];
-  if(!proj.length) return;
-  const W = canvas.width; const H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#0d1b34'; ctx.fillRect(0,0,W,H);
-  const labels = proj.map(p=>p.horaFormatada);
-  const pot = proj.map(p=>p.potencial);
-  const moa = proj.map(p=>p.moagem);
-  const estConj = proj.map(p=>p.estoqueProjetado);
-  const estTon = proj.map(p=>p.estoqueProjetado*70);
-  const nominal = unidade.nominal;
-  const tonAtual = calculos.estoque.atual*70;
-  const horas = Math.floor(tonAtual/(calculos.moagemAtual||1));
-  const mins = Math.round((tonAtual%(calculos.moagemAtual||1))/(calculos.moagemAtual||1)*60);
-  document.getElementById('chartTitle').innerText = `${unidade.sigla} | Estoque: ${tonAtual.toFixed(0)}t ${horas}:${String(mins).padStart(2,'0')} min | Industrial ${calculos.moagemAtual}t/h | Agrícola ${calculos.potencialFuturo.media.toFixed(0)}t/h | Min ${unidade.gatilho*70}t Max ${(unidade.gatilho+18)*70}t`;
-  const maxVal = Math.max(...pot, ...moa, nominal+100, ...estTon, 200);
-  const padding = {l:60, r:20, t:20, b:50};
-  const chartW = W - padding.l - padding.r;
-  const chartH = H - padding.t - padding.b;
-  function x(i){ return padding.l + (i/(labels.length-1))*chartW; }
-  function y(v){ return padding.t + chartH - (v/maxVal)*chartH; }
-  ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1;
-  for(let i=0;i<=4;i++){ const yy = padding.t + (i/4)*chartH; ctx.beginPath(); ctx.moveTo(padding.l, yy); ctx.lineTo(W-padding.r, yy); ctx.stroke(); }
-  ctx.fillStyle='#6b86a6'; ctx.font='11px Inter'; ctx.textAlign='right';
-  for(let i=0;i<=4;i++){ const v = maxVal - (i/4)*maxVal; const yy = padding.t + (i/4)*chartH; ctx.fillText(Math.round(v)+'t', padding.l-8, yy+3); }
-  ctx.textAlign='center'; ctx.fillStyle='#6b86a6'; ctx.font='10px Inter';
-  labels.forEach((lab,i)=>{ if(i%2===0) ctx.fillText(lab, x(i), H-12); });
-  function drawLine(data, color, width, dash){
-    ctx.strokeStyle=color; ctx.lineWidth=width; ctx.setLineDash(dash||[]); ctx.beginPath();
-    data.forEach((v,i)=>{ const xx=x(i), yy=y(v); if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy); }); ctx.stroke(); ctx.setLineDash([]);
-  }
-  const minT = unidade.gatilho*70; const maxT = (unidade.gatilho+18)*70;
-  ctx.fillStyle='rgba(255,213,128,0.12)'; ctx.fillRect(padding.l, y(maxT), chartW, y(minT)-y(maxT));
-  ctx.fillStyle='rgba(143,188,80,0.10)'; ctx.fillRect(padding.l, y(maxT+500), chartW, y(maxT)-y(maxT+500));
-  drawLine(proj.map(()=>nominal), '#2B78FF', 3, []);
-  drawLine(estTon, '#8FBC50', 2.5, [8,5]);
-  drawLine(pot, '#FF8C00', 2, [8,5]);
-  drawLine(moa, '#00B4FF', 2, [6,4]);
-  const leg = [{c:'#2B78FF', t:`Nominal ${nominal} t/h`}, {c:'#8FBC50', t:'Estoque Proj.'}, {c:'#FF8C00', t:'Colheita'}, {c:'#00B4FF', t:'Industrial'}];
-  let lx = padding.l; let ly = H-28;
-  leg.forEach(l=>{ ctx.fillStyle=l.c; ctx.fillRect(lx, ly, 12,3); ctx.fillStyle='#a8bed9'; ctx.font='10px Inter'; ctx.textAlign='left'; ctx.fillText(l.t, lx+16, ly+4); lx+=110; });
+  const proj = calculos.projecaoEstoque || [];
+  if(proj.length===0) return;
+
+  const labels = proj.map(p => p.horaFormatada);
+  const estoqueConj = proj.map(p => p.estoqueProjetado); 
+  const estoqueT = proj.map(p => p.estoqueProjetado * 70);
+  const potencial = proj.map(p => p.potencial);
+  const moagem = proj.map(p => p.moagem);
+  const nominal = proj.map(() => unidade.nominal);
+  
+  const tonPatio = calculos.estoque.atual * 70;
+  const horasDur = calculos.moagemAtual > 0 ? Math.floor(tonPatio / calculos.moagemAtual) : 0;
+  const minsDur = calculos.moagemAtual > 0 ? Math.round((tonPatio % calculos.moagemAtual) / calculos.moagemAtual * 60) : 0;
+
+  $('chartTitle').textContent = `${unidade.sigla} | Estoque: .${tonPatio.toFixed(0)}t ${horasDur}:${String(minsDur).padStart(2,'0')} min | Ritmo atual: Industrial ${calculos.moagemAtual}t/h - 100% / Agrícola ${calculos.potencialFuturo.media.toFixed(0)}t/h - 100% | Pátio ${calculos.estoque.atual} conj`;
+
+  if(chartInstance){ chartInstance.destroy(); }
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: `Nominal IND. (${unidade.nominal} t/h)`,
+          data: nominal,
+          borderColor: '#2B78FF',
+          backgroundColor: '#2B78FF',
+          borderWidth: 3,
+          tension: 0,
+          pointRadius: 0,
+          yAxisID: 'y'
+        },
+        {
+          label: `Estoque Projetado (conj)`,
+          data: estoqueConj,
+          borderColor: '#4A5A2A',
+          backgroundColor: '#4A5A2A',
+          borderWidth: 2.5,
+          borderDash: [8,5],
+          tension: 0.35,
+          pointRadius: 0,
+          yAxisID: 'y'
+        },
+        {
+          label: `Ritmo Colheita`,
+          data: potencial,
+          borderColor: '#E67E22',
+          backgroundColor: '#E67E22',
+          borderWidth: 2,
+          borderDash: [8,5],
+          tension: 0.3,
+          pointRadius: 0,
+          yAxisID: 'y'
+        },
+        {
+          label: `Ritmo Industrial`,
+          data: moagem,
+          borderColor: '#1A56DB',
+          backgroundColor: '#1A56DB',
+          borderWidth: 2,
+          borderDash: [6,4],
+          tension: 0.2,
+          pointRadius: 0,
+          yAxisID: 'y'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction:{mode:'index', intersect:false},
+      plugins:{ 
+        legend:{ 
+          position:'bottom', 
+          labels:{ color:'#a8bed9', usePointStyle:true, font:{size:10}, boxWidth:18, padding:16 } 
+        }
+      },
+      scales:{
+        y:{ 
+          beginAtZero:true,
+          max: 1400,
+          title:{display:true, text:'Ritmo Operação (t) / Estoque (conj x 70)', color:'#6b86a6'},
+          ticks:{ color:'#6b86a6' },
+          grid:{ color:'rgba(168,190,217,0.12)' }
+        },
+        x:{ 
+          grid:{ color:'rgba(168,190,217,0.06)' },
+          ticks:{ color:'#6b86a6', maxTicksLimit:24, font:{size:9} }
+        }
+      }
+    }
+  });
 }
 
 async function gerar(){
@@ -114,15 +321,47 @@ async function gerar(){
     $('kpiMoagemAtual').textContent=data.calculos.moagemAtual+' t/h'+(data.usinaParada?' PARADA':'');
     $('kpiFuturo').textContent=data.calculos.potencialFuturo.media.toFixed(0)+' t/h';
     $('kpiRiskHour').textContent=data.usinaParada?(data.calculos.retorno.horaVoltaIdeal!=null?String(data.calculos.retorno.horaVoltaIdeal).padStart(2,'0')+':00 VOLTA':'AGUARDAR'):(data.calculos.risco.primeiraHoraRisco!=null?String(data.calculos.risco.primeiraHoraRisco).padStart(2,'0')+':00 RISCO':'OK 12h');
-    $('resultStatus').textContent=`${data.unidade.sigla} • Moagem ${data.calculos.moagemAtual} t/h • Pátio ${data.calculos.estoque.atual} conj • Futuro ${data.calculos.potencialFuturo.media.toFixed(0)} t/h`;
+    $('resultStatus').textContent=`${data.unidade.sigla} • Moagem ${data.calculos.moagemAtual} t/h • Pátio ${data.calculos.estoque.atual} conj • Futuro ${data.calculos.potencialFuturo.media.toFixed(0)} t/h • Saldo ${data.calculos.potencialFuturo.saldoFuturo>=0?'+':''}${data.calculos.potencialFuturo.saldoFuturo.toFixed(0)}t/h`;
+    
+    // MOSTRA ANTES DE DESENHAR
     $('resultArea').classList.remove('hidden');
-    setTimeout(()=>{ desenharGraficoNativo(data.calculos, data.unidade); window.scrollTo({top:document.getElementById('graficoBox').offsetTop-20, behavior:'smooth'}); }, 100);
-  }catch(e){$('errorMessage').textContent=e.message;$('errorArea').classList.remove('hidden');}
-  finally{btn.disabled=false; btn.textContent='✦ GERAR PLANO DE VOO';$('loadingArea').classList.add('hidden');}
+    
+    // Delay pequeno pra garantir que canvas tem tamanho
+    setTimeout(()=>{
+      desenharGraficoPlanoVoo(data.calculos, data.unidade);
+      window.scrollTo({top:$('chartWrap').offsetTop-20, behavior:'smooth'});
+    }, 150);
+
+  }catch(e){
+    $('errorMessage').textContent=e.message;
+    $('errorArea').classList.remove('hidden');
+  }finally{
+    btn.disabled=false; btn.textContent='✦ GERAR PLANO DE VOO';
+    $('loadingArea').classList.add('hidden');
+  }
 }
 $('generateButton').addEventListener('click', gerar);
-$('copyButton').addEventListener('click', async()=>{if(!lastText)return;try{await navigator.clipboard.writeText(lastText);const b=$('copyButton');b.textContent='✓ COPIADO!';setTimeout(()=>{b.textContent='📋 COPIAR P/ WHATSAPP';},2000);}catch{window.open(`https://wa.me/?text=${encodeURIComponent(lastText)}`,'_blank');}});
-$('clearButton').addEventListener('click',()=>{['potentialInput','stock1','stock2','stock3','stockCurrent','moagemAtual','potFut1','potFut2','potFut3','comments'].forEach(id=>$(id).value='');$('resultArea').classList.add('hidden');$('previewArea').classList.add('hidden');});
+$('copyButton').addEventListener('click', async()=>{
+  if(!lastText) return;
+  try{
+    await navigator.clipboard.writeText(lastText);
+    const b=$('copyButton');
+    b.textContent='✓ COPIADO!';
+    b.classList.add('copiado');
+    setTimeout(()=>{b.textContent='📋 COPIAR P/ WHATSAPP'; b.classList.remove('copiado');},2000);
+  }catch{
+    const wpp=`https://wa.me/?text=${encodeURIComponent(lastText)}`;
+    window.open(wpp,'_blank');
+  }
+});
+$('clearButton').addEventListener('click',()=>{
+  ['potentialInput','stock1','stock2','stock3','stockCurrent','moagemAtual','potFut1','potFut2','potFut3','comments'].forEach(id=>$(id).value='');
+  $('resultArea').classList.add('hidden');
+  $('previewArea').classList.add('hidden');
+  if(chartInstance) chartInstance.destroy();
+  atualizarSaldo();
+});
+(function(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return; const rec=new SR(); rec.lang='pt-BR'; rec.continuous=true; rec.interimResults=true; let listening=false; const btn=$('micButton'); btn.addEventListener('click',()=>{if(listening) rec.stop(); else try{rec.start()}catch{}}); rec.onstart=()=>{listening=true; btn.classList.add('recording'); btn.textContent='●';}; rec.onend=()=>{listening=false; btn.classList.remove('recording'); btn.textContent='🎤';}; rec.onresult=(e)=>{let fin=''; for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) fin+=e.results[i][0].transcript+' '; if(fin) $('comments').value=($('comments').value.trim()+' '+fin.trim()).trim();};})();
 </script>
 </body>
 </html>
