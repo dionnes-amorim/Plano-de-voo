@@ -5,7 +5,7 @@
 <title>Plano de Vôo | COA - Tereos</title>
 <link rel="icon" href="/logo.ico">
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 .brand::before,.brand::after,.topbar::before,.topbar-content::before,.brand-title::before{display:none!important; content:none!important;}
 .topbar-content{display:flex; align-items:center}
@@ -15,8 +15,6 @@
 .result-header h2{margin:2px 0 0; font-size:20px}
 #copyButton{ display:inline-flex; align-items:center; gap:8px; min-height:46px; padding:0 18px; border-radius:12px; background:linear-gradient(135deg,#25D366,#128C7E); border:1px solid rgba(255,255,255,.15); color:#fff; font-weight:900; font-size:11px; box-shadow:0 8px 24px rgba(37,211,102,.25); cursor:pointer;}
 #copyButton.copiado{background:linear-gradient(135deg,#69d66a,#3cb85d)}
-
-/* GRAFICO - CORRIGIDO TEMA ESCURO */
 .chart-wrap{
   background: #0d1b34;
   border-radius:16px; 
@@ -24,25 +22,14 @@
   margin:18px 0;
   border:1px solid rgba(0,180,255,.25);
   display:block!important;
-  min-height:320px;
+  min-height:360px;
 }
-.chart-title{
-  font-size:11px; 
-  font-weight:800; 
-  color:#9ae889; 
-  text-align:center; 
-  margin-bottom:12px;
-  line-height:1.4;
-}
-#graficoPlanoVoo{
-  background: #0d1b34;
-  width:100%!important;
-  display:block!important;
-}
+.chart-wrap-inner{ position:relative; width:100%; height:320px; }
+.chart-title{ font-size:11px; font-weight:800; color:#9ae889; text-align:center; margin-bottom:12px; line-height:1.4; }
+#graficoPlanoVoo{ background: #0d1b34; width:100%!important; height:100%!important; display:block!important; }
 </style>
 </head>
 <body>
-<!-- ... SEU HEADER IGUAL ... -->
 <header class="topbar">
   <div class="topbar-content">
     <div class="brand">
@@ -140,8 +127,10 @@
     </div>
 
     <div class="chart-wrap" id="chartWrap">
-      <div class="chart-title" id="chartTitle">VER | Estoque: 900t 1:48 min | Ritmo atual: Industrial 500t/h - 100% / Agrícola 500t/h - 100%</div>
-      <canvas id="graficoPlanoVoo" height="280"></canvas>
+      <div class="chart-title" id="chartTitle">Gráfico Plano de Voo - Carregando...</div>
+      <div class="chart-wrap-inner">
+        <canvas id="graficoPlanoVoo"></canvas>
+      </div>
     </div>
 
     <div class="result-status" id="resultStatus">—</div>
@@ -208,12 +197,12 @@ function montarDados(){const tabela=$('potentialInput').value.trim(); if(!tabela
 function desenharGraficoPlanoVoo(calculos, unidade){
   const canvas = $('graficoPlanoVoo');
   if(!canvas) return;
+  if(typeof Chart === 'undefined'){ console.error('Chart.js não carregou'); $('chartTitle').textContent='ERRO: Chart.js não carregou - verifique CDN'; return; }
   const ctx = canvas.getContext('2d');
   const proj = calculos.projecaoEstoque || [];
   if(proj.length===0) return;
 
   const labels = proj.map(p => p.horaFormatada);
-  const estoqueConj = proj.map(p => p.estoqueProjetado); 
   const estoqueT = proj.map(p => p.estoqueProjetado * 70);
   const potencial = proj.map(p => p.potencial);
   const moagem = proj.map(p => p.moagem);
@@ -223,7 +212,7 @@ function desenharGraficoPlanoVoo(calculos, unidade){
   const horasDur = calculos.moagemAtual > 0 ? Math.floor(tonPatio / calculos.moagemAtual) : 0;
   const minsDur = calculos.moagemAtual > 0 ? Math.round((tonPatio % calculos.moagemAtual) / calculos.moagemAtual * 60) : 0;
 
-  $('chartTitle').textContent = `${unidade.sigla} | Estoque: .${tonPatio.toFixed(0)}t ${horasDur}:${String(minsDur).padStart(2,'0')} min | Ritmo atual: Industrial ${calculos.moagemAtual}t/h - 100% / Agrícola ${calculos.potencialFuturo.media.toFixed(0)}t/h - 100% | Pátio ${calculos.estoque.atual} conj`;
+  $('chartTitle').textContent = `${unidade.sigla} | Estoque: ${tonPatio.toFixed(0)}t ${horasDur}:${String(minsDur).padStart(2,'0')} min | Industrial ${calculos.moagemAtual}t/h | Agrícola ${calculos.potencialFuturo.media.toFixed(0)}t/h | Pátio ${calculos.estoque.atual} conj`;
 
   if(chartInstance){ chartInstance.destroy(); }
 
@@ -232,73 +221,20 @@ function desenharGraficoPlanoVoo(calculos, unidade){
     data: {
       labels: labels,
       datasets: [
-        {
-          label: `Nominal IND. (${unidade.nominal} t/h)`,
-          data: nominal,
-          borderColor: '#2B78FF',
-          backgroundColor: '#2B78FF',
-          borderWidth: 3,
-          tension: 0,
-          pointRadius: 0,
-          yAxisID: 'y'
-        },
-        {
-          label: `Estoque Projetado (conj)`,
-          data: estoqueConj,
-          borderColor: '#4A5A2A',
-          backgroundColor: '#4A5A2A',
-          borderWidth: 2.5,
-          borderDash: [8,5],
-          tension: 0.35,
-          pointRadius: 0,
-          yAxisID: 'y'
-        },
-        {
-          label: `Ritmo Colheita`,
-          data: potencial,
-          borderColor: '#E67E22',
-          backgroundColor: '#E67E22',
-          borderWidth: 2,
-          borderDash: [8,5],
-          tension: 0.3,
-          pointRadius: 0,
-          yAxisID: 'y'
-        },
-        {
-          label: `Ritmo Industrial`,
-          data: moagem,
-          borderColor: '#1A56DB',
-          backgroundColor: '#1A56DB',
-          borderWidth: 2,
-          borderDash: [6,4],
-          tension: 0.2,
-          pointRadius: 0,
-          yAxisID: 'y'
-        }
+        { label: `Nominal ${unidade.nominal} t/h`, data: nominal, borderColor: '#2B78FF', backgroundColor: '#2B78FF', borderWidth: 3, tension: 0, pointRadius: 0 },
+        { label: `Estoque Proj. (${tonPatio.toFixed(0)}t)`, data: estoqueT, borderColor: '#8FBC50', backgroundColor: '#8FBC50', borderWidth: 2.5, borderDash: [8,5], tension: 0.35, pointRadius: 3, pointBackgroundColor: '#8FBC50' },
+        { label: `Ritmo Colheita`, data: potencial, borderColor: '#FF8C00', backgroundColor: '#FF8C00', borderWidth: 2, borderDash: [8,5], tension: 0.3, pointRadius: 0 },
+        { label: `Ritmo Industrial`, data: moagem, borderColor: '#00B4FF', backgroundColor: '#00B4FF', borderWidth: 2, borderDash: [6,4], tension: 0.2, pointRadius: 0 }
       ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction:{mode:'index', intersect:false},
-      plugins:{ 
-        legend:{ 
-          position:'bottom', 
-          labels:{ color:'#a8bed9', usePointStyle:true, font:{size:10}, boxWidth:18, padding:16 } 
-        }
-      },
+      plugins:{ legend:{ position:'bottom', labels:{ color:'#a8bed9', usePointStyle:true, font:{size:10}, boxWidth:18, padding:14 } } },
       scales:{
-        y:{ 
-          beginAtZero:true,
-          max: 1400,
-          title:{display:true, text:'Ritmo Operação (t) / Estoque (conj x 70)', color:'#6b86a6'},
-          ticks:{ color:'#6b86a6' },
-          grid:{ color:'rgba(168,190,217,0.12)' }
-        },
-        x:{ 
-          grid:{ color:'rgba(168,190,217,0.06)' },
-          ticks:{ color:'#6b86a6', maxTicksLimit:24, font:{size:9} }
-        }
+        y:{ beginAtZero:true, title:{display:true, text:'t/h / Estoque (t)', color:'#6b86a6'}, ticks:{ color:'#6b86a6' }, grid:{ color:'rgba(168,190,217,0.12)' } },
+        x:{ grid:{ color:'rgba(168,190,217,0.06)' }, ticks:{ color:'#6b86a6', maxTicksLimit:12, font:{size:9} } }
       }
     }
   });
@@ -322,16 +258,8 @@ async function gerar(){
     $('kpiFuturo').textContent=data.calculos.potencialFuturo.media.toFixed(0)+' t/h';
     $('kpiRiskHour').textContent=data.usinaParada?(data.calculos.retorno.horaVoltaIdeal!=null?String(data.calculos.retorno.horaVoltaIdeal).padStart(2,'0')+':00 VOLTA':'AGUARDAR'):(data.calculos.risco.primeiraHoraRisco!=null?String(data.calculos.risco.primeiraHoraRisco).padStart(2,'0')+':00 RISCO':'OK 12h');
     $('resultStatus').textContent=`${data.unidade.sigla} • Moagem ${data.calculos.moagemAtual} t/h • Pátio ${data.calculos.estoque.atual} conj • Futuro ${data.calculos.potencialFuturo.media.toFixed(0)} t/h • Saldo ${data.calculos.potencialFuturo.saldoFuturo>=0?'+':''}${data.calculos.potencialFuturo.saldoFuturo.toFixed(0)}t/h`;
-    
-    // MOSTRA ANTES DE DESENHAR
     $('resultArea').classList.remove('hidden');
-    
-    // Delay pequeno pra garantir que canvas tem tamanho
-    setTimeout(()=>{
-      desenharGraficoPlanoVoo(data.calculos, data.unidade);
-      window.scrollTo({top:$('chartWrap').offsetTop-20, behavior:'smooth'});
-    }, 150);
-
+    setTimeout(()=>{ desenharGraficoPlanoVoo(data.calculos, data.unidade); }, 200);
   }catch(e){
     $('errorMessage').textContent=e.message;
     $('errorArea').classList.remove('hidden');
