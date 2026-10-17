@@ -394,7 +394,6 @@ EXEMPLOS OURO PARA COPIAR ESTILO:
 ${EXEMPLOS_TODOS}
 
 INSTRUÇÃO FINAL: Pense nos números (deficit, saldo futuro, menor pátio) mas escreva 100% no padrão sagrado acima. Retorne APENAS o comunicado final. Sem explicação, sem markdown, sem ```.
-    
   return prompt;
 }
 
