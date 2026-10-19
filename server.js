@@ -339,6 +339,7 @@ function montarPrompt(dados, calc, unidade){
   const histTxt=calc.historico.map(r=>`${horaFmt(r.hora)}: Entrada ${r.potencial.toFixed(0)} / Saída ${r.moagem.toFixed(0)}`).join('\n');
   const pAtioMenorInt = Math.round(calc.risco.menorEstoque);
   const pAtioAtualInt = Math.round(calc.estoque.atual);
+  const temObs = comentarios && comentarios.trim().length > 5 && comentarios !== 'Frentes em operação normal, sem observações adicionais.';
 
   return `
 VOCÊ É ANALISTA SÊNIOR COA CTT - TEREOS. SUA RESPOSTA SERÁ VALIDADA AUTOMATICAMENTE. SE QUEBRAR QUALQUER REGRA, SERÁ DESCARTADA.
