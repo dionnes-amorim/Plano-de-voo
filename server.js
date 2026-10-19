@@ -31,7 +31,20 @@ function normalizarTexto(t){ return String(t||'').normalize('NFD').replace(/[\u0
 function horaNumero(h){ const m=String(h||'').match(/\d{1,2}/); if(!m) return null; const n=Number(m[0]); return n>=0&&n<=23?n:null; }
 function horaFmt(h){ const n=horaNumero(h); return n==null?'--':`${String(n).padStart(2,'0')}:00`; }
 function horaRelativa(h,ha){ let d=(h-ha+24)%24; if(d>12) d-=24; return d; }
-function numeroBR(v){ if(v==null||v==='') return null; let t=String(v).trim().replace(/[^\d.,-]/g,''); if(!t) return null; if(t.includes('.')&&t.includes(',')) t=t.replace(/\./g,'').replace(',','.'); else if(t.includes(',')) t=t.replace(',','.'); const n=Number(t); return Number.isFinite(n)?n:null; }
+function numeroBR(v){ 
+  if(v==null||v==='') return null; 
+  let t=String(v).trim().replace(/[^\d.,-]/g,''); 
+  if(!t) return null; 
+  if(t.includes('.')&&t.includes(',')) t=t.replace(/\./g,'').replace(',','.'); 
+  else if(t.includes(',')) t=t.replace(/\./g,'').replace(',','.'); 
+  else if(/^\d{1,3}(\.\d{3})+$/.test(t)) t=t.replace(/\./g,''); // 1.000 = 1000
+  else if(/\.\d{3}$/.test(t)) {
+    const p=t.split('.');
+    if(p[p.length-1].length===3) t=t.replace(/\./g,'');
+  }
+  const n=Number(t); 
+  return Number.isFinite(n)?n:null; 
+}
 
 function identificarUnidade(texto){
   const n=normalizarTexto(texto);
