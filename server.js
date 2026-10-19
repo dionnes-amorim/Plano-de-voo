@@ -341,62 +341,63 @@ function montarPrompt(dados, calc, unidade){
   const pAtioAtualInt = Math.round(calc.estoque.atual);
 
   return `
-VOCÊ É ANALISTA SÊNIOR COA CTT - TEREOS. SUA RESPOSTA SERÁ VALIDADA AUTOMATICAMENTE. SE QUEBRAR QUALQUER REGRA, SERÁ DESCARTADA.
+VOCE É UM ANALISTA SENIOR COA CTT - TEREOS. ANALISE COMPLEXA E COERENTE.
 
-OBJETIVO: Gerar comunicado igual aos exemplos reais, com RACIOCÍNIO nos números mas ESCRITA SAGRADA.
+OBJETIVO: Gerar comunicado com RACIOCINIO PROPRIO mas usando apenas PALAVREADO permitido. NAO INVENTE dados que nao estao na observacao.
 
-DADOS REAIS PARA RACIOCÍNIO (USE PARA CALCULAR, NÃO COPIE LITERAL):
-Unidade: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h
+DADOS PARA RACIOCINIO (USE PARA CALCULAR, NAO COPIE LITERAL SE NAO TIVER NA OBS):
+Unidade: ${unidade.nome} (${unidade.sigla}) - Nominal ${unidade.nominal} t/h
 Hora Atual: ${horaFmt(calc.horaAtual)}
 Moagem: ${calc.moagemAtual} t/h
-Pátio: ${pAtioAtualInt} conj (variação ${Math.round(calc.estoque.variacao)} conj)
-Média 3h entrada: ${calc.medias.historicoPotencial.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = deficit ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
-Futuro médio 3h: ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = saldo ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
-Menor pátio: ${pAtioMenorInt} conj às ${horaFmt(calc.risco.horaMenorEstoque)} - Risco: ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco imediato'}
-Zona de risco da unidade: ${unidade.gatilho} conj
+Patio Atual: ${pAtioAtualInt} conj (variacao ${variacao} conj vs H-3)
+Media 3h entrada: ${calc.medias.historicoPotencial.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = saldo ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
+Futuro medio 3h: ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = saldo futuro ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
+Menor patio projetado: ${pAtioMenorInt} conj as ${horaFmt(calc.risco.horaMenorEstoque)} - Risco: ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco nas proximas 12h'}
+Zona de risco interna (NAO CITE NUMERO NO TEXTO): ${unidade.gatilho} conj
 
-PROJEÇÃO HORA A HORA (USE HORÁRIOS EXATOS NO TEXTO):
+PROJECAO HORA A HORA:
 ${projTxt}
 
-HISTÓRICO:
+HISTORICO RECENTE (CONSIDERE APENAS ULTIMAS 3 A 5 HORAS, IGNORE O QUE E MAIS ANTIGO QUE 6H):
 ${histTxt}
 
-OBS CAMPO:
-${comentarios}
+OBSERVACAO REAL DO CAMPO - ESTA E A UNICA FONTE DE CAUSA. SE NAO CITOU MANUTENCAO, NAO INVENTE MANUTENCAO. SE NAO CITOU MAQUINA, NAO INVENTE QTD DE MAQUINA:
+${temObs ? comentarios : 'Nenhuma observacao adicional informada. Analise apenas numeros de entrada/saida e estoque.'}
 
-=== REGRAS SAGRADAS DE ESCRITA - QUEBRA = ERRO ===
+=== REGRAS SAGRADAS DE ESCRITA - QUEBRA = REPROVADO ===
 
-1. TAMANHO: 1200 a 1800 caracteres. Conte. Se <1100, REPROVADO.
-2. ESTRUTURA FIXA 4 PARÁGRAFOS + TÍTULO:
+1. TAMANHO: 1200 a 1800 caracteres. Se menor que 1100, REPROVADO.
+
+2. ESTRUTURA FIXA 4 PARAGRAFOS + TITULO - COM LIGACAO OBRIGATORIA ENTRE ELES:
 
 LINHA 1 EXATA: *Comunicado ${unidade.sigla}*
 
-PARÁGRAFO 1: Começar OBRIGATORIAMENTE com "De momento, a moagem da unidade está formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Entretanto, a média de entrada das últimas 3 horas está em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Depois explique se está ganhando/perdendo pátio. Se moagem 0, usar "No momento, a moagem da unidade está parada, com pátio contabilizando ${pAtioAtualInt} conjuntos carregados."
+PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um patio contabilizando ${pAtioAtualInt} conjuntos carregados. Entretanto, a media de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Depois explique SE esta ganhando ou perdendo patio com base no saldo real. Se o potencial futuro for MAIOR que moagem atual, diga que tende a GANHAR patio, se for MENOR, tende a PERDER. Tem que ter coerencia com paragrafo 3. Se moagem 0, usar "No momento, a moagem da unidade esta parada, com patio contabilizando ${pAtioAtualInt} conjuntos carregados."
 
-PARÁGRAFO 2: Começar OBRIGATORIAMENTE com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". Citar % indisponibilidade, qtd máquinas, frente FXXX caso houver. Use "frente F329 em processo de mudança" NUNCA "frentes de cortes". Segunda frase começar com "Além da indisponibilidade," ou "Além das manutenções," ou "Além da frente FXX". Citar déficit de X toneladas vs cota, troca de turno às HH:00, falta de caminhão, caso houver.
+PARAGRAFO 2: Comecar com "O principal motivo da baixa entrega e" OU "O principal ponto de atencao da unidade e". REGRA FIRME: SO CITE O QUE ESTA NA OBSERVACAO. Se na observacao tem "F329 em mudanca", cite F329. Se tem "indisponibilidade 16% colhedora", cite isso. Se NAO TEM manutencao na observacao, NAO FALE de manutencao. Se NAO TEM qtd de maquina, NAO INVENTE qtd de maquina. Se a observacao esta vazia, fale apenas de "variacao de entrega entre as frentes" e do deficit numerico calculado. Segunda frase comecar com "Alem da indisponibilidade," ou "Alem da frente FXX," MAS SO SE TIVER segunda causa na observacao, senao continue explicando a primeira causa com numeros de deficit de toneladas vs cota se houver.
 
-PARÁGRAFO 3: Começar OBRIGATORIAMENTE com "Conforme apresentado no gráfico acima,". Proibido citar h1,h2,h3. Use apenas MÉDIA: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". Dê horário de risco: "existe risco de redução para 750 t/h entre 22:30 e 23:30" ou "risco de parada entre 18:00 e 19:00". Depois solução: "Dessa forma, o ideal neste momento é ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo conforme o seu potencial de produção e a manutenção entrar em linha após HH:00 (caso houver a manutenção), poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo úmido/chuva, NÃO falar de nominal.
+PARAGRAFO 3: Comecar com "Conforme apresentado no grafico acima,". Use apenas MEDIA: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o patio tende a chegar a ${pAtioMenorInt} conjuntos ate as ${horaFmt(calc.risco.horaMenorEstoque)}". AQUI PRECISA TER LIGACAO com paragrafo 1: se no paragrafo 1 voce disse que esta perdendo patio, aqui tem que confirmar que vai continuar caindo ate horario X. Se disse que vai ganhar, aqui tem que mostrar que vai subir. Nao pode ser incoerente. De horario de risco SO SE o patio projetado ficar ABAIXO de 14 conjuntos. Se estiver acima de 20 conjuntos, NAO CITE zona de risco, apenas diga que tende a se manter estavel. Depois solucao: "Dessa forma, o ideal neste momento e ajustarmos a moagem para X t/h entre HH:00 e HH:00" (solucao coerente com deficit ou ganho). E "Conforme as frentes entrarem em ciclo conforme o seu potencial de producao ${temObs ? 'e a manutencao entrar em linha apos HH:00 (caso houver manutencao citada na observacao)' : ''}, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo umido/chuva citado na observacao, NAO falar de nominal.
 
-PARÁGRAFO 4: Exato: "Seguimos acompanhando o cenário hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria."
+PARAGRAFO 4: Exato: "Seguimos acompanhando o cenario hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria." Esse paragrafo tem que fechar com o que foi dito antes, sem contradizer.
 
-3. NUMEROS: PÁTIO SEMPRE INTEIRO ARREDONDADO. NUNCA 12,5 conjuntos. Use ${pAtioMenorInt} conj. Moagem e entrada podem ter t/h com inteiro.
+3. NUMEROS: PATIO SEMPRE INTEIRO ARREDONDADO. NUNCA 12,5 conjuntos.
 
-4. VOCABULÁRIO PERMITIDO APENAS: frente, frentes, frentes de colheita, estoque, pátio, conjuntos carregados, moagem, entrada, saída, potencial, mudança, indisponibilidade mecânica, colhedora, transbordo, caminhão, troca de turno, quebra de ciclo, déficit, cota, risco, redução, aumento, nominal, gráfico acima, supervisão, indústria, CTT, Cotur.
+4. VOCABULARIO PERMITIDO APENAS: frente, frentes, frentes de colheita, estoque, patio, conjuntos carregados, moagem, entrada, saida, potencial, mudanca, indisponibilidade mecanica, colhedora, transbordo, caminhao, troca de turno, quebra de ciclo, deficit, cota, risco, reducao, aumento, nominal, grafico acima, supervisao, industria, CTT, Cotur.
 
-5. VOCABULÁRIO PROIBIDO = REPROVAÇÃO AUTOMÁTICA, NUNCA ESCREVA: gatilho, frentes de corte, cessamento, h1, h2, h3, precipitação pluviométrica, regime, escoamento, escoar, volumetria, matéria-prima, residual, throughput, lastro, otimização, sinergia, premissa, mitigar, performance, suprimento de cana, encharcado, histórica, generalizadas.
+5. VOCABULARIO PROIBIDO = REPROVA: gatilho, frentes de corte, cessamento, h1, h2, h3, precipitacao pluviometrica, regime, escoamento, escoar, volumetria, materia-prima, residual, throughput, lastro, otimizacao, sinergia, premissa, mitigar, performance, suprimento de cana, encharcado, historica, generalizadas.
 
-6. TROQUE "gatilho" POR "zona de risco do estoque da unidade"
+6. ZONA DE RISCO: NAO CITE NUMERO DA ZONA DE RISCO NO TEXTO FINAL. Apenas considere internamente. Se patio projetado ficar abaixo de ${unidade.gatilho+2} conjuntos, diga que "entra na zona de risco do estoque da unidade" ou "abaixo da zona de risco", sem falar o numero 12. Se estiver acima de 20 conjuntos, nem mencione zona de risco.
 
-7. TROQUE "regime" POR "conforme for alinhando o ciclo de caminhões para as frentes"
+7. COERENCIA OBRIGATORIA: O que falar no paragrafo 1 tem que ligar com o 2, 3 e 4. Exemplo: se falar que potencial futuro e alto e patio vai subir, no paragrafo 3 nao pode falar que patio vai cair. Se falar que entrada e menor que saida, tem que manter que esta perdendo patio.
 
-8. NÃO PRECISO CITAR NO TEXTO FINAL O QUANTO É A ZONA DE RISCO DO ESTOQUE EM CONJUNTOS, SOMENTE ALERTAR SE CHEGAR NESSE BAIXO ESTOQUE NA PROJEÇÃO DE ESTOQUE.
+8. FONTE UNICA DE CAUSA: A causa da baixa ou alta entrega vem APENAS da observacao que o usuario digitou. Nao invente manutencao, chuva, frente, se nao foi digitado. Se observacao vazia, use apenas analise numerica de deficit/saldo.
 
-9. A ANÁLISE DEVE LEVAR EM CONTA AS ÚLTIMAS 3 A 5 HORAS DO QUE ACONTECEU + ESTOQUE + POTENCIAL ESTIMADO. DE 6 HORAS PARA TRÁS NÃO LEVA MAIS EM CONTA PARA O FUTURO PORQUE FOI UMA JANELA MUITO GRANDE DO QUE JÁ PASSOU.
+9. JANELA DE ANALISE: Considere apenas ultimas 3 a 5 horas do historico + estoque atual + potencial futuro 3h. O que aconteceu ha mais de 6 horas atras ignore para projecao futura.
 
-EXEMPLOS OURO PARA COPIAR ESTILO:
+EXEMPLOS OURO APENAS PARA PALAVREADO, NAO COPIE FRASE SE NAO TIVER NA OBSERVACAO:
 ${EXEMPLOS_TODOS}
 
-INSTRUÇÃO FINAL: Pense nos números mas escreva 100% no padrão sagrado acima. Retorne APENAS o comunicado final. Sem explicação.
+INSTRUCAO FINAL: Raciocinio complexo e coerente. Pense nos numeros (deficit, saldo futuro, menor patio) e ligue com a observacao real. Se observacao nao tem manutencao, NAO CITE manutencao. Se observacao nao tem frente, NAO CITE frente. Retorne APENAS o comunicado final.
 `;
 }
 
