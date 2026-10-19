@@ -146,6 +146,41 @@
 function parsePotencial(text){
   if(!text||text.length<15) return null;
   let dados=[];
+  function parseBR(s){
+    s = String(s).trim();
+    if(!s) return NaN;
+    // 1.000,00 -> 1000.00
+    if(s.includes(',') && s.includes('.')){
+      return Number(s.replace(/\./g,'').replace(',','.'));
+    }
+    // 1,000 -> 1000 ou 1,5 -> 1.5
+    if(s.includes(',')){
+      // se tem virgula e 3 digitos depois, pode ser milhar? No BR virgula é decimal
+      if(/,\d{1,2}$/.test(s)){ // decimal
+        return Number(s.replace(/\./g,'').replace(',','.'));
+      } else {
+        return Number(s.replace(/\./g,'').replace(',','.'));
+      }
+    }
+    // Só ponto: 1.000 = 1000, 1.00 = 1
+    if(s.includes('.')){
+      // se termina com . + 3 digitos, é milhar
+      if(/^\d{1,3}(\.\d{3})+$/.test(s)){
+        return Number(s.replace(/\./g,''));
+      }
+      // se tem só um ponto e 3 digitos no final, também milhar
+      if(/\.\d{3}$/.test(s) && !/\.\d{3}\./.test(s)){
+        // 1.000, 10.000 -> milhar
+        const partes = s.split('.');
+        if(partes[partes.length-1].length===3){
+          return Number(s.replace(/\./g,''));
+        }
+      }
+      return Number(s);
+    }
+    return Number(s);
+  }
+
   text.split('\n').forEach(line=>{
     const t=line.trim(); if(!t) return;
     const low=t.toLowerCase();
@@ -154,11 +189,7 @@ function parsePotencial(text){
     const hm=t.match(/(\d{1,2})\s*-\s*(\d{1,2})/); if(!hm) return;
     const horaIni=Number(hm[1]); if(horaIni<0||horaIni>23) return;
     const rawNums=t.match(/[\d.,]+/g); if(!rawNums||rawNums.length<3) return;
-    const nums=rawNums.map(s=>{
-      if(s.includes(',')&&s.includes('.')) return Number(s.replace(/\./g,'').replace(',','.'));
-      if(s.includes(',')) return Number(s.replace(',','.'));
-      return Number(s);
-    }).filter(v=>isFinite(v));
+    const nums=rawNums.map(parseBR).filter(v=>isFinite(v));
     if(nums.length<2) return;
     const entrada=nums[nums.length-2]; const saida=nums[nums.length-1];
     if(entrada>=0&&entrada<10000&&saida>=0&&saida<10000){
