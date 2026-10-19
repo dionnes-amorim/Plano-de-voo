@@ -341,19 +341,19 @@ function montarPrompt(dados, calc, unidade){
   const pAtioAtualInt = Math.round(calc.estoque.atual);
 
   return `
-VOCE É UM ANALISTA SENIOR COA CTT - TEREOS. ANALISE COMPLEXA E COERENTE.
+VOCÊ É ANALISTA SÊNIOR COA CTT - TEREOS. SUA RESPOSTA SERÁ VALIDADA AUTOMATICAMENTE. SE QUEBRAR QUALQUER REGRA, SERÁ DESCARTADA.
 
-OBJETIVO: Gerar comunicado com RACIOCINIO PROPRIO mas usando apenas PALAVREADO permitido. NAO INVENTE dados que nao estao na observacao.
+OBJETIVO: Gerar comunicado igual aos exemplos reais, com RACIOCÍNIO nos números mas ESCRITA SAGRADA.
 
-DADOS PARA RACIOCINIO (USE PARA CALCULAR, NAO COPIE LITERAL SE NAO TIVER NA OBS):
-Unidade: ${unidade.nome} (${unidade.sigla}) - Nominal ${unidade.nominal} t/h
+DADOS REAIS PARA RACIOCÍNIO (USE PARA CALCULAR, NÃO COPIE LITERAL):
+Unidade: ${unidade.nome} (${unidade.sigla}) - ${unidade.tipo} - Nominal ${unidade.nominal} t/h
 Hora Atual: ${horaFmt(calc.horaAtual)}
 Moagem: ${calc.moagemAtual} t/h
-Patio Atual: ${pAtioAtualInt} conj (variacao ${variacao} conj vs H-3)
-Media 3h entrada: ${calc.medias.historicoPotencial.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = saldo ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
-Futuro medio 3h: ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = saldo futuro ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
-Menor patio projetado: ${pAtioMenorInt} conj as ${horaFmt(calc.risco.horaMenorEstoque)} - Risco: ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco nas proximas 12h'}
-Zona de risco interna (NAO CITE NUMERO NO TEXTO): ${unidade.gatilho} conj
+Pátio: ${pAtioAtualInt} conj (variação ${Math.round(calc.estoque.variacao)} conj)
+Média 3h entrada: ${calc.medias.historicoPotencial.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = deficit ${(calc.medias.historicoPotencial - calc.moagemAtual).toFixed(0)} t/h
+Futuro médio 3h: ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem ${calc.moagemAtual} t/h = saldo ${calc.potencialFuturo.saldoFuturo.toFixed(0)} t/h
+Menor pátio: ${pAtioMenorInt} conj às ${horaFmt(calc.risco.horaMenorEstoque)} - Risco: ${calc.risco.primeiraHoraRisco!=null?horaFmt(calc.risco.primeiraHoraRisco):'sem risco imediato'}
+Zona de risco da unidade: ${unidade.gatilho} conj
 
 PROJECAO HORA A HORA:
 ${projTxt}
@@ -372,13 +372,13 @@ ${temObs ? comentarios : 'Nenhuma observacao adicional informada. Analise apenas
 
 LINHA 1 EXATA: *Comunicado ${unidade.sigla}*
 
-PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um patio contabilizando ${pAtioAtualInt} conjuntos carregados. Entretanto, a media de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Depois explique SE esta ganhando ou perdendo patio com base no saldo real. Se o potencial futuro for MAIOR que moagem atual, diga que tende a GANHAR patio, se for MENOR, tende a PERDER. Tem que ter coerencia com paragrafo 3. Se moagem 0, usar "No momento, a moagem da unidade esta parada, com patio contabilizando ${pAtioAtualInt} conjuntos carregados."
+PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um patio contabilizando ${pAtioAtualInt} conjuntos carregados. Entretanto, a media de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a saida em ${calc.moagemAtual} t/h". Depois explique SE esta ganhando ou perdendo patio com base no saldo real. Se o potencial futuro for MAIOR que moagem atual, diga que tende a GANHAR patio, se for MENOR, tende a PERDER. Tem que ter coerencia com paragrafo 3. Se moagem 0, usar "No momento, a moagem da unidade esta parada, com patio contabilizando ${pAtioAtualInt} conjuntos carregados."
 
 PARAGRAFO 2: Comecar com "O principal motivo da baixa entrega e" OU "O principal ponto de atencao da unidade e". REGRA FIRME: SO CITE O QUE ESTA NA OBSERVACAO. Se na observacao tem "F329 em mudanca", cite F329. Se tem "indisponibilidade 16% colhedora", cite isso. Se NAO TEM manutencao na observacao, NAO FALE de manutencao. Se NAO TEM qtd de maquina, NAO INVENTE qtd de maquina. Se a observacao esta vazia, fale apenas de "variacao de entrega entre as frentes" e do deficit numerico calculado. Segunda frase comecar com "Alem da indisponibilidade," ou "Alem da frente FXX," MAS SO SE TIVER segunda causa na observacao, senao continue explicando a primeira causa com numeros de deficit de toneladas vs cota se houver.
 
 PARAGRAFO 3: Comecar com "Conforme apresentado no grafico acima,". Use apenas MEDIA: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o patio tende a chegar a ${pAtioMenorInt} conjuntos ate as ${horaFmt(calc.risco.horaMenorEstoque)}". AQUI PRECISA TER LIGACAO com paragrafo 1: se no paragrafo 1 voce disse que esta perdendo patio, aqui tem que confirmar que vai continuar caindo ate horario X. Se disse que vai ganhar, aqui tem que mostrar que vai subir. Nao pode ser incoerente. De horario de risco SO SE o patio projetado ficar ABAIXO de 14 conjuntos. Se estiver acima de 20 conjuntos, NAO CITE zona de risco, apenas diga que tende a se manter estavel. Depois solucao: "Dessa forma, o ideal neste momento e ajustarmos a moagem para X t/h entre HH:00 e HH:00" (solucao coerente com deficit ou ganho). E "Conforme as frentes entrarem em ciclo conforme o seu potencial de producao ${temObs ? 'e a manutencao entrar em linha apos HH:00 (caso houver manutencao citada na observacao)' : ''}, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo umido/chuva citado na observacao, NAO falar de nominal.
 
-PARAGRAFO 4: Exato: "Seguimos acompanhando o cenario hora a hora junto à supervisão da unidade e reforçando o alinhamento com a indústria." Esse paragrafo tem que fechar com o que foi dito antes, sem contradizer.
+PARAGRAFO 4: Exato: "Seguimos acompanhando o cenario hora a hora junto a supervisao da unidade e reforcando o alinhamento com a industria." Esse paragrafo tem que fechar com o que foi dito antes, sem contradizer.
 
 3. NUMEROS: PATIO SEMPRE INTEIRO ARREDONDADO. NUNCA 12,5 conjuntos.
 
