@@ -150,7 +150,7 @@ function parsePotencial(text){
     const t=line.trim(); if(!t) return;
     const low=t.toLowerCase();
     if(low.includes('hora')&&low.includes('máquinas')) return;
-    if(low.startsWith('total')||low.includes('safra')||low.includes('filial')) return;
+    if(low.startsWith('total')||low.includes('safra')||low.includes('filial')||low.includes('média')||low.includes('media')||low.includes('avg')||low.includes('total geral')) return;
     const hm=t.match(/(\d{1,2})\s*-\s*(\d{1,2})/); if(!hm) return;
     const horaIni=Number(hm[1]); if(horaIni<0||horaIni>23) return;
     const rawNums=t.match(/[\d.,]+/g); if(!rawNums||rawNums.length<3) return;
@@ -197,32 +197,27 @@ function montarDados(){const tabela=$('potentialInput').value.trim(); if(!tabela
 function desenharGraficoPlanoVoo(calculos, unidade){
   const canvas = $('graficoPlanoVoo');
   if(!canvas) return;
-  if(typeof Chart === 'undefined'){ console.error('Chart.js não carregou'); $('chartTitle').textContent='ERRO: Chart.js não carregou - verifique CDN'; return; }
+  if(typeof Chart === 'undefined'){ $('chartTitle').textContent='ERRO: Chart.js não carregou'; return; }
   const ctx = canvas.getContext('2d');
   const proj = calculos.projecaoEstoque || [];
   if(proj.length===0) return;
-
   const labels = proj.map(p => p.horaFormatada);
-  const estoqueT = proj.map(p => p.estoqueProjetado * 70);
+  const estoqueT = proj.map(p => Math.max(0,p.estoqueProjetado) * 70);
   const potencial = proj.map(p => p.potencial);
   const moagem = proj.map(p => p.moagem);
   const nominal = proj.map(() => unidade.nominal);
-  
   const tonPatio = calculos.estoque.atual * 70;
   const horasDur = calculos.moagemAtual > 0 ? Math.floor(tonPatio / calculos.moagemAtual) : 0;
   const minsDur = calculos.moagemAtual > 0 ? Math.round((tonPatio % calculos.moagemAtual) / calculos.moagemAtual * 60) : 0;
-
   $('chartTitle').textContent = `${unidade.sigla} | Estoque: ${tonPatio.toFixed(0)}t ${horasDur}:${String(minsDur).padStart(2,'0')} min | Industrial ${calculos.moagemAtual}t/h | Agrícola ${calculos.potencialFuturo.media.toFixed(0)}t/h | Pátio ${calculos.estoque.atual} conj`;
-
   if(chartInstance){ chartInstance.destroy(); }
-
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: {
       labels: labels,
       datasets: [
         { label: `Nominal ${unidade.nominal} t/h`, data: nominal, borderColor: '#2B78FF', backgroundColor: '#2B78FF', borderWidth: 3, tension: 0, pointRadius: 0 },
-        { label: `Estoque Proj. (${tonPatio.toFixed(0)}t)`, data: estoqueT, borderColor: '#8FBC50', backgroundColor: '#8FBC50', borderWidth: 2.5, borderDash: [8,5], tension: 0.35, pointRadius: 3, pointBackgroundColor: '#8FBC50' },
+        { label: `Estoque Proj.`, data: estoqueT, borderColor: '#8FBC50', backgroundColor: '#8FBC50', borderWidth: 2.5, borderDash: [8,5], tension: 0.35, pointRadius: 3 },
         { label: `Ritmo Colheita`, data: potencial, borderColor: '#FF8C00', backgroundColor: '#FF8C00', borderWidth: 2, borderDash: [8,5], tension: 0.3, pointRadius: 0 },
         { label: `Ritmo Industrial`, data: moagem, borderColor: '#00B4FF', backgroundColor: '#00B4FF', borderWidth: 2, borderDash: [6,4], tension: 0.2, pointRadius: 0 }
       ]
