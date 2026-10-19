@@ -65,9 +65,14 @@ function calcularCenario(dados, unidade){
   const temFuturo = potF1!=null || potF2!=null || potF3!=null;
   const usinaParada = moagemAtual === 0;
   let horaAtual=horaNumero(dados.horaAtual); if(horaAtual==null) horaAtual=new Date().getHours();
+
+  // CORRECAO PRINCIPAL: usa ultimas linhas coladas, nao relogio do PC
+  const historicoReal = potencial.slice(-5);
+  const historico3h = potencial.slice(-3);
+
   const comRel=potencial.map(r=>({...r, relativo:horaRelativa(r.hora, horaAtual)}));
-  const historico=comRel.filter(r=>r.relativo!=null&&r.relativo<0).sort((a,b)=>b.relativo-a.relativo).slice(0,6);
   const futuroBase=comRel.filter(r=>r.relativo!=null&&r.relativo>=0).sort((a,b)=>a.relativo-b.relativo).slice(0,14);
+  
   let futuro=[];
   if(temFuturo){
     const baseHora=horaAtual;
@@ -76,22 +81,24 @@ function calcularCenario(dados, unidade){
     if(potF3!=null) futuro.push({hora:(baseHora+3)%24, potencial:potF3, moagem:usinaParada?0:moagemAtual});
     futuro=futuro.concat(futuroBase.filter(r=>!futuro.some(f=>f.hora===r.hora)).slice(0,10));
   } else { futuro=futuroBase.map(r=>({...r, moagem:usinaParada?0:moagemAtual})); }
+  
   let estoqueProj=atual, menorEstoque=atual, horaMenor=horaAtual, primeiraHoraRisco=null, horaVoltaIdeal=null, estoqueNaVolta=0;
   const projecao=[];
   for(const row of futuro){
     const saldo=usinaParada? row.potencial : (row.potencial-row.moagem);
     estoqueProj+=saldo/TON_POR_CONJ;
-    projecao.push({hora:row.hora, horaFormatada:horaFmt(row.hora), potencial:row.potencial, moagem:row.moagem, saldoToneladas:saldo, estoqueProjetado:estoqueProj});
-    if(estoqueProj<menorEstoque){ menorEstoque=estoqueProj; horaMenor=row.hora; }
-    if(!usinaParada && primeiraHoraRisco==null && estoqueProj < unidade.gatilho) primeiraHoraRisco=row.hora;
-    if(usinaParada && horaVoltaIdeal==null){ const meta=unidade.gatilho+10; if(estoqueProj>=meta){ horaVoltaIdeal=row.hora; estoqueNaVolta=estoqueProj; } }
+    const estoqueSeguro = Math.max(0, estoqueProj);
+    projecao.push({hora:row.hora, horaFormatada:horaFmt(row.hora), potencial:row.potencial, moagem:row.moagem, saldoToneladas:saldo, estoqueProjetado:estoqueSeguro});
+    if(estoqueSeguro<menorEstoque){ menorEstoque=estoqueSeguro; horaMenor=row.hora; }
+    if(!usinaParada && primeiraHoraRisco==null && estoqueSeguro < unidade.gatilho) primeiraHoraRisco=row.hora;
+    if(usinaParada && horaVoltaIdeal==null){ const meta=unidade.gatilho+10; if(estoqueSeguro>=meta){ horaVoltaIdeal=row.hora; estoqueNaVolta=estoqueSeguro; } }
   }
-  const mediaHistPot=historico.length?historico.reduce((t,r)=>t+r.potencial,0)/historico.length:0;
-  const mediaHistMoag=historico.length?historico.reduce((t,r)=>t+r.moagem,0)/historico.length:moagemAtual;
+  const mediaHistPot=historico3h.length?historico3h.reduce((t,r)=>t+r.potencial,0)/historico3h.length:0;
+  const mediaHistMoag=historico3h.length?historico3h.reduce((t,r)=>t+r.moagem,0)/historico3h.length:moagemAtual;
   const mediasFut=[potF1,potF2,potF3].filter(v=>v!=null);
   const mediaFuturoPot=mediasFut.length? mediasFut.reduce((a,b)=>a+b,0)/mediasFut.length : 0;
   const saldoFuturo=usinaParada? mediaFuturoPot : (mediaFuturoPot-moagemAtual);
-  return {usinaParada, unidade, horaAtual, moagemAtual, potencialFuturo:{h1:potF1,h2:potF2,h3:potF3, media:mediaFuturoPot, temFuturo, saldoFuturo}, estoque:{h3,h2,h1,atual, variacao:atual-h3}, medias:{historicoPotencial:mediaHistPot, historicoMoagem:mediaHistMoag}, historico, projecaoEstoque:projecao, risco:{menorEstoque, horaMenorEstoque:horaMenor, primeiraHoraRisco}, retorno:{horaVoltaIdeal, estoqueNaVolta, metaRetorno:unidade.gatilho+10}};
+  return {usinaParada, unidade, horaAtual, moagemAtual, potencialFuturo:{h1:potF1,h2:potF2,h3:potF3, media:mediaFuturoPot, temFuturo, saldoFuturo}, estoque:{h3,h2,h1,atual, variacao:atual-h3}, medias:{historicoPotencial:mediaHistPot, historicoMoagem:mediaHistMoag}, historico:historicoReal, projecaoEstoque:projecao, risco:{menorEstoque, horaMenorEstoque:horaMenor, primeiraHoraRisco}, retorno:{horaVoltaIdeal, estoqueNaVolta, metaRetorno:unidade.gatilho+10}};
 }
 
 function extrairTextoGemini(data){ const partes=data?.candidates?.[0]?.content?.parts||[]; return partes.filter(p=>p&&typeof p.text==='string'&&p.thought!==true).map(p=>p.text).join('\n').trim(); }
