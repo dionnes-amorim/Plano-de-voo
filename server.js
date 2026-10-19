@@ -387,17 +387,19 @@ ${temObs ? comentarios : 'Sem observacao adicional. Analise apenas numeros.'}
 
 1. TAMANHO: 1200 a 1800 caracteres.
 
-2. ESTRUTURA 4 PARAGRAFOS + TITULO COM LIGACAO OBRIGATORIA:
+2. ESTRUTURA 5 PARAGRAFOS + TITULO COM LIGACAO OBRIGATORIA:
 
 LINHA 1: *Comunicado ${unidade.sigla}*
 
-PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um patio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Diga se ganha ou perde patio baseado não só no saldo, mas também no potencial das próximas horas pontuado lá. Tenha coerencia: se potencial futuro maior que moagem, diga que tende a ganhar patio, se menor, tende a perder. Se moagem 0, use "No momento, a moagem da unidade esta parada..."
+PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Diga se ganha ou perde pátio baseado não só no saldo, mas também no potencial das próximas horas pontuado lá. Tenha coerência: se potencial futuro maior que moagem, diga que tende a ganhar patio, se menor, tende a perder. Se moagem 0, use "No momento, a moagem da unidade esta parada..."
 
-PARAGRAFO 2: Comecar com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". REGRA FIRME: CITE APENAS O QUE ESTA NA OBSERVACAO. Nao invente manutencao, nao invente maquina, nao invente frente. Se observacao tem "F329 em mudanca", cite. Se tem "16% colhedora", cite. Se observacao vazia, fale apenas "variação na entrega entre as frentes" sem inventar motivo. NUNCA diga "como nao tem manutencao na observacao..." apenas cite o que tem. Segunda frase com "Além da..." so se tiver segunda causa na observacao.
+PARAGRAFO 2: Comecar com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". REGRA FIRME: CITE APENAS O QUE ESTA NA OBSERVAÇÃO. Não invente manutenção, não invente maquina, não invente frente. Se observação tem "F329 em mudança", cite. Se tem "16% colhedora", cite. Se observação vazia, fale apenas "variação na entrega entre as frentes" sem inventar motivo. NUNCA diga "como não tem manutenção na observação..." apenas cite o que tem. Segunda frase com "Além da..." s se tiver segunda causa na observação.
 
-PARAGRAFO 3: Comecar com "Conforme apresentado no gráfico acima,". Use media: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". REGRA DO PATIO ZERO: patio nunca pode ser negativo. Se projecao chegar a zero, significa parada da unidade. Entao a recomendacao de reducao tem que vir ANTES de zerar. Quando entrar na zona de risco, ja tem que reduzir a moagem conforme potencial estimado. Ex: "existe risco de reducao para 700 t/h entre 18:00 e 19:00" ou "risco de parada entre 18:00 e 19:00 caso mantenha". Depois solucao coerente: "Dessa forma, o ideal e ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo ${temObs ? '(se citado na observacao, cite manutencao retornando)' : ''}, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo umido/chuva na observacao, nao fale nominal.
+PARAGRAFO 3: Comecar com "Conforme apresentado no gráfico acima,". Use media: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". REGRA DO PATIO ZERO: patio nunca pode ser negativo. Se projeção chegar a zero, significa parada da unidade. Então a recomendação de redução tem que vir ANTES de zerar. Quando entrar na zona de risco, ja tem que reduzir a moagem conforme potencial estimado. Ex: "existe risco de reducao para 700 t/h entre 18:00 e 19:00" ou "risco de parada entre 18:00 e 19:00 caso mantenha". Depois solução coerente: "Dessa forma, o ideal é ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo ${temObs ? '(se citado na observação, cite manutenção retornando)' : ''}, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se solo úmido/chuva na observação, não fale nominal.
 
-PARAGRAFO 4: "Seguimos acompanhando o cenario hora a hora junto a supervisao da unidade e reforcando o alinhamento com a industria."
+PARAGRAFO 4: Apresente uma solução para a observação, caso haja alguma, dizendo que vamos fazer o contrário do que estiver. Se for baixa entrega de frentes, diga que solicitamos uma melhora no rendimento, se for manutenção diga que estamos constantemente em contato com a manutenção da unidade para alinharmos a melhor estratégia de liberação de equipamentos, se for mudança diga que estamos alinhando o ciclo da frente o mais rápido possível quando finalizar mudança para melhorarmos produção, se for tudo pode comentar um pouco de cada, e se for solo úmido só fala que estamos constantemente olhando as oportunidades.
+
+PARAGRAFO 5: "Seguimos acompanhando o cenário hora a hora junto a supervisão da unidade e reforçando o alinhamento com a indústria."
 
 3. NUMEROS: PATIO SEMPRE INTEIRO E NUNCA NEGATIVO. Zero = parada. Use ${pAtioMenorInt} conj.
 
@@ -407,11 +409,13 @@ PARAGRAFO 4: "Seguimos acompanhando o cenario hora a hora junto a supervisao da 
 
 6. ZONA DE RISCO: Nao cite numero. Se patio projetado < 14, diga "entra na zona de risco" ou "abaixo da zona de risco". Se >20, nem mencione zona de risco.
 
-7. COERENCIA: Paragrafo 1 ao 4 tem que se ligar. Nao pode falar que perde patio e depois falar que vai subir sem motivo.
+7. COERENCIA: Paragrafo 1 ao 5 tem que se ligar. Nao pode falar que perde patio e depois falar que vai subir sem motivo.
 
-8. JANELA: Ultimas 3 a 5h + estoque + futuro 3h. Ignore >6h.
+8. JANELA: Ultimas 3 a 6h + estoque + futuro 3h. Ignore >7h.
 
 9. SE NO GERAL, POTENCIAL FOR MAIOR QUE MOAGEM MÉDIA E ESTOQUE PROJETAR UMA MALHORA, RECOMENDE AUMENTAR MOAGEM. SE JÁ ESTIVER NA NOMINAL, RECOMENDE MOER ACIMA E SUGIRA O AUMENTO, SEMPRE DE 50 A 100 T/H ATÉ BATER COM O POTENCIAL DE ENTREGA DAS FRENTES.
+
+10. OUTRA COISA, TEM QUE TER COERÊNCIA EM TUDO NA ANÁLISE, SEMPRE DIGA QUE AS PRÓXIMAS HORAS É REFENTE A ANÁLISE EM CIMA DO POTENCIAL, O QUE ACONTECEU É COM BASE NO REALIZADO, AS PRÓXIMAS HORAS É UMA ANÁLISE DE POTENCIAL, NÃO GARANTIDO, MAS NÃO PRECISA FALAR ISSO, APENAS DEIXAR CLARO QUE AS PRÓXIMAS HORAS É DE ACORDO COM O POTENCIAL.
 
 EXEMPLOS SO PARA PALAVREADO:
 ${EXEMPLOS_TODOS}
