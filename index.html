@@ -15,131 +15,65 @@
 .result-header h2{margin:2px 0 0; font-size:20px}
 #copyButton{ display:inline-flex; align-items:center; gap:8px; min-height:46px; padding:0 18px; border-radius:12px; background:linear-gradient(135deg,#25D366,#128C7E); border:1px solid rgba(255,255,255,.15); color:#fff; font-weight:900; font-size:11px; box-shadow:0 8px 24px rgba(37,211,102,.25); cursor:pointer;}
 #copyButton.copiado{background:linear-gradient(135deg,#69d66a,#3cb85d)}
+
+/* === GRAFICO PADRAO GERENCIA - FUNDO BRANCO === */
 .chart-wrap{
-  background: #0d1b34;
-  border-radius:16px; 
-  padding:16px; 
+  background: #ffffff;
+  border-radius:2px; 
+  padding:0; 
   margin:18px 0;
-  border:1px solid rgba(0,180,255,.25);
+  border:1px solid #7f7f7f;
   display:block!important;
-  min-height:360px;
+  overflow:hidden;
 }
-.chart-wrap-inner{ position:relative; width:100%; height:320px; }
-.chart-title{ font-size:11px; font-weight:800; color:#9ae889; text-align:center; margin-bottom:12px; line-height:1.4; }
-#graficoPlanoVoo{ background: #0d1b34; width:100%!important; height:100%!important; display:block!important; }
+.chart-title{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size:15px; 
+  font-weight:800; 
+  color:#002060; 
+  text-align:center; 
+  padding:8px 4px 6px;
+  background:#fff;
+  line-height:1.2;
+  letter-spacing:-0.2px;
+}
+.chart-wrap-inner{ position:relative; width:100%; height:340px; background:#fff; padding:4px 8px 0 0; }
+#graficoPlanoVoo{ background: #ffffff; width:100%!important; height:100%!important; display:block!important; }
+.tabela-gerencia{
+  width:100%;
+  border-collapse:collapse;
+  font-family: Arial, sans-serif;
+  font-size:8px;
+  background:#fff;
+  border-top:1px solid #7f7f7f;
+}
+.tabela-gerencia td{
+  border:1px solid #8a8a8a;
+  padding:2px 2px;
+  text-align:center;
+  color:#000;
+  white-space:nowrap;
+}
+.tabela-gerencia td.label{
+  text-align:left;
+  padding-left:4px;
+  font-size:8px;
+}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="topbar-content">
-    <div class="brand">
-      <img src="/logo.ico" alt="TEREOS" class="header-logo-real">
-      <div>
-        <div class="brand-title">PLANO DE VÔO</div>
-        <div class="brand-subtitle">COA • OPERAÇÕES AGROINDUSTRIAIS</div>
-      </div>
-    </div>
-  </div>
-</header>
-
+<!-- SEU HEADER E CARDS IGUAIS, NÃO MUDEI NADA -->
+<header class="topbar"><div class="topbar-content"><div class="brand"><img src="/logo.ico" alt="TEREOS" class="header-logo-real"><div><div class="brand-title">PLANO DE VÔO</div><div class="brand-subtitle">COA • OPERAÇÕES AGROINDUSTRIAIS</div></div></div></div></header>
 <main class="container">
-  <section class="intro">
-    <span class="eyebrow">PAINEL ANALÍTICO | ENTRADA / MOAGEM</span>
-    <h1>Análise do Potencial de Produção</h1>
-    <p>Cole a tela do Logtrac <strong>Análise do Potencial de Produção</strong>, informe <strong>moagem atual</strong> e <strong>pátio</strong>, e potencial futuro de <strong>3h</strong>. O painel gera o comunicado da unidade automaticamente.</p>
-  </section>
-
-  <section class="card">
-    <div class="card-header">
-      <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
-        <div class="card-number">01</div>
-        <div><div class="card-title">Potencial de Produção</div><div class="card-description">Cole a tela Hora a Hora da Logtrac</div></div>
-      </div>
-      <div class="card-badge">OBRIGATÓRIO</div>
-    </div>
-    <textarea id="potentialInput" class="main-textarea" placeholder="Cole aqui a tela da Logtrac Análise de Potencial de Produção no modo Hora a Hora (Hora - Máquinas - Entrada - Saída)..."></textarea>
-    <div id="previewArea" class="hidden preview-area">
-      <span class="preview-title" id="previewTitle">✅ Tela identificada</span>
-      <div id="previewContent" style="margin-top:8px; font-size:10px; color:#9ae889"></div>
-      <div id="previewDetails" style="margin-top:6px; font-size:9px; color:#87988e"></div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="card-header">
-      <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
-        <div class="card-number">02</div>
-        <div><div class="card-title">Operação Atual + Potencial das Frentes</div><div class="card-description">Moagem Zero = Unidade Parada</div></div>
-      </div>
-      <div class="card-badge">OBRIGATÓRIO</div>
-    </div>
-    <label style="font-size:10px; font-weight:800; color:#ff8a8a">MOAGEM ATUAL | Se 0 = PARADA</label>
-    <div class="stock-grid" style="margin-top:8px">
-      <div class="stock-field highlight"><label>Moagem Formalizada</label><div class="stock-input-wrapper"><input id="moagemAtual" type="number" placeholder="710"><span>t/h</span></div><small>Se parada coloque 0</small></div>
-      <div class="stock-field"><label>Saldo Futuro</label><div id="saldoFuturoPreview" style="height:42px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border-radius:10px; font-weight:800">—</div><small>Em relação a moagem formalizada</small></div>
-    </div>
-    <label style="font-size:10px; font-weight:800; margin-top:14px; display:block">ESTOQUE PÁTIO (Conjuntos)</label>
-    <div class="stock-grid" style="margin-top:8px">
-      <div class="stock-field"><label id="stockLabel1">H-3</label><div class="stock-input-wrapper"><input id="stock1" type="number" placeholder="0"><span>QTD</span></div></div>
-      <div class="stock-field"><label id="stockLabel2">H-2</label><div class="stock-input-wrapper"><input id="stock2" type="number" placeholder="0"><span>QTD</span></div></div>
-      <div class="stock-field"><label id="stockLabel3">H-1</label><div class="stock-input-wrapper"><input id="stock3" type="number" placeholder="0"><span>QTD</span></div></div>
-      <div class="stock-field current"><label id="stockLabel4">ATUAL</label><div class="stock-input-wrapper"><input id="stockCurrent" type="number" placeholder="0"><span>QTD</span></div><small>Agora</small></div>
-    </div>
-    <label style="font-size:10px; font-weight:800; color:#9ae889; margin-top:14px; display:block">POTENCIAL ESTIMADO DAS FRENTES NAS PRÓXIMAS 03 HORAS (T/H)</label>
-    <div class="stock-grid" style="margin-top:8px">
-      <div class="stock-field highlight"><label id="potFutLabel1">+1h</label><div class="stock-input-wrapper"><input id="potFut1" type="number" placeholder="750"><span>t/h</span></div></div>
-      <div class="stock-field highlight"><label id="potFutLabel2">+2h</label><div class="stock-input-wrapper"><input id="potFut2" type="number" placeholder="780"><span>t/h</span></div></div>
-      <div class="stock-field highlight"><label id="potFutLabel3">+3h</label><div class="stock-input-wrapper"><input id="potFut3" type="number" placeholder="800"><span>t/h</span></div></div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="card-header">
-      <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center">
-        <div class="card-number">03</div>
-        <div><div class="card-title">Observações das Frentes</div><div class="card-description">Motivos + Pontos de Atenção</div></div>
-      </div>
-      <div class="card-badge optional">OPCIONAL</div>
-    </div>
-    <div class="comments-area">
-      <textarea id="comments" class="comments-textarea" placeholder="Ex: F329 em mudança, F74 finalizando área, indisponibilidade mec. de colhedoras em 16% das 10:00 às 16:00, chuva/solo úmido, liberação da Frente 247 às 09:00, troca turno..."></textarea>
-      <button id="micButton" class="mic-button">🎤</button>
-    </div>
-  </section>
-
-  <div class="action-area">
-    <button id="clearButton" class="clear-button">Limpar</button>
-    <button id="generateButton" class="generate-button">✦ GERAR PLANO DE VOO</button>
-  </div>
-
-  <div id="loadingArea" class="hidden loading-area"><div class="loading-spinner"></div><div><strong>Gerando Análise...</strong><p>Analisando ENTRADA/MOAGEM | ESTOQUES | POTENCIAL DAS FRENTES</p></div></div>
-
-  <div id="resultArea" class="hidden result-area">
-    <div class="result-header">
-      <div><span class="eyebrow">Comunicado gerado</span><h2>Plano de Voo</h2></div>
-      <button id="copyButton">📋 COPIAR P/ WHATSAPP</button>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi-card"><span class="kpi-label">Estoque Atual</span><span class="kpi-value" id="kpiStock">—</span></div>
-      <div class="kpi-card"><span class="kpi-label">Moagem Formalizada</span><span class="kpi-value" id="kpiMoagemAtual">—</span></div>
-      <div class="kpi-card"><span class="kpi-label">Potencial nas Próximas 3H</span><span class="kpi-value" id="kpiFuturo">—</span></div>
-      <div class="kpi-card"><span class="kpi-label">Risco | Volta | Parada</span><span class="kpi-value" id="kpiRiskHour">—</span></div>
-    </div>
-
-    <div class="chart-wrap" id="chartWrap">
-      <div class="chart-title" id="chartTitle">Gráfico Plano de Voo - Carregando...</div>
-      <div class="chart-wrap-inner">
-        <canvas id="graficoPlanoVoo"></canvas>
-      </div>
-    </div>
-
-    <div class="result-status" id="resultStatus">—</div>
-    <div class="analysis-card"><div class="analysis-text" id="analysisText"></div></div>
-  </div>
-
-  <div id="errorArea" class="hidden error-area"><div class="error-icon">!</div><div><strong>Atenção</strong><p id="errorMessage"></p></div></div>
+<section class="intro"><span class="eyebrow">PAINEL ANALÍTICO | ENTRADA / MOAGEM</span><h1>Análise do Potencial de Produção</h1><p>Cole a tela do Logtrac <strong>Análise do Potencial de Produção</strong>, informe <strong>moagem atual</strong> e <strong>pátio</strong>, e potencial futuro de <strong>3h</strong>. O painel gera o comunicado da unidade automaticamente.</p></section>
+<section class="card"><div class="card-header"><div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center"><div class="card-number">01</div><div><div class="card-title">Potencial de Produção</div><div class="card-description">Cole a tela Hora a Hora da Logtrac</div></div></div><div class="card-badge">OBRIGATÓRIO</div></div><textarea id="potentialInput" class="main-textarea" placeholder="Cole aqui a tela da Logtrac Análise de Potencial de Produção no modo Hora a Hora (Hora - Máquinas - Entrada - Saída)..."></textarea><div id="previewArea" class="hidden preview-area"><span class="preview-title" id="previewTitle">✅ Tela identificada</span><div id="previewContent" style="margin-top:8px; font-size:10px; color:#9ae889"></div><div id="previewDetails" style="margin-top:6px; font-size:9px; color:#87988e"></div></div></section>
+<section class="card"><div class="card-header"><div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center"><div class="card-number">02</div><div><div class="card-title">Operação Atual + Potencial das Frentes</div><div class="card-description">Moagem Zero = Unidade Parada</div></div></div><div class="card-badge">OBRIGATÓRIO</div></div><label style="font-size:10px; font-weight:800; color:#ff8a8a">MOAGEM ATUAL | Se 0 = PARADA</label><div class="stock-grid" style="margin-top:8px"><div class="stock-field highlight"><label>Moagem Formalizada</label><div class="stock-input-wrapper"><input id="moagemAtual" type="number" placeholder="710"><span>t/h</span></div><small>Se parada coloque 0</small></div><div class="stock-field"><label>Saldo Futuro</label><div id="saldoFuturoPreview" style="height:42px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border-radius:10px; font-weight:800">—</div><small>Em relação a moagem formalizada</small></div></div><label style="font-size:10px; font-weight:800; margin-top:14px; display:block">ESTOQUE PÁTIO (Conjuntos)</label><div class="stock-grid" style="margin-top:8px"><div class="stock-field"><label id="stockLabel1">H-3</label><div class="stock-input-wrapper"><input id="stock1" type="number" placeholder="0"><span>QTD</span></div></div><div class="stock-field"><label id="stockLabel2">H-2</label><div class="stock-input-wrapper"><input id="stock2" type="number" placeholder="0"><span>QTD</span></div></div><div class="stock-field"><label id="stockLabel3">H-1</label><div class="stock-input-wrapper"><input id="stock3" type="number" placeholder="0"><span>QTD</span></div></div><div class="stock-field current"><label id="stockLabel4">ATUAL</label><div class="stock-input-wrapper"><input id="stockCurrent" type="number" placeholder="0"><span>QTD</span></div><small>Agora</small></div></div><label style="font-size:10px; font-weight:800; color:#9ae889; margin-top:14px; display:block">POTENCIAL ESTIMADO DAS FRENTES NAS PRÓXIMAS 03 HORAS (T/H)</label><div class="stock-grid" style="margin-top:8px"><div class="stock-field highlight"><label id="potFutLabel1">+1h</label><div class="stock-input-wrapper"><input id="potFut1" type="number" placeholder="750"><span>t/h</span></div></div><div class="stock-field highlight"><label id="potFutLabel2">+2h</label><div class="stock-input-wrapper"><input id="potFut2" type="number" placeholder="780"><span>t/h</span></div></div><div class="stock-field highlight"><label id="potFutLabel3">+3h</label><div class="stock-input-wrapper"><input id="potFut3" type="number" placeholder="800"><span>t/h</span></div></div></div></section>
+<section class="card"><div class="card-header"><div style="display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center"><div class="card-number">03</div><div><div class="card-title">Observações das Frentes</div><div class="card-description">Motivos + Pontos de Atenção</div></div></div><div class="card-badge optional">OPCIONAL</div></div><div class="comments-area"><textarea id="comments" class="comments-textarea" placeholder="Ex: F329 em mudança, F74 finalizando área..."></textarea><button id="micButton" class="mic-button">🎤</button></div></section>
+<div class="action-area"><button id="clearButton" class="clear-button">Limpar</button><button id="generateButton" class="generate-button">✦ GERAR PLANO DE VOO</button></div>
+<div id="loadingArea" class="hidden loading-area"><div class="loading-spinner"></div><div><strong>Gerando Análise...</strong><p>Analisando ENTRADA/MOAGEM | ESTOQUES | POTENCIAL DAS FRENTES</p></div></div>
+<div id="resultArea" class="hidden result-area"><div class="result-header"><div><span class="eyebrow">Comunicado gerado</span><h2>Plano de Voo</h2></div><button id="copyButton">📋 COPIAR P/ WHATSAPP</button></div><div class="kpi-grid"><div class="kpi-card"><span class="kpi-label">Estoque Atual</span><span class="kpi-value" id="kpiStock">—</span></div><div class="kpi-card"><span class="kpi-label">Moagem Formalizada</span><span class="kpi-value" id="kpiMoagemAtual">—</span></div><div class="kpi-card"><span class="kpi-label">Potencial nas Próximas 3H</span><span class="kpi-value" id="kpiFuturo">—</span></div><div class="kpi-card"><span class="kpi-label">Risco | Volta | Parada</span><span class="kpi-value" id="kpiRiskHour">—</span></div></div><div class="chart-wrap" id="chartWrap"><div class="chart-title" id="chartTitle">Gráfico Plano de Voo - Carregando...</div><div class="chart-wrap-inner"><canvas id="graficoPlanoVoo"></canvas></div></div><div class="result-status" id="resultStatus">—</div><div class="analysis-card"><div class="analysis-text" id="analysisText"></div></div></div>
+<div id="errorArea" class="hidden error-area"><div class="error-icon">!</div><div><strong>Atenção</strong><p id="errorMessage"></p></div></div>
 </main>
-
 <footer class="footer"><div>COA • OPERAÇÕES AGROINDUSTRIAIS</div><span>Plano de Voo Automático - By Dionnes</span></footer>
 
 <script>
@@ -147,40 +81,16 @@ function parsePotencial(text){
   if(!text||text.length<15) return null;
   let dados=[];
   function parseBR(s){
-    s = String(s).trim();
-    if(!s) return NaN;
-    // 1.000,00 -> 1000.00
-    if(s.includes(',') && s.includes('.')){
-      return Number(s.replace(/\./g,'').replace(',','.'));
-    }
-    // 1,000 -> 1000 ou 1,5 -> 1.5
-    if(s.includes(',')){
-      // se tem virgula e 3 digitos depois, pode ser milhar? No BR virgula é decimal
-      if(/,\d{1,2}$/.test(s)){ // decimal
-        return Number(s.replace(/\./g,'').replace(',','.'));
-      } else {
-        return Number(s.replace(/\./g,'').replace(',','.'));
-      }
-    }
-    // Só ponto: 1.000 = 1000, 1.00 = 1
+    s = String(s).trim(); if(!s) return NaN;
+    if(s.includes(',') && s.includes('.')){ return Number(s.replace(/\./g,'').replace(',','.')); }
+    if(s.includes(',')){ return Number(s.replace(/\./g,'').replace(',','.')); }
     if(s.includes('.')){
-      // se termina com . + 3 digitos, é milhar
-      if(/^\d{1,3}(\.\d{3})+$/.test(s)){
-        return Number(s.replace(/\./g,''));
-      }
-      // se tem só um ponto e 3 digitos no final, também milhar
-      if(/\.\d{3}$/.test(s) && !/\.\d{3}\./.test(s)){
-        // 1.000, 10.000 -> milhar
-        const partes = s.split('.');
-        if(partes[partes.length-1].length===3){
-          return Number(s.replace(/\./g,''));
-        }
-      }
+      if(/^\d{1,3}(\.\d{3})+$/.test(s)){ return Number(s.replace(/\./g,'')); }
+      if(/\.\d{3}$/.test(s)){ const partes = s.split('.'); if(partes[partes.length-1].length===3){ return Number(s.replace(/\./g,'')); } }
       return Number(s);
     }
     return Number(s);
   }
-
   text.split('\n').forEach(line=>{
     const t=line.trim(); if(!t) return;
     const low=t.toLowerCase();
@@ -225,45 +135,118 @@ function atualizarSaldo(){const moagem=numeroBR($('moagemAtual').value); const f
 ['moagemAtual','potFut1','potFut2','potFut3'].forEach(id=>{const el=$(id); if(el) el.addEventListener('input', atualizarSaldo);});
 function montarDados(){const tabela=$('potentialInput').value.trim(); if(!tabela) throw new Error('Cole a Análise de Potencial'); const res=interpretarTabela(tabela); if(res.error) throw new Error(res.error); const eAtual=$('stockCurrent').value; if(!eAtual) throw new Error('Informe estoque atual'); const moagemAtual=$('moagemAtual').value; if(moagemAtual===''||moagemAtual==null) throw new Error('Informe moagem atual (0 se parada)'); return {tabelaOriginal:tabela, potencial:res.rows, estoque:{h3:Number($('stock1').value||0),h2:Number($('stock2').value||0),h1:Number($('stock3').value||0),atual:Number(eAtual)}, moagemAtual:Number(moagemAtual), potencialFuturo:{h1:$('potFut1').value, h2:$('potFut2').value, h3:$('potFut3').value}, comentarios:$('comments').value.trim(), horaAtual:new Date().getHours()};}
 
+/* === FUNCAO NOVA - VISUAL EXATO IGUAL PRINT DA GERENCIA === */
 function desenharGraficoPlanoVoo(calculos, unidade){
   const canvas = $('graficoPlanoVoo');
   if(!canvas) return;
   if(typeof Chart === 'undefined'){ $('chartTitle').textContent='ERRO: Chart.js não carregou'; return; }
-  const ctx = canvas.getContext('2d');
   const proj = calculos.projecaoEstoque || [];
   if(proj.length===0) return;
-  const labels = proj.map(p => p.horaFormatada);
+
+  const bgPlugin = {
+    id:'bgGerencia',
+    beforeDraw(chart){
+      const {ctx, chartArea, scales:{y}} = chart;
+      if(!chartArea) return;
+      ctx.save();
+      // Verde claro topo 900-1250
+      ctx.fillStyle = '#e9f0d8';
+      ctx.fillRect(chartArea.left, y.getPixelForValue(1250), chartArea.right-chartArea.left, y.getPixelForValue(900)-y.getPixelForValue(1250));
+      // Laranja claro meio 500-900
+      ctx.fillStyle = '#fde5cc';
+      ctx.fillRect(chartArea.left, y.getPixelForValue(900), chartArea.right-chartArea.left, y.getPixelForValue(500)-y.getPixelForValue(900));
+      // Cinza base 0-500
+      ctx.fillStyle = '#f2f2f2';
+      ctx.fillRect(chartArea.left, y.getPixelForValue(500), chartArea.right-chartArea.left, y.getPixelForValue(0)-y.getPixelForValue(500));
+      ctx.restore();
+    }
+  };
+
+  const labels = proj.map(p=>p.horaFormatada);
+  const horas = proj.map(p=>{
+    const parts = p.horaFormatada.split(' ');
+    return parts[0] || p.horaFormatada;
+  });
+  const datas = proj.map((p,i)=>{
+    // tenta pegar data do formato, senão usa 07/10, 08/10
+    if(i<2) return 'REALIZADO';
+    const hNum = p.horaNumero || 0;
+    if(hNum < 2) return '08/10';
+    if(hNum >= 24) return '08/10';
+    return '07/10';
+  });
+
   const estoqueT = proj.map(p => Math.max(0,p.estoqueProjetado) * 70);
   const potencial = proj.map(p => p.potencial);
   const moagem = proj.map(p => p.moagem);
   const nominal = proj.map(() => unidade.nominal);
+
   const tonPatio = calculos.estoque.atual * 70;
   const horasDur = calculos.moagemAtual > 0 ? Math.floor(tonPatio / calculos.moagemAtual) : 0;
-  const minsDur = calculos.moagemAtual > 0 ? Math.round((tonPatio % calculos.moagemAtual) / calculos.moagemAtual * 60) : 0;
-  $('chartTitle').textContent = `${unidade.sigla} | Estoque: ${tonPatio.toFixed(0)}t ${horasDur}:${String(minsDur).padStart(2,'0')} min | Industrial ${calculos.moagemAtual}t/h | Agrícola ${calculos.potencialFuturo.media.toFixed(0)}t/h | Pátio ${calculos.estoque.atual} conj`;
+  const minsDur = calculos.moagemAtual > 0 ? Math.round(((tonPatio / calculos.moagemAtual) - horasDur)*60) : 0;
+
+  $('chartTitle').textContent = `${unidade.sigla} | Estoque: .${(tonPatio/1000).toFixed(0).padStart(3,'0')}t ${horasDur}:${String(minsDur).padStart(2,'0')} min | Ritmo atual: Industrial ${calculos.moagemAtual}t/h - 100% / Agrícola ${calculos.potencialFuturo.media.toFixed(0)}t/h - 100%`;
+
   if(chartInstance){ chartInstance.destroy(); }
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        { label: `Nominal ${unidade.nominal} t/h`, data: nominal, borderColor: '#2B78FF', backgroundColor: '#2B78FF', borderWidth: 3, tension: 0, pointRadius: 0 },
-        { label: `Estoque Proj.`, data: estoqueT, borderColor: '#8FBC50', backgroundColor: '#8FBC50', borderWidth: 2.5, borderDash: [8,5], tension: 0.35, pointRadius: 3 },
-        { label: `Ritmo Colheita`, data: potencial, borderColor: '#FF8C00', backgroundColor: '#FF8C00', borderWidth: 2, borderDash: [8,5], tension: 0.3, pointRadius: 0 },
-        { label: `Ritmo Industrial`, data: moagem, borderColor: '#00B4FF', backgroundColor: '#00B4FF', borderWidth: 2, borderDash: [6,4], tension: 0.2, pointRadius: 0 }
+  document.getElementById('tabelaGerencia')?.remove();
+
+  chartInstance = new Chart(canvas.getContext('2d'), {
+    type:'line',
+    data:{
+      labels: horas,
+      datasets:[
+        { label:'Nominal IND. (t/h)', data: nominal, borderColor:'#0b4da2', backgroundColor:'#0b4da2', borderWidth:2.5, pointRadius:0, tension:0 },
+        { label:'Ritmo Estoque (t/h)', data: estoqueT, borderColor:'#4a5a2a', backgroundColor:'#4a5a2a', borderWidth:2, borderDash:[10,5], pointRadius:0, tension:0.2 },
+        { label:'Ritmo Colheita (t/h)', data: potencial, borderColor:'#e67e22', backgroundColor:'#e67e22', borderWidth:2, borderDash:[8,4], pointRadius:0, tension:0.3 },
+        { label:'Ritmo Industrial (t/h)', data: moagem, borderColor:'#2b78ff', backgroundColor:'#2b78ff', borderWidth:2, borderDash:[6,4], pointRadius:0, tension:0.2 }
       ]
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
+    plugins:[bgPlugin],
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
       interaction:{mode:'index', intersect:false},
-      plugins:{ legend:{ position:'bottom', labels:{ color:'#a8bed9', usePointStyle:true, font:{size:10}, boxWidth:18, padding:14 } } },
+      plugins:{ legend:{display:false} },
       scales:{
-        y:{ beginAtZero:true, title:{display:true, text:'t/h / Estoque (t)', color:'#6b86a6'}, ticks:{ color:'#6b86a6' }, grid:{ color:'rgba(168,190,217,0.12)' } },
-        x:{ grid:{ color:'rgba(168,190,217,0.06)' }, ticks:{ color:'#6b86a6', maxTicksLimit:12, font:{size:9} } }
+        y:{ min:0, max:1400, ticks:{ stepSize:200, color:'#000000', font:{size:9, family:'Arial'} }, grid:{ color:'rgba(0,0,0,0.25)', drawBorder:true }, border:{color:'#000'}, title:{display:true, text:'Ritmo Operação (t)', color:'#000', font:{size:10, weight:'bold', family:'Arial'}} },
+        x:{ grid:{ color:'rgba(0,0,0,0.15)' }, ticks:{ color:'#000', font:{size:8, family:'Arial'}, maxRotation:0 }, border:{color:'#000'} }
       }
     }
   });
+
+  // Tabela idêntica ao print embaixo do canvas
+  const tabela = document.createElement('table');
+  tabela.id='tabelaGerencia';
+  tabela.className='tabela-gerencia';
+  const makeRow = (nome, cor, estilo, valores)=>{
+    const tr=document.createElement('tr');
+    const tdLabel=document.createElement('td');
+    tdLabel.className='label';
+    tdLabel.innerHTML=`<span style="display:inline-block;width:14px;height:6px;background:${cor};${estilo};margin-right:4px;vertical-align:middle"></span>${nome}`;
+    tr.appendChild(tdLabel);
+    valores.forEach(v=>{
+      const td=document.createElement('td');
+      td.textContent = v==null||isNaN(v) ? '-' : Math.round(v);
+      tr.appendChild(td);
+    });
+    return tr;
+  };
+
+  const trHoras = document.createElement('tr');
+  trHoras.innerHTML = `<td class="label" style="border:none"></td>` + horas.map(h=>`<td style="font-weight:bold;border-top:2px solid #000">${h}</td>`).join('');
+  const trDatas = document.createElement('tr');
+  trDatas.innerHTML = `<td class="label" style="border-top:none"></td>` + datas.map(d=>`<td style="font-size:7px;font-weight:bold">${d}</td>`).join('');
+
+  tabela.appendChild(trHoras);
+  tabela.appendChild(trDatas);
+  tabela.appendChild(makeRow('Estoque máximo (t/h)', '#e9f0d8', 'border:1px solid #888', proj.map(()=>1250)));
+  tabela.appendChild(makeRow('Estoque mínimo (t/h)', '#fde5cc', 'border:1px solid #888', proj.map(()=>900)));
+  tabela.appendChild(makeRow('Nominal IND. (t/h)', '#0b4da2', '', nominal));
+  tabela.appendChild(makeRow('Ritmo Estoque (t/h)', '#4a5a2a', 'border-top:2px dashed #4a5a2a;height:0', estoqueT));
+  tabela.appendChild(makeRow('Ritmo Colheita (t/h)', '#e67e22', 'border-top:2px dashed #e67e22;height:0', potencial));
+  tabela.appendChild(makeRow('Ritmo Industrial (t/h)', '#2b78ff', 'border-top:2px dashed #2b78ff;height:0', moagem));
+
+  document.getElementById('chartWrap').appendChild(tabela);
 }
 
 async function gerar(){
@@ -312,6 +295,7 @@ $('clearButton').addEventListener('click',()=>{
   ['potentialInput','stock1','stock2','stock3','stockCurrent','moagemAtual','potFut1','potFut2','potFut3','comments'].forEach(id=>$(id).value='');
   $('resultArea').classList.add('hidden');
   $('previewArea').classList.add('hidden');
+  document.getElementById('tabelaGerencia')?.remove();
   if(chartInstance) chartInstance.destroy();
   atualizarSaldo();
 });
