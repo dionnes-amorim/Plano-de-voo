@@ -391,7 +391,7 @@ ${temObs ? comentarios : 'Sem observacao adicional. Analise apenas numeros.'}
 
 LINHA 1: *Comunicado ${unidade.sigla}*
 
-PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Se moagem 0, use "No momento, a moagem da unidade esta parada..." AQUI COLOQUE O QUANTO A MOAGEM ESTÁ FOMRALIZADA E DEPOIS AS MÉDIAS DE ENTRADA E MOAGEM DAS ÚLTIMAS 03 HORAS, SEM FAZER RACIOCÍNIO AQUI QUE AS DEMAIS LINHAS JÁ VÃO FALAR ISSO. A MOAGEM FORMALIZADA É SÓ UM INFORMATIVO, QUEM MANDA É MOAGEM MÉDIA REAL, MAS NÃO PRECISA CITAR ISSO.
+PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Se moagem 0, use "No momento, a moagem da unidade esta parada..." AQUI COLOQUE O QUANTO A MOAGEM ESTÁ FOMRALIZADA E DEPOIS AS MÉDIAS DE ENTRADA E MOAGEM DAS ÚLTIMAS 03 HORAS, SEM FAZER RACIOCÍNIO AQUI QUE AS DEMAIS LINHAS JÁ VÃO FALAR ISSO. A MOAGEM FORMALIZADA É SÓ UM INFORMATIVO, QUEM MANDA É MOAGEM MÉDIA REAL, MAS NÃO PRECISA CITAR ISSO. FAZ O QUE ESTOU DIZENDO, A MOAGEM FORMALIZADA É UMA COISA, SEMPRE CONSIDERE PARA ANALISAR E EVIDENCIE A MOAGEM ATUAL COMO A MÉDIA DAS ÚLTIMAS 03 HORAS E NÃO A FORMALIZADA.
 
 PARAGRAFO 2: Comecar com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". REGRA FIRME: CITE APENAS O QUE ESTA NA OBSERVAÇÃO. Não invente manutenção, não invente maquina, não invente frente. Se observação tem "F329 em mudança", cite. Se tem "16% colhedora", cite. Se observação vazia, fale apenas "variação na entrega entre as frentes" sem inventar motivo. NUNCA diga "como não tem manutenção na observação..." apenas cite o que tem. Segunda frase com "Além da..." s se tiver segunda causa na observação.
 
@@ -422,6 +422,7 @@ SEJA OUSADO TAMBÉM, SUGIRA JANELAS BEM RESTRITAS DE AUMENTO DE MOAGEM, NÃO ESP
 CONSIDERE TAMBÉM AS INFORMAÇÕES DE PESO ESTIMADO DAS ÚLTIMAS 03 HORAS, QUE É O QUANTO DE TONELADAS QUE SAÍRAM DAS FRENTES, ISSO TAMBÉM DEIXA A ANÁLISE AINDA MAIS RICA PARA AJUDAR A PROJETAR O FUTURO, NÃO PRECISA CITAR ISSO NO TEXTO, MAS UTILIZE NO RACICÍNIO PARA TER A MELHROA ANÁLISE POSSÍVEL.
 NÃO PRECISA FICAR CITANDO DÉFICITS TAMBÉM NA ANÁLISE NÃO. CONSIDERE NO RACIOCÍNIO MAS NÃO CITE NO TEXTO, APENAS PARA ENRIQUECER A ANÁLISE MESMO.
 A ANÁLISE TA FICANDO FEIA, TA PROJETANDO RUINDADE AS VEZES QUANDO CENÁRIO VAI MELHORAR, CALIBRE MELHOR ISSO, PLEASE.
+CITE A MOAGEM FORMALIZADA SÓ NO PRIMEIRO PARÁGRAFO PARA INFORMAR O QUANTO A MOAGEM ESTÁ ALINHADA, SEMPRE CONSIDERE E COLOQUE COMO MÉDIA DE MOAGEM AQUELA REALIZADA NAS ÚLTIMAS HORAS.
 
 EXEMPLOS SO PARA PALAVREADO:
 ${EXEMPLOS_TODOS}
