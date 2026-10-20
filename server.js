@@ -377,7 +377,7 @@ Zona de risco interna (NAO CITE NUMERO): ${unidade.gatilho} conj
 PROJECAO (PATlO NUNCA NEGATIVO - ZERO SIGNIFICA PARADA):
 ${projTxt}
 
-HISTORICO RECENTE (CONSIDERE SO ULTIMAS 3 A 5H, IGNORE >6H):
+HISTORICO RECENTE (CONSIDERE SO ULTIMAS 3 A 6H, IGNORE >7H):
 ${histTxt}
 
 OBSERVACAO REAL DO CAMPO - UNICA FONTE DE CAUSA. CITE APENAS O QUE ESTIVER AQUI. SE NAO TIVER MANUTENCAO, NAO FALE DE MANUTENCAO. SE NAO TIVER FRENTE, NAO FALE DE FRENTE. NAO EXPLIQUE QUE NAO TEM, APENAS NAO CITE:
@@ -391,7 +391,7 @@ ${temObs ? comentarios : 'Sem observacao adicional. Analise apenas numeros.'}
 
 LINHA 1: *Comunicado ${unidade.sigla}*
 
-PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Se moagem 0, use "No momento, a moagem da unidade esta parada..."
+PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Se moagem 0, use "No momento, a moagem da unidade esta parada... AQUI COLOQUE AS MÉDIAS DE DE ENTRADA E REALIZAO E O QUANTO A MOAGEM ESTÁ FOMRALIZADA, SEM FAZER RACIOCÍNIO AQUI QUE AS DEMAIS LINHAS JÁ VÃO FALAR ISSO"
 
 PARAGRAFO 2: Comecar com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". REGRA FIRME: CITE APENAS O QUE ESTA NA OBSERVAÇÃO. Não invente manutenção, não invente maquina, não invente frente. Se observação tem "F329 em mudança", cite. Se tem "16% colhedora", cite. Se observação vazia, fale apenas "variação na entrega entre as frentes" sem inventar motivo. NUNCA diga "como não tem manutenção na observação..." apenas cite o que tem. Segunda frase com "Além da..." s se tiver segunda causa na observação.
 
@@ -413,11 +413,12 @@ PARAGRAFO 5: "Seguimos acompanhando o cenário hora a hora junto a supervisão d
 
 8. JANELA: Ultimas 3 a 6h + estoque + futuro 3h. Ignore >7h.
 
-9. SE NO GERAL, POTENCIAL FOR MAIOR QUE MOAGEM MÉDIA E ESTOQUE PROJETAR UMA MALHORA, RECOMENDE AUMENTAR MOAGEM. SE JÁ ESTIVER NA NOMINAL, RECOMENDE MOER ACIMA E SUGIRA O AUMENTO, SEMPRE DE 50 A 100 T/H ATÉ BATER COM O POTENCIAL DE ENTREGA DAS FRENTES.
+9. SE NO GERAL, POTENCIAL FOR MAIOR QUE MOAGEM MÉDIA E ESTOQUE PROJETAR UMA MALHORA, RECOMENDE AUMENTAR MOAGEM. SE JÁ ESTIVER NA NOMINAL, RECOMENDE MOER ACIMA E SUGIRA O AUMENTO, SEMPRE DE 50 A 100 T/H ATÉ BATER COM O POTENCIAL DE ENTREGA DAS FRENTES, MAS NÃO PRECISA CITAR ISSO DE AUMENTO DE 50 A 100 DENTRO DA ANÁLISE.
 
 10. OUTRA COISA, TEM QUE TER COERÊNCIA EM TUDO NA ANÁLISE, SEMPRE DIGA QUE AS PRÓXIMAS HORAS É REFENTE A ANÁLISE EM CIMA DO POTENCIAL, O QUE ACONTECEU É COM BASE NO REALIZADO, AS PRÓXIMAS HORAS É UMA ANÁLISE DE POTENCIAL, NÃO GARANTIDO, MAS NÃO PRECISA FALAR ISSO, APENAS DEIXAR CLARO QUE AS PRÓXIMAS HORAS É DE ACORDO COM O POTENCIAL.
 SE A ENTRADA MÉDIA FOR MENOR QUE A MOAGEM FORMALIZADA OU MENOR QUE A MOAGEM REALIZADA, SUGIRA REDUÇÃO SE TIVER NA ZONA DE RISCO NO ESTOQUE. SE MOAGEM REALIZADA ESTIVER ACIMA DA MOAGEM FORMALIZADA E NÃO TIVER NA ZONA DE RISCO, SUGIRA UM AJUSTE DE MOAGEM PARA A FORMALIZADA E NÃO MOER ACIMA PARA EVITAR REDUÇÃO. SE NÃO TIVER JEITO AI TEM QUE REDUZIR MOAGEM MESMO, MAS JÁ BOLE UMA ESTRATÉGIA PARA VOLTAR PARA NOMINAL O QUANTO ANTES, APROVEITANDO CADA GANHO DE ESTOQUE.
 SEJA SEMPRE ANALÍTICO E APROVEITE CADA JANELA, A PROJEÇÃO DE CADA HORA FUTURA QUE O ESTOQUE MELHORAR, SUGIRA AUMENTO DE MOAGEM, FALE SEMPRE O NÚMERO QUE FOR AUMENTAR E REDUZIR E A HORA EXATA TAMBÉM DA SUGESTÃO, PARA SER ANALÍTICO AO EXTREMO.
+SEJA OUSADO TAMBÉM, SUGIRA JANELAS BEM RESTRITAS DE AUMENTO DE MOAGEM, NÃO ESPERA SUBIR MUITO ESTOQUE PARA IR AUMENTANDO, SEMPRE APROVEITANDO AS OPORTUNIDADES.
 
 EXEMPLOS SO PARA PALAVREADO:
 ${EXEMPLOS_TODOS}
