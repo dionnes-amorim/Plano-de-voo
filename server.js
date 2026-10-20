@@ -397,11 +397,12 @@ LINHA 1 - TITULO: *Comunicado ${unidade.sigla}*
 PARAGRAFO 1 - REGRA TRAVADA: Comece EXATAMENTE com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.medias.historicoMoagem.toFixed(0)} t/h"
 ATENCAO: Nesse paragrafo 1, a moagem formalizada é APENAS um informativo de alinhamento. Quem MANDA para analisar o passado é a moagem MEDIA REAL ${calc.medias.historicoMoagem.toFixed(0)} e entrada MEDIA REAL ${calc.medias.historicoPotencial.toFixed(0)} da TELA POTENCIAL. Não faça raciocínio de perda/ganho aqui. Se moagem formalizada for 0, comece com "No momento, a moagem da unidade esta parada..."
 
-PARAGRAFO 2 - CAUSA REAL: Comece com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". TRAVADO: Voce so pode citar o que esta na OBSERVACAO REAL DO CAMPO. Se tem "F329 em mudança" cite F329. Se tem "16% colhedora" cite 16% colhedora. Se observacao vazia, use apenas "variação na entrega entre as frentes" sem inventar nada. NUNCA escreva "como nao tem manutencao na observacao". Segunda frase so com "Além da..." se tiver SEGUNDA causa escrita na observacao.
+PARAGRAFO 2 - CAUSA REAL: Comece com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". TRAVADO: Você só pode citar o que esta na OBSERVAÇÃO REAL DO CAMPO. Se tem "F329 em mudança" cite F329. Se tem "16% colhedora" cite 16% colhedora. Se observação vazia, use apenas "variação na entrega entre as frentes" sem inventar nada. NUNCA escreva "como não tem manutenção na observação". Segunda frase so com "Além da..." se tiver SEGUNDA causa escrita na observação.
 
-PARAGRAFO 3 - PROJECAO FUTURA COM GRAFICO: Comece com "Conforme apresentado no gráfico acima,". Aqui voce usa o FUTURO POTENCIAL. Texto obrigatorio: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". REGRA DO ZERO: patio nunca negativo. Se projecao chegar a 0 = parada da unidade. Recomendacao de reducao tem que vir ANTES de zerar. Ex: "existe risco de reducao para 650 t/h entre 18:00 e 19:00" ou "risco de parada entre 18:00 e 19:00 caso mantenha". Depois solucao: "Dessa forma, o ideal é ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo ${temObs ? '(se citado na observação, cite manutenção retornando)' : ''}, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se tiver chuva/solo umido na observacao, NAO prometa nominal.
+PARAGRAFO 3 - PROJEÇÃO FUTURA COM GRÁFICO: Comece com "Conforme apresentado no gráfico acima,". Aqui você usa o FUTURO POTENCIAL. Texto obrigatório: "com potencial de ${calc.potencialFuturo.media.toFixed(0)} t/h vs moagem de ${calc.moagemAtual} t/h, o pátio tende a chegar a ${pAtioMenorInt} conjuntos até às ${horaFmt(calc.risco.horaMenorEstoque)}". REGRA DO ZERO: patio nunca negativo. Se projeção chegar a 0 = parada da unidade. Recomendação de redução tem que vir ANTES de zerar. Ex: "existe risco de redução para 650 t/h entre 18:00 e 19:00" ou "risco de parada entre 18:00 e 19:00, caso cenário permaneça". Depois solução: "Dessa forma, o ideal é ajustarmos a moagem para X t/h entre HH:00 e HH:00" e "Conforme as frentes entrarem em ciclo ${temObs ? '(se citado na observação, cite manutenção retornando)' : ''}, poderemos avaliar retorno para nominal de ${unidade.nominal} t/h por volta das HH:00". Se tiver chuva/solo umido na observacao, NAO prometa nominal.
+ATENCAO: Nesse paragrafo 1, não cite a moagem formalizada, considere somente a média para o cálculo. Quem MANDA para analisar o passado é a moagem MEDIA REAL ${calc.medias.historicoMoagem.toFixed(0)} e entrada MEDIA REAL ${calc.medias.historicoPotencial.toFixed(0)} da TELA POTENCIAL.
 
-PARAGRAFO 4 - SOLUCAO INVERSA DA OBSERVACAO: Se baixa entrega -> "solicitamos melhora no rendimento das frentes". Se manutencao -> "estamos constantemente em contato com a manutencao da unidade para alinharmos a melhor estrategia de liberacao". Se mudanca -> "estamos alinhando o ciclo da frente o mais rapido possivel quando finalizar mudanca". Se solo umido/chuva -> "estamos constantemente olhando as oportunidades". Se tudo -> comente um pouco de cada. So use o que esta na observacao.
+PARAGRAFO 4 - SOLUÇÃO INVERSA DA OBSERVAÇÃO: Se baixa entrega -> "solicitamos melhora no rendimento das frentes". Se manutenção -> "estamos constantemente em contato com a manutenção da unidade para alinharmos a melhor estratégia de liberação". Se mudança -> "estamos alinhando o ciclo da frente o mais rapido possível quando finalizar mudança". Se solo umido/chuva -> "estamos constantemente olhando as oportunidades". Se tudo -> comente um pouco de cada. Só use o que esta na observação.
 
 PARAGRAFO 5 - FECHAMENTO FIXO: "Seguimos acompanhando o cenário hora a hora junto a supervisão da unidade e reforçando o alinhamento com a indústria."
 
@@ -409,26 +410,26 @@ PARAGRAFO 5 - FECHAMENTO FIXO: "Seguimos acompanhando o cenário hora a hora jun
 
 4. VOCABULARIO PERMITIDO: frente, frentes, estoque, patio, conjuntos carregados, moagem, entrada, saida, potencial, mudanca, indisponibilidade mecanica, colhedora, transbordo, caminhao, troca de turno, quebra de ciclo, deficit, cota, risco, reducao, aumento, nominal, grafico acima, supervisao, industria, CTT, Cotur.
 
-5. VOCABULARIO PROIBIDO: gatilho, frentes de corte, cessamento, h1, h2, h3, precipitacao pluviometrica, regime, escoamento, escoar, volumetria, materia-prima, residual, throughput, lastro, otimizacao, sinergia, premissa, mitigar, performance, suprimento de cana, encharcado, historica, generalizadas.
+5. VOCABULARIO PROIBIDO: segurança operacional, giro, planta, período, represamento, plenamente, sustentação, gradual,  fluxo de recebimento, fabril,  gatilho, frentes de corte, cessamento, h1, h2, h3, precipitacao pluviometrica, regime, escoamento, escoar, volumetria, materia-prima, residual, throughput, lastro, otimizacao, sinergia, premissa, mitigar, performance, suprimento de cana, encharcado, historica, generalizadas.
 
 6. ZONA DE RISCO: Nunca cite o numero ${unidade.gatilho}. Se patio projetado < 14 diga "entra na zona de risco". Se >20 nao mencione.
 
-7. COERENCIA TOTAL: Paragrafo 1 fala passado REAL, paragrafo 3 fala futuro POTENCIAL. Deixe claro que proximas horas e analise em cima do POTENCIAL, nao garantia. Nao pode falar que perde patio e depois falar que vai subir sem motivo.
+7. COERÊNCIA TOTAL: Paragrafo 1 fala passado REAL, paragrafo 3 fala futuro POTENCIAL. Deixe claro que proximas horas é análise em cima do POTENCIAL, não garantia. Não pode falar que perde pátio e depois falar que vai subir sem motivo.
 
 8. JANELA: Analise ultimas 3 a 6h + estoque + futuro 3h. Ignore >7h.
 
 9. REGRA DE OURO DA MOAGEM: 
-- Se entrada media REAL < moagem media REAL e patio na zona de risco = SUGIRA REDUCAO.
-- Se moagem media REAL > formalizada e fora da zona de risco = SUGIRA AJUSTE PARA FORMALIZADA para evitar reducao futura.
-- Se potencial futuro > moagem media REAL e estoque projetar melhora = RECOMENDE AUMENTO de 50 a 100 t/h ate bater no potencial, sem citar "50 a 100" no texto, apenas sugira o numero.
-- Se ja esta na nominal, recomende moer acima se potencial permitir.
-- Sempre seja ousado: sugira janelas restritas de aumento/reducao com hora exata (ex: entre 18:00 e 19:00), nao espere estoque subir muito.
+- Se entrada média REAL < moagem media REAL e patio na zona de risco = SUGIRA REDUÇÃO.
+- Se moagem média REAL > formalizada e fora da zona de risco = SUGIRA AJUSTE PARA FORMALIZADA para evitar redução futura.
+- Se potencial futuro > moagem média REAL e estoque projetar melhora = RECOMENDE AUMENTO de 50 a 100 t/h ate bater no potencial, sem citar "50 a 100" no texto, apenas sugira o número.
+- Se já esta na nominal, recomende moer acima se potencial permitir.
+- Sempre seja ousado: sugira janelas restritas de aumento/redução com hora exata (ex: entre 18:00 e 19:00), não espere estoque subir muito.
 
-10. CALIBRE: Considere peso estimado das ultimas 03 horas no raciocinio mas nao cite deficit no texto. Analise nao pode projetar ruindade quando cenario vai melhorar.
-EXEMPLOS SO PARA PALAVREADO:
+10. CALIBRE: Considere peso estimado das ultimas 03 horas no raciocinio mas nao cite deficit no texto. Análise não pode projetar ruindade quando cenário vai melhorar.
+EXEMPLOS SÓ PARA PALAVREADO:
 ${EXEMPLOS_TODOS}
 
-INSTRUCAO FINAL: Coerente, sem inventar, sem falar que nao tem observacao. Cite so o que tem na observacao. Se projecao zerar, recomende reducao antes. Retorne APENAS comunicado.
+INSTRUCAO FINAL: Coerente, sem inventar, sem falar que não tem observação. Cite só o que tem na observação. Se projeção zerar, recomende redução antes. Retorne APENAS comunicado.
 `;
 }
 
