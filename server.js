@@ -391,7 +391,7 @@ ${temObs ? comentarios : 'Sem observacao adicional. Analise apenas numeros.'}
 
 LINHA 1: *Comunicado ${unidade.sigla}*
 
-PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Se moagem 0, use "No momento, a moagem da unidade esta parada... AQUI COLOQUE AS MÉDIAS DE DE ENTRADA E REALIZAO E O QUANTO A MOAGEM ESTÁ FOMRALIZADA, SEM FAZER RACIOCÍNIO AQUI QUE AS DEMAIS LINHAS JÁ VÃO FALAR ISSO"
+PARAGRAFO 1: Comecar com "De momento, a moagem da unidade esta formalizada em ${calc.moagemAtual} t/h, com um pátio contabilizando ${pAtioAtualInt} conjuntos carregados. Enquanto, a média de entrada das ultimas 3 horas esta em ${calc.medias.historicoPotencial.toFixed(0)} t/h e a moagem em ${calc.moagemAtual} t/h". Se moagem 0, use "No momento, a moagem da unidade esta parada..." AQUI COLOQUE O QUANTO A MOAGEM ESTÁ FOMRALIZADA E DEPOIS AS MÉDIAS DE ENTRADA E MOAGEM DAS ÚLTIMAS 03 HORAS, SEM FAZER RACIOCÍNIO AQUI QUE AS DEMAIS LINHAS JÁ VÃO FALAR ISSO. A MOAGEM FORMALIZADA É SÓ UM INFORMATIVO, QUEM MANDA É MOAGEM MÉDIA REAL, MAS NÃO PRECISA CITAR ISSO.
 
 PARAGRAFO 2: Comecar com "O principal motivo da baixa entrega é" OU "O principal ponto de atenção da unidade é". REGRA FIRME: CITE APENAS O QUE ESTA NA OBSERVAÇÃO. Não invente manutenção, não invente maquina, não invente frente. Se observação tem "F329 em mudança", cite. Se tem "16% colhedora", cite. Se observação vazia, fale apenas "variação na entrega entre as frentes" sem inventar motivo. NUNCA diga "como não tem manutenção na observação..." apenas cite o que tem. Segunda frase com "Além da..." s se tiver segunda causa na observação.
 
@@ -419,6 +419,9 @@ PARAGRAFO 5: "Seguimos acompanhando o cenário hora a hora junto a supervisão d
 SE A ENTRADA MÉDIA FOR MENOR QUE A MOAGEM FORMALIZADA OU MENOR QUE A MOAGEM REALIZADA, SUGIRA REDUÇÃO SE TIVER NA ZONA DE RISCO NO ESTOQUE. SE MOAGEM REALIZADA ESTIVER ACIMA DA MOAGEM FORMALIZADA E NÃO TIVER NA ZONA DE RISCO, SUGIRA UM AJUSTE DE MOAGEM PARA A FORMALIZADA E NÃO MOER ACIMA PARA EVITAR REDUÇÃO. SE NÃO TIVER JEITO AI TEM QUE REDUZIR MOAGEM MESMO, MAS JÁ BOLE UMA ESTRATÉGIA PARA VOLTAR PARA NOMINAL O QUANTO ANTES, APROVEITANDO CADA GANHO DE ESTOQUE.
 SEJA SEMPRE ANALÍTICO E APROVEITE CADA JANELA, A PROJEÇÃO DE CADA HORA FUTURA QUE O ESTOQUE MELHORAR, SUGIRA AUMENTO DE MOAGEM, FALE SEMPRE O NÚMERO QUE FOR AUMENTAR E REDUZIR E A HORA EXATA TAMBÉM DA SUGESTÃO, PARA SER ANALÍTICO AO EXTREMO.
 SEJA OUSADO TAMBÉM, SUGIRA JANELAS BEM RESTRITAS DE AUMENTO DE MOAGEM, NÃO ESPERA SUBIR MUITO ESTOQUE PARA IR AUMENTANDO, SEMPRE APROVEITANDO AS OPORTUNIDADES.
+CONSIDERE TAMBÉM AS INFORMAÇÕES DE PESO ESTIMADO DAS ÚLTIMAS 03 HORAS, QUE É O QUANTO DE TONELADAS QUE SAÍRAM DAS FRENTES, ISSO TAMBÉM DEIXA A ANÁLISE AINDA MAIS RICA PARA AJUDAR A PROJETAR O FUTURO, NÃO PRECISA CITAR ISSO NO TEXTO, MAS UTILIZE NO RACICÍNIO PARA TER A MELHROA ANÁLISE POSSÍVEL.
+NÃO PRECISA FICAR CITANDO DÉFICITS TAMBÉM NA ANÁLISE NÃO. CONSIDERE NO RACIOCÍNIO MAS NÃO CITE NO TEXTO, APENAS PARA ENRIQUECER A ANÁLISE MESMO.
+A ANÁLISE TA FICANDO FEIA, TA PROJETANDO RUINDADE AS VEZES QUANDO CENÁRIO VAI MELHORAR, CALIBRE MELHOR ISSO, PLEASE.
 
 EXEMPLOS SO PARA PALAVREADO:
 ${EXEMPLOS_TODOS}
