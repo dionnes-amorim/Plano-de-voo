@@ -421,11 +421,12 @@ PARAGRAFO 5 - FECHAMENTO FIXO: "Seguimos acompanhando o cenário hora a hora jun
 9. REGRA DE OURO DA MOAGEM: 
 - Se entrada média REAL < moagem media REAL e patio na zona de risco = SUGIRA REDUÇÃO.
 - Se moagem média REAL > formalizada e fora da zona de risco = SUGIRA AJUSTE PARA FORMALIZADA para evitar redução futura.
-- Se potencial futuro > moagem média REAL e estoque projetar melhora = RECOMENDE AUMENTO de 50 a 100 t/h ate bater no potencial, sem citar "50 a 100" no texto, apenas sugira o número.
+- Se potencial futuro > moagem média REAL e estoque projetar melhora = RECOMENDE AUMENTO de 50 a 100 t/h ate bater no potencial, sem citar "50 a 100" no texto, apenas sugira o número, pontuando escrito o horário de cada aumento e quantas toneladas recomendadas.
 - Se já esta na nominal, recomende moer acima se potencial permitir.
-- Sempre seja ousado: sugira janelas restritas de aumento/redução com hora exata (ex: entre 18:00 e 19:00), não espere estoque subir muito.
+- Se estiver moendo acima e cenário não estiver legal, já recomende ajustar para nominal antes de precisar reduzir moagem ou chegar em nível crítico.
+- Seja um pouco ousado, quando der é claro: sugira janelas restritas de aumento/redução com hora exata (ex: entre 18:00 e 19:00), não espere estoque subir muito estoque, sem prejudicar o cenário, se não tiver jeito, sugira o que for melhor com base em toda a análise.
 
-10. CALIBRE: Considere peso estimado das ultimas 03 horas no raciocinio mas nao cite deficit no texto. Análise não pode projetar ruindade quando cenário vai melhorar.
+10. CALIBRE: Considere peso estimado das ultimas 03 horas no raciocinio mas não cite déficit no texto. Análise não pode projetar ruindade quando cenário vai melhorar.
 EXEMPLOS SÓ PARA PALAVREADO:
 ${EXEMPLOS_TODOS}
 
